@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+    <meta type="array">
+        <description></description>
+        <type>database</type>
+        <csh_table></csh_table>
+        <labelContext type="array">
+        </labelContext>
+    </meta>
+    <data type="array">
+        <languageKey index="default" type="array">
+            <label index="tx_nawsinglesignon_usermap">usermap</label>
+            <label index="tx_nawsinglesignon_usermap.uid">uid</label>
+            <label index="tx_nawsinglesignon_usermap.mapping_id">mapping_id</label>
+            <label index="tx_nawsinglesignon_usermap.fe_uid">fe_uid</label>
+            <label index="tx_nawsinglesignon_usermap.mapping_username">mapping_username</label>
+            <label index="tx_nawsinglesignon_properties">properties</label>
+            <label index="tx_nawsinglesignon_properties.uid">uid</label>
+            <label index="tx_nawsinglesignon_properties.mapping_id">mapping_id</label>
+            <label index="tx_nawsinglesignon_properties.mapping_tablename">mapping_tablename</label>
+            <label index="tx_nawsinglesignon_properties.allowall">allowall</label>
+            <label index="tx_nawsinglesignon_properties.sysfolder_id">sysfolder_id</label>
+        </languageKey>
+    </data>
+    <orig_hash type="array">
+        <languageKey index="default" type="array">
+            <label index="tx_nawsinglesignon_usermap" type="integer">128434427</label>
+            <label index="tx_nawsinglesignon_usermap.uid" type="integer">159849786</label>
+            <label index="tx_nawsinglesignon_usermap.mapping_id" type="integer">40874120</label>
+            <label index="tx_nawsinglesignon_usermap.fe_uid" type="integer">119929247</label>
+            <label index="tx_nawsinglesignon_usermap.mapping_username" type="integer">21538873</label>
+            <label index="tx_nawsinglesignon_properties" type="integer">122065874</label>
+            <label index="tx_nawsinglesignon_properties.uid" type="integer">159849786</label>
+            <label index="tx_nawsinglesignon_properties.mapping_id" type="integer">40874120</label>
+            <label index="tx_nawsinglesignon_properties.mapping_tablename" type="integer">224802493</label>
+            <label index="tx_nawsinglesignon_properties.allowall" type="integer">58290742</label>
+            <label index="tx_nawsinglesignon_properties.sysfolder_id" type="integer">253860753</label>
+        </languageKey>
+    </orig_hash>
+    <orig_text type="array">
+        <languageKey index="default" type="array">
+        </languageKey>
+    </orig_text>
+</T3locallang>

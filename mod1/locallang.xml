@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+    <meta type="array">
+        <description></description>
+        <type></type>
+        <csh_table></csh_table>
+        <labelContext type="array">
+        </labelContext>
+    </meta>
+    <data type="array">
+        <languageKey index="default" type="array">
+            <label index="title">User Mapping</label>
+            <label index="function1">Info</label>
+            <label index="function6">Create a new Mapping</label>
+            <label index="function2">Edit a Mapping Table</label>
+            <label index="function4">Delete a Mapping Table</label>
+            <label index="function5">Copy a Mapping Table</label>
+            <label index="editTitle">Edit Table Properties</label>
+            <label index="editText">Done.</label>
+            <label index="enterTableName">Enter a Mapping Table Name</label>
+            <label index="viewTableName">Stored Mapping Table properties</label>
+            <label index="infoTitle">Info</label>
+            <label index="infoText">&lt;p&gt;For the &lt;b&gt;Single Sign-On Extension&lt;/b&gt; you are able to set up a &lt;b&gt;User Mapping&lt;/b&gt;.
+		This per-user mappings are configured in User Mapping Tables.&lt;/p&gt;
+		&lt;p&gt;Every User Mapping Table has a unique name plus additional settings, e.g. on the handling of users that are not explicitely configured for User Mapping.&lt;/p&gt;
+		&lt;p&gt;In the top of this view you can &lt;b&gt;create, edit, copy&lt;/b&gt; and &lt;b&gt;delete&lt;/b&gt; User Mapping Tables.&lt;/p&gt;
+		&lt;hr&gt;&lt;p&gt;In the Single Sign-On content element setup, you can then select from the Mapping Tables you defined here. See screenshot.&lt;/p&gt;
+	</label>
+            <label index="savedTitle">Storing data...</label>
+            <label index="savedText">Done.</label>
+            <label index="deleteTitle">Deleting data...</label>
+            <label index="deleteText">Done.</label>
+            <label index="foldername">Folder name:</label>
+            <label index="uid">UID:</label>
+            <label index="nrUsers">Users:</label>
+            <label index="selectSysfolder">Select a Sysfolder:</label>
+            <label index="selectMappingtable">Select a Mapping Table</label>
+            <label index="mappingTable">Mapping Table</label>
+            <label index="allow">allow user but do not change the name</label>
+            <label index="defaultmapping">map all empty mappings this name</label>
+            <label index="username">Username:</label>
+            <label index="realname">Realname:</label>
+            <label index="mapname">Maps to:</label>
+            <label index="userListTitle">User Mapping List</label>
+            <label index="sysfolderid">Sysfolder ID:</label>
+            <label index="gotoPage">Go to page</label>
+            <label index="goBack">back</label>
+            <label index="goForward">forward</label>
+            <label index="submit">submit</label>
+            <label index="cancel">cancel</label>
+        </languageKey>
+        <languageKey index="dk" type="array">
+        </languageKey>
+        <languageKey index="de" type="array">
+        </languageKey>
+        <languageKey index="no" type="array">
+        </languageKey>
+        <languageKey index="it" type="array">
+        </languageKey>
+        <languageKey index="fr" type="array">
+        </languageKey>
+        <languageKey index="es" type="array">
+        </languageKey>
+        <languageKey index="nl" type="array">
+        </languageKey>
+        <languageKey index="cz" type="array">
+        </languageKey>
+        <languageKey index="pl" type="array">
+        </languageKey>
+        <languageKey index="si" type="array">
+        </languageKey>
+        <languageKey index="fi" type="array">
+        </languageKey>
+        <languageKey index="tr" type="array">
+        </languageKey>
+        <languageKey index="se" type="array">
+        </languageKey>
+        <languageKey index="pt" type="array">
+        </languageKey>
+        <languageKey index="ru" type="array">
+        </languageKey>
+        <languageKey index="ro" type="array">
+        </languageKey>
+        <languageKey index="ch" type="array">
+        </languageKey>
+        <languageKey index="sk" type="array">
+        </languageKey>
+        <languageKey index="lt" type="array">
+        </languageKey>
+    </data>
+    <orig_hash type="array">
+        <languageKey index="default" type="array">
+            <label index="title" type="integer">16829022</label>
+            <label index="function1" type="integer">67476226</label>
+            <label index="function6" type="integer">79402510</label>
+            <label index="function2" type="integer">75266736</label>
+            <label index="function4" type="integer">229532270</label>
+            <label index="function5" type="integer">232840704</label>
+            <label index="editTitle" type="integer">55219118</label>
+            <label index="editText" type="integer">257507410</label>
+            <label index="enterTableName" type="integer">19057709</label>
+            <label index="viewTableName" type="integer">54384179</label>
+            <label index="infoTitle" type="integer">67476226</label>
+            <label index="infoText" type="integer">178430660</label>
+            <label index="savedTitle" type="integer">125155167</label>
+            <label index="savedText" type="integer">257507410</label>
+            <label index="deleteTitle" type="integer">86811009</label>
+            <label index="deleteText" type="integer">257507410</label>
+            <label index="foldername" type="integer">138492940</label>
+            <label index="uid" type="integer">4287132</label>
+            <label index="nrUsers" type="integer">62843978</label>
+            <label index="selectSysfolder" type="integer">103476222</label>
+            <label index="selectMappingtable" type="integer">45776239</label>
+            <label index="mappingTable" type="integer">212468780</label>
+            <label index="allow" type="integer">102343093</label>
+            <label index="defaultmapping" type="integer">163176880</label>
+            <label index="username" type="integer">212632006</label>
+            <label index="realname" type="integer">90685150</label>
+            <label index="mapname" type="integer">199807930</label>
+            <label index="userListTitle" type="integer">23339342</label>
+            <label index="sysfolderid" type="integer">180903579</label>
+            <label index="gotoPage" type="integer">30726533</label>
+            <label index="goBack" type="integer">74038176</label>
+            <label index="goForward" type="integer">157670314</label>
+            <label index="submit" type="integer">209305076</label>
+            <label index="cancel" type="integer">17493045</label>
+        </languageKey>
+        <languageKey index="dk" type="array">
+        </languageKey>
+        <languageKey index="de" type="array">
+        </languageKey>
+        <languageKey index="no" type="array">
+        </languageKey>
+        <languageKey index="it" type="array">
+        </languageKey>
+        <languageKey index="fr" type="array">
+        </languageKey>
+        <languageKey index="es" type="array">
+        </languageKey>
+        <languageKey index="nl" type="array">
+        </languageKey>
+        <languageKey index="cz" type="array">
+        </languageKey>
+        <languageKey index="pl" type="array">
+        </languageKey>
+        <languageKey index="si" type="array">
+        </languageKey>
+        <languageKey index="fi" type="array">
+        </languageKey>
+        <languageKey index="tr" type="array">
+        </languageKey>
+        <languageKey index="se" type="array">
+        </languageKey>
+        <languageKey index="pt" type="array">
+        </languageKey>
+        <languageKey index="ru" type="array">
+        </languageKey>
+        <languageKey index="ro" type="array">
+        </languageKey>
+        <languageKey index="ch" type="array">
+        </languageKey>
+        <languageKey index="sk" type="array">
+        </languageKey>
+        <languageKey index="lt" type="array">
+        </languageKey>
+    </orig_hash>
+    <orig_text type="array">
+        <languageKey index="default" type="array">
+        </languageKey>
+        <languageKey index="dk" type="array">
+        </languageKey>
+        <languageKey index="de" type="array">
+        </languageKey>
+        <languageKey index="no" type="array">
+        </languageKey>
+        <languageKey index="it" type="array">
+        </languageKey>
+        <languageKey index="fr" type="array">
+        </languageKey>
+        <languageKey index="es" type="array">
+        </languageKey>
+        <languageKey index="nl" type="array">
+        </languageKey>
+        <languageKey index="cz" type="array">
+        </languageKey>
+        <languageKey index="pl" type="array">
+        </languageKey>
+        <languageKey index="si" type="array">
+        </languageKey>
+        <languageKey index="fi" type="array">
+        </languageKey>
+        <languageKey index="tr" type="array">
+        </languageKey>
+        <languageKey index="se" type="array">
+        </languageKey>
+        <languageKey index="pt" type="array">
+        </languageKey>
+        <languageKey index="ru" type="array">
+        </languageKey>
+        <languageKey index="ro" type="array">
+        </languageKey>
+        <languageKey index="ch" type="array">
+        </languageKey>
+        <languageKey index="sk" type="array">
+        </languageKey>
+        <languageKey index="lt" type="array">
+        </languageKey>
+    </orig_text>
+</T3locallang>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+    <meta type="array">
+        <description></description>
+        <type>CSH</type>
+        <csh_table></csh_table>
+        <labelContext type="array">
+        </labelContext>
+    </meta>
+    <data type="array">
+        <languageKey index="default" type="array">
+            <label index="tx_nawsinglesignon_tpaid.description">Here you need to fill in the TPA ID you configures in the sigsso.conf file at the third party server.</label>
+            <label index="tx_nawsinglesignon_targeturl.description">The target URI where the sigsso.php script can be reached.</label>
+            <label index="tx_nawsinglesignon_linkdescription.description">This is the displayed Text in the Typo3 frontend</label>
+            <label index="tx_nawsinglesignon_contenttype.description">Here you can choose how the link sould be generated</label>
+            <label index="tx_nawsinglesignon_frametarget.description">In this frame target the Single Sign-On will be displayed if \&quot;Link in Content\&quot; is choosen.</label>
+            <label index="tx_nawsinglesignon_usermapping.description">Here you need to select one usermapping Table. If each User should be mapped one to one choose the &quot;Default (no mapping)&quot; table.</label>
+            <label index="tx_nawsinglesignon_frametargetcustom.description">Enter a custom frame target name here if you need it.</label>
+            <label index="tx_nawsinglesignon_linklifetime.description">Here you can insert the lifetime in seconds for the link, that is generated.</label>
+            <label index="tx_nawsinglesignon_forcessl.description">If it is on, the Single Sign-On only work if the user access over a https connection.</label>
+        </languageKey>
+    </data>
+    <orig_hash type="array">
+        <languageKey index="default" type="array">
+            <label index="tx_nawsinglesignon_tpaid.description" type="integer">36915644</label>
+            <label index="tx_nawsinglesignon_targeturl.description" type="integer">177888674</label>
+            <label index="tx_nawsinglesignon_linkdescription.description" type="integer">10503281</label>
+            <label index="tx_nawsinglesignon_contenttype.description" type="integer">159734728</label>
+            <label index="tx_nawsinglesignon_frametarget.description" type="integer">61603877</label>
+            <label index="tx_nawsinglesignon_usermapping.description" type="integer">44676326</label>
+            <label index="tx_nawsinglesignon_frametargetcustom.description" type="integer">69718244</label>
+            <label index="tx_nawsinglesignon_linklifetime.description" type="integer">48158138</label>
+            <label index="tx_nawsinglesignon_forcessl.description" type="integer">247876021</label>
+        </languageKey>
+    </orig_hash>
+    <orig_text type="array">
+        <languageKey index="default" type="array">
+        </languageKey>
+    </orig_text>
+</T3locallang>

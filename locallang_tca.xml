@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+    <meta type="array">
+        <description></description>
+        <type></type>
+        <csh_table></csh_table>
+        <labelContext type="array">
+        </labelContext>
+    </meta>
+    <data type="array">
+        <languageKey index="default" type="array">
+            <label index="naw_single_signon">Single Sign-On</label>
+            <label index="naw_single_signon.pi_flexform.sheet_general">General</label>
+            <label index="naw_single_signon.pi_flexform.tpaid">Third Party Application ID (as configured in Trust Agent)</label>
+            <label index="naw_single_signon.pi_flexform.targeturl">Trust Agent URL</label>
+            <label index="naw_single_signon.pi_flexform.linkdescription">Link Display Text  (for &quot;Link in Content&quot;)</label>
+            <label index="naw_single_signon.pi_flexform.style">Style</label>
+            <label index="naw_single_signon.pi_flexform.frametarget">Frame Target (for &quot;Link in Content&quot;)</label>
+            <label index="naw_single_signon.pi_flexform.frametarget.I.0">_blank</label>
+            <label index="naw_single_signon.pi_flexform.frametarget.I.1">_self</label>
+            <label index="naw_single_signon.pi_flexform.frametarget.I.2">_parent</label>
+            <label index="naw_single_signon.pi_flexform.frametarget.I.3">_top</label>
+            <label index="naw_single_signon.pi_flexform.frametargetcustom">Custom Frame Target Name (overrides: Frame Target)</label>
+            <label index="naw_single_signon.pi_flexform.html_before">HTML before the Link</label>
+            <label index="naw_single_signon.pi_flexform.html_after">HTML after the Link</label>
+            <label index="naw_single_signon.pi_flexform.contenttype">Invocation Type</label>
+            <label index="naw_single_signon.pi_flexform.contenttype.I.0">Open in new window (requires JavaScript)</label>
+            <label index="naw_single_signon.pi_flexform.contenttype.I.1">Open here (HTTP redirect)</label>
+            <label index="naw_single_signon.pi_flexform.contenttype.I.2">Display &quot;Link in Content&quot;</label>
+            <label index="naw_single_signon.pi_flexform.contenttype.I.3">New Window (JavaScript) AND Link in Content</label>
+						<label index="naw_single_signon.pi_flexform.contenttype.I.4">URL only (text string)</label>
+            <label index="naw_single_signon.pi_flexform.security">Security</label>
+            <label index="naw_single_signon.pi_flexform.linklifetime">Link Lifetime (sec)</label>
+            <label index="naw_single_signon.pi_flexform.forcessl">Require SSL</label>
+            <label index="naw_single_signon.pi_flexform.flag_create">Allow to create the user in tpa</label>
+            <label index="naw_single_signon.pi_flexform.enable_fields">FE-Userdata that should be updated or commited to the tpa</label>
+            <label index="naw_single_signon.pi_flexform.usermapping">Select a Usermapping Table</label>
+            <label index="naw_single_signon.pi_flexform.no_usermapping">No Usermapping</label>
+        </languageKey>
+        <languageKey index="dk" type="array">
+        </languageKey>
+        <languageKey index="de" type="array">
+        </languageKey>
+        <languageKey index="no" type="array">
+        </languageKey>
+        <languageKey index="it" type="array">
+        </languageKey>
+        <languageKey index="fr" type="array">
+        </languageKey>
+        <languageKey index="es" type="array">
+        </languageKey>
+        <languageKey index="nl" type="array">
+        </languageKey>
+        <languageKey index="cz" type="array">
+        </languageKey>
+        <languageKey index="pl" type="array">
+        </languageKey>
+        <languageKey index="si" type="array">
+        </languageKey>
+        <languageKey index="fi" type="array">
+        </languageKey>
+        <languageKey index="tr" type="array">
+        </languageKey>
+        <languageKey index="se" type="array">
+        </languageKey>
+        <languageKey index="pt" type="array">
+        </languageKey>
+        <languageKey index="ru" type="array">
+        </languageKey>
+        <languageKey index="ro" type="array">
+        </languageKey>
+        <languageKey index="ch" type="array">
+        </languageKey>
+        <languageKey index="sk" type="array">
+        </languageKey>
+        <languageKey index="lt" type="array">
+        </languageKey>
+        <languageKey index="is" type="array">
+        </languageKey>
+        <languageKey index="hr" type="array">
+        </languageKey>
+        <languageKey index="hu" type="array">
+        </languageKey>
+        <languageKey index="gl" type="array">
+        </languageKey>
+        <languageKey index="th" type="array">
+        </languageKey>
+        <languageKey index="gr" type="array">
+        </languageKey>
+        <languageKey index="hk" type="array">
+        </languageKey>
+        <languageKey index="eu" type="array">
+        </languageKey>
+        <languageKey index="bg" type="array">
+        </languageKey>
+        <languageKey index="br" type="array">
+        </languageKey>
+        <languageKey index="et" type="array">
+        </languageKey>
+        <languageKey index="ar" type="array">
+        </languageKey>
+        <languageKey index="he" type="array">
+        </languageKey>
+        <languageKey index="ua" type="array">
+        </languageKey>
+        <languageKey index="lv" type="array">
+        </languageKey>
+        <languageKey index="jp" type="array">
+        </languageKey>
+        <languageKey index="vn" type="array">
+        </languageKey>
+        <languageKey index="ca" type="array">
+        </languageKey>
+        <languageKey index="ba" type="array">
+        </languageKey>
+        <languageKey index="kr" type="array">
+        </languageKey>
+        <languageKey index="eo" type="array">
+        </languageKey>
+        <languageKey index="my" type="array">
+        </languageKey>
+        <languageKey index="hi" type="array">
+        </languageKey>
+    </data>
+    <orig_hash type="array">
+        <languageKey index="default" type="array">
+            <label index="naw_single_signon" type="integer">76275195</label>
+            <label index="naw_single_signon.pi_flexform.sheet_general" type="integer">14366585</label>
+            <label index="naw_single_signon.pi_flexform.tpaid" type="integer">8894224</label>
+            <label index="naw_single_signon.pi_flexform.targeturl" type="integer">17764852</label>
+            <label index="naw_single_signon.pi_flexform.linkdescription" type="integer">140149663</label>
+            <label index="naw_single_signon.pi_flexform.style" type="integer">182617337</label>
+            <label index="naw_single_signon.pi_flexform.frametarget" type="integer">38479406</label>
+            <label index="naw_single_signon.pi_flexform.frametarget.I.0" type="integer">36816673</label>
+            <label index="naw_single_signon.pi_flexform.frametarget.I.1" type="integer">206155199</label>
+            <label index="naw_single_signon.pi_flexform.frametarget.I.2" type="integer">128637117</label>
+            <label index="naw_single_signon.pi_flexform.frametarget.I.3" type="integer">85700449</label>
+            <label index="naw_single_signon.pi_flexform.frametargetcustom" type="integer">145086136</label>
+            <label index="naw_single_signon.pi_flexform.html_before" type="integer">95683711</label>
+            <label index="naw_single_signon.pi_flexform.html_after" type="integer">264447386</label>
+            <label index="naw_single_signon.pi_flexform.contenttype" type="integer">128962952</label>
+            <label index="naw_single_signon.pi_flexform.contenttype.I.0" type="integer">227310529</label>
+            <label index="naw_single_signon.pi_flexform.contenttype.I.1" type="integer">72660979</label>
+            <label index="naw_single_signon.pi_flexform.contenttype.I.2" type="integer">52680301</label>
+            <label index="naw_single_signon.pi_flexform.contenttype.I.3" type="integer">84477705</label>
+            <label index="naw_single_signon.pi_flexform.security" type="integer">49996582</label>
+            <label index="naw_single_signon.pi_flexform.linklifetime" type="integer">67390268</label>
+            <label index="naw_single_signon.pi_flexform.forcessl" type="integer">101494895</label>
+            <label index="naw_single_signon.pi_flexform.flag_create" type="integer">96412056</label>
+            <label index="naw_single_signon.pi_flexform.disabled_fields" type="integer">185256564</label>
+            <label index="naw_single_signon.pi_flexform.usermapping" type="integer">182519704</label>
+            <label index="naw_single_signon.pi_flexform.no_usermapping" type="integer">37854139</label>
+        </languageKey>
+        <languageKey index="dk" type="array">
+        </languageKey>
+        <languageKey index="de" type="array">
+        </languageKey>
+        <languageKey index="no" type="array">
+        </languageKey>
+        <languageKey index="it" type="array">
+        </languageKey>
+        <languageKey index="fr" type="array">
+        </languageKey>
+        <languageKey index="es" type="array">
+        </languageKey>
+        <languageKey index="nl" type="array">
+        </languageKey>
+        <languageKey index="cz" type="array">
+        </languageKey>
+        <languageKey index="pl" type="array">
+        </languageKey>
+        <languageKey index="si" type="array">
+        </languageKey>
+        <languageKey index="fi" type="array">
+        </languageKey>
+        <languageKey index="tr" type="array">
+        </languageKey>
+        <languageKey index="se" type="array">
+        </languageKey>
+        <languageKey index="pt" type="array">
+        </languageKey>
+        <languageKey index="ru" type="array">
+        </languageKey>
+        <languageKey index="ro" type="array">
+        </languageKey>
+        <languageKey index="ch" type="array">
+        </languageKey>
+        <languageKey index="sk" type="array">
+        </languageKey>
+        <languageKey index="lt" type="array">
+        </languageKey>
+        <languageKey index="is" type="array">
+        </languageKey>
+        <languageKey index="hr" type="array">
+        </languageKey>
+        <languageKey index="hu" type="array">
+        </languageKey>
+        <languageKey index="gl" type="array">
+        </languageKey>
+        <languageKey index="th" type="array">
+        </languageKey>
+        <languageKey index="gr" type="array">
+        </languageKey>
+        <languageKey index="hk" type="array">
+        </languageKey>
+        <languageKey index="eu" type="array">
+        </languageKey>
+        <languageKey index="bg" type="array">
+        </languageKey>
+        <languageKey index="br" type="array">
+        </languageKey>
+        <languageKey index="et" type="array">
+        </languageKey>
+        <languageKey index="ar" type="array">
+        </languageKey>
+        <languageKey index="he" type="array">
+        </languageKey>
+        <languageKey index="ua" type="array">
+        </languageKey>
+        <languageKey index="lv" type="array">
+        </languageKey>
+        <languageKey index="jp" type="array">
+        </languageKey>
+        <languageKey index="vn" type="array">
+        </languageKey>
+        <languageKey index="ca" type="array">
+        </languageKey>
+        <languageKey index="ba" type="array">
+        </languageKey>
+        <languageKey index="kr" type="array">
+        </languageKey>
+        <languageKey index="eo" type="array">
+        </languageKey>
+        <languageKey index="my" type="array">
+        </languageKey>
+        <languageKey index="hi" type="array">
+        </languageKey>
+    </orig_hash>
+    <orig_text type="array">
+        <languageKey index="default" type="array">
+        </languageKey>
+        <languageKey index="dk" type="array">
+        </languageKey>
+        <languageKey index="de" type="array">
+        </languageKey>
+        <languageKey index="no" type="array">
+        </languageKey>
+        <languageKey index="it" type="array">
+        </languageKey>
+        <languageKey index="fr" type="array">
+        </languageKey>
+        <languageKey index="es" type="array">
+        </languageKey>
+        <languageKey index="nl" type="array">
+        </languageKey>
+        <languageKey index="cz" type="array">
+        </languageKey>
+        <languageKey index="pl" type="array">
+        </languageKey>
+        <languageKey index="si" type="array">
+        </languageKey>
+        <languageKey index="fi" type="array">
+        </languageKey>
+        <languageKey index="tr" type="array">
+        </languageKey>
+        <languageKey index="se" type="array">
+        </languageKey>
+        <languageKey index="pt" type="array">
+        </languageKey>
+        <languageKey index="ru" type="array">
+        </languageKey>
+        <languageKey index="ro" type="array">
+        </languageKey>
+        <languageKey index="ch" type="array">
+        </languageKey>
+        <languageKey index="sk" type="array">
+        </languageKey>
+        <languageKey index="lt" type="array">
+        </languageKey>
+        <languageKey index="is" type="array">
+        </languageKey>
+        <languageKey index="hr" type="array">
+        </languageKey>
+        <languageKey index="hu" type="array">
+        </languageKey>
+        <languageKey index="gl" type="array">
+        </languageKey>
+        <languageKey index="th" type="array">
+        </languageKey>
+        <languageKey index="gr" type="array">
+        </languageKey>
+        <languageKey index="hk" type="array">
+        </languageKey>
+        <languageKey index="eu" type="array">
+        </languageKey>
+        <languageKey index="bg" type="array">
+        </languageKey>
+        <languageKey index="br" type="array">
+        </languageKey>
+        <languageKey index="et" type="array">
+        </languageKey>
+        <languageKey index="ar" type="array">
+        </languageKey>
+        <languageKey index="he" type="array">
+        </languageKey>
+        <languageKey index="ua" type="array">
+        </languageKey>
+        <languageKey index="lv" type="array">
+        </languageKey>
+        <languageKey index="jp" type="array">
+        </languageKey>
+        <languageKey index="vn" type="array">
+        </languageKey>
+        <languageKey index="ca" type="array">
+        </languageKey>
+        <languageKey index="ba" type="array">
+        </languageKey>
+        <languageKey index="kr" type="array">
+        </languageKey>
+        <languageKey index="eo" type="array">
+        </languageKey>
+        <languageKey index="my" type="array">
+        </languageKey>
+        <languageKey index="hi" type="array">
+        </languageKey>
+    </orig_text>
+</T3locallang>

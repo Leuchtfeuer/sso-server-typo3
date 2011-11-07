@@ -1,0 +1,14 @@
+  # cat=basic; type=string; label=SSLPrivateKeyFile:Path to your SSLPrivateKeyFile
+SSLPrivateKeyFile = /path/to/private.key
+
+  # cat=basic; type=string; label=SSLPassphrase
+SSLPassphrase =
+
+  # cat=basic; type=boolean; label=externalOpenssl:If your PHP is compiled without --with-openssl you must enable this. Note: Your private key does not have a passphrase with this option.
+externalOpenssl = 0
+
+  # cat=basic; type=int; label=maxUsersPerPage:Maximum displayed Users in the Backend while editing and creating Usermappings
+maxUsersPerPage = 15
+
+  # cat=basic; type=string; label=FE-Userdata that should be updated or commited to the tpa (seperated by colon)
+enable_fields = name,address,email

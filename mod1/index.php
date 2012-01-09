@@ -138,7 +138,7 @@
 		*/
 		function printContent() {
 			global $SOBE;
-			$this->content .= $this->doc->middle();
+			$this->content .= $this->doc->divider();
 			$this->content .= $this->doc->endPage();
 			echo $this->content;
 		}

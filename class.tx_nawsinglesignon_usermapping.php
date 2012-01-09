@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2005-2006 Dietrich Heise <heise@naw.de>
+*  (c) 2005-2006 Dietrich Heise <typo3-ext@naw.info>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -23,7 +23,7 @@
 ***************************************************************/
 
 /**
- * @author      Dietrich Heise <heise@naw.de>
+ * @author      Dietrich Heise <typo3-ext@naw.info>
  */
  
 class tx_nawsinglesignon_usermapping {

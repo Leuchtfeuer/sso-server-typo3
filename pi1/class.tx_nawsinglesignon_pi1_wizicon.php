@@ -2,7 +2,7 @@
 	/***************************************************************
 	*  Copyright notice
 	*
-	*  (c) 2003 Dietrich Heise (heise@naw.de)
+	*  (c) 2003 Dietrich Heise (typo3-ext@naw.info)
 	*  All rights reserved
 	*
 	*  This script is part of the Typo3 project. The Typo3 project is
@@ -24,7 +24,7 @@
 	/**
 	* Class that adds the wizard icon.
 	*
-	* @author Dietrich Heise <heise@naw.de>
+	* @author Dietrich Heise <typo3-ext@naw.info>
 	*/
 	class tx_nawsinglesignon_pi1_wizicon {
 		function proc($wizardItems) {

@@ -3,7 +3,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2003-2006 Dietrich Heise (heise@naw.de)
+*  (c) 2003-2006 Dietrich Heise (typo3-ext@naw.info)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -24,7 +24,7 @@
 /**
 * Plugin 'Single Sign-On' for the 'naw_single_signon' extension.
 *
-* @author Dietrich Heise <heise@naw.de>
+* @author Dietrich Heise <typo3-ext@naw.info>
 */
 
 require_once (PATH_tslib.'class.tslib_pibase.php');

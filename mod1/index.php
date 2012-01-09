@@ -158,10 +158,10 @@
 				case 6:
 				// Create new Mapping
 				$this->content .= $this->doc->section($LANG->getLL('function6'), '', 0, 1);
-				if (t3lib_div::GPvar('sysfolder_id') && t3lib_div::GPvar('saveit') ) {
+				if (t3lib_div::_GP('sysfolder_id') && t3lib_div::_GP('saveit') ) {
 					$this->saveMappingTable();
 					$this->content .= $this->doc->section($LANG->getLL('savedTitle'), $LANG->getLL('savedText'), 1, 1);
-				} elseif (t3lib_div::GPvar('sysfolder_id') ) {
+				} elseif (t3lib_div::_GP('sysfolder_id') ) {
 					$this->editMappingTable();
 				} else {
 					$this->selectUserFolder();
@@ -170,11 +170,11 @@
 				case 2:
 				// Edit Mapping
 				$this->content .= $this->doc->section($LANG->getLL('function2'), '', 0, 1);
-				if (t3lib_div::GPvar('sysfolder_id') && t3lib_div::GPvar('mapping_id') && t3lib_div::GPvar('saveit') ) {
+				if (t3lib_div::_GP('sysfolder_id') && t3lib_div::_GP('mapping_id') && t3lib_div::_GP('saveit') ) {
 					$this->saveMappingTable();
 					$this->content .= $this->doc->section($LANG->getLL('savedTitle'), $LANG->getLL('editText'), 1, 1);
 					$this->editMappingTable();
-				} elseif (t3lib_div::GPvar('sysfolder_id') && t3lib_div::GPvar('mapping_id') ) {
+				} elseif (t3lib_div::_GP('sysfolder_id') && t3lib_div::_GP('mapping_id') ) {
 					$this->editMappingTable();
 				} else {
 					$this->selectMappingTable();
@@ -183,7 +183,7 @@
 				case 4:
 				// Delete Mapping
 				$this->content .= $this->doc->section($LANG->getLL('function4'), '', 0, 1);
-				if (t3lib_div::GPvar('mapping_id')) {
+				if (t3lib_div::_GP('mapping_id')) {
 					$this->deleteMappingTable();
 				} else {
 					$this->selectMappingTable();
@@ -192,10 +192,10 @@
 				case 5:
 				// Copy Mapping
 				$this->content .= $this->doc->section($LANG->getLL('function5'), '', 0, 1);
-				if (t3lib_div::GPvar('sysfolder_id') && t3lib_div::GPvar('saveit')) {
+				if (t3lib_div::_GP('sysfolder_id') && t3lib_div::_GP('saveit')) {
 					$this->saveMappingTable();
 					$this->content .= $this->doc->section('Saved', 'Done.', 0, 1);
-				} elseif (t3lib_div::GPvar('mapping_id')) {
+				} elseif (t3lib_div::_GP('mapping_id')) {
 					$this->copyMappingTable();
 				} else {
 					$this->selectMappingTable();
@@ -211,7 +211,7 @@
 		*/
 		function copyMappingTable() {
 			global $LANG;
-			$old_mapping_id = t3lib_div::GPvar('mapping_id');
+			$old_mapping_id = t3lib_div::_GP('mapping_id');
 			$mapping_id = 0;
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',$this->table_properties, 'uid='.$old_mapping_id);
 			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
@@ -251,8 +251,8 @@
 		*/
 		function deleteMappingTable() {
 			global $LANG;
-			$mapping_id = t3lib_div::GPvar('mapping_id');
-			if (t3lib_div::GPvar('deleteit')) {
+			$mapping_id = t3lib_div::_GP('mapping_id');
+			if (t3lib_div::_GP('deleteit')) {
 				$res = $GLOBALS['TYPO3_DB']->exec_DELETEquery($this->table_properties, 'uid='.$mapping_id);
 				$res = $GLOBALS['TYPO3_DB']->exec_DELETEquery($this->table_usermap, 'mapping_id='.$mapping_id);
 				$this->content .= $this->doc->section($LANG->getLL('deleteTitle'), $LANG->getLL('deleteText'), 1, 1);
@@ -273,22 +273,22 @@
 		}
 		 
 		/**
-		* Saves the Mapping Table (from t3lib_div::GPvar('offset')
-		* to t3lib_div::GPvar('offset')+$this->extConf['maxUsersPerPage']
+		* Saves the Mapping Table (from t3lib_div::_GP('offset')
+		* to t3lib_div::_GP('offset')+$this->extConf['maxUsersPerPage']
 		* Only the actualy shown users will be saved
 		*
 		* @return void
 		*/
 		function saveMappingTable() {
-			$mapping_id = t3lib_div::GPvar('mapping_id');
-			$sysfolder_id = t3lib_div::GPvar('sysfolder_id');
-			$mapping_tablename = t3lib_div::GPvar('mapping_tablename');
-			$mapping_defaultmapping = t3lib_div::GPvar('mapping_defaultmapping');
-			$offset = t3lib_div::GPvar('offset');
+			$mapping_id = t3lib_div::_GP('mapping_id');
+			$sysfolder_id = t3lib_div::_GP('sysfolder_id');
+			$mapping_tablename = t3lib_div::_GP('mapping_tablename');
+			$mapping_defaultmapping = t3lib_div::_GP('mapping_defaultmapping');
+			$offset = t3lib_div::_GP('offset');
 			$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['naw_single_signon']);
 			$maxUsersPerPage = $this->extConf['maxUsersPerPage'];
 			 
-			$allowall = t3lib_div::GPvar('allowall') ? 1 : 0;
+			$allowall = t3lib_div::_GP('allowall') ? 1 : 0;
 			 
 			// Save Table Properties (name and default mapping)
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',$this->table_properties, 'uid='.$mapping_id);
@@ -319,7 +319,7 @@
 				if (($i >= $offset) && ($i < $offset+$maxUsersPerPage)) {
 					$result2 = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',$this->table_usermap, 'mapping_id='.$mapping_id.' AND fe_uid='.$row['uid']);
 					$feuid = 'fe_uid'.$row['uid'];
-					$username = t3lib_div::GPvar($feuid);
+					$username = t3lib_div::_GP($feuid);
 					if ($GLOBALS['TYPO3_DB']->sql_num_rows($result2) == 1) {
 						// Update DB
 						$values = Array(
@@ -346,9 +346,9 @@
 		*/
 		function editMappingTable() {
 			global $LANG;
-			$sysfolder_id = t3lib_div::GPvar('sysfolder_id');
-			$mapping_id = t3lib_div::GPvar('mapping_id');
-			$offset = t3lib_div::GPvar('offset');
+			$sysfolder_id = t3lib_div::_GP('sysfolder_id');
+			$mapping_id = t3lib_div::_GP('mapping_id');
+			$offset = t3lib_div::_GP('offset');
 			if (!isset($mapping_id)) {
 				$mapping_id = 0;
 			}

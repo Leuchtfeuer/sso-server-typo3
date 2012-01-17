@@ -76,7 +76,6 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 		}
 
 
-
 		// Create Signing Data
 		if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'],'flag_create','sDEF3')){
 			$create_modify = $this->pi_getFFvalue($this->cObj->data['pi_flexform'],'flag_create','sDEF3');
@@ -114,8 +113,10 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 		$userdata=base64_encode($userdata_tmp);
 
 		//print_r($this->pi_getFFvalue($this->cObj->data['pi_flexform'],'tpaid','sDEF'));
+		// rather ugly..
 		$this->data = 'version='.$this->sso_version.'&user='.$user.'&tpa_id='.$this->pi_getFFvalue($this->cObj->data['pi_flexform'],'tpaid','sDEF').'&expires='.$this->valid.'&action=logon&flags='.$flags.'&userdata='.$userdata;
-		//$this->data = 'user='.$user.'&amp;tpa_id='.$this->cObj->data['tx_nawsinglesignon_tpaid'].'&amp;expires='.$this->valid;
+		$this->dataURL = 'version='.rawurlencode($this->sso_version).'&user='.rawurlencode($user).'&tpa_id='.rawurlencode($this->pi_getFFvalue($this->cObj->data['pi_flexform'],'tpaid','sDEF')).'&expires='.rawurlencode($this->valid).'&action=logon&flags='.rawurlencode($flags).'&userdata='.rawurlencode($userdata);
+		
 		if ($debugflag)
 			print_r($this->data);
 
@@ -173,7 +174,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 		$this->sign = bin2hex($this->signature);
 
 		# Generate the URL
-		$this->URL = $this->pi_getFFvalue($this->cObj->data['pi_flexform'],'targeturl','sDEF').'?'.$this->data.'&signature='.$this->sign;
+		$this->URL = htmlspecialchars($this->pi_getFFvalue($this->cObj->data['pi_flexform'],'targeturl','sDEF').'?'.$this->dataURL.'&signature='.$this->sign);
 		//$this->URL = $this->cObj->data['tx_nawsinglesignon_targeturl'].'?'.$this->data.'&amp;signature='.$this->sign;
 
 		// Insert Link/Redirect/Popup

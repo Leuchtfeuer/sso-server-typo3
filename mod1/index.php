@@ -211,11 +211,11 @@
 		*/
 		function copyMappingTable() {
 			global $LANG;
-			$old_mapping_id = t3lib_div::_GP('mapping_id');
+			$old_mapping_id = intval(t3lib_div::_GP('mapping_id'));
 			$mapping_id = 0;
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',$this->table_properties, 'uid='.$old_mapping_id);
 			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-			$sysfolder_id = $row['sysfolder_id'];
+			$sysfolder_id = intval($row['sysfolder_id']);
 
 			$this->content .= '<form action="index.php?SET[function]='.(string)$this->MOD_SETTINGS['function'].'">'.chr(10);
 			$this->content .= '<input type="hidden" name="sysfolder_id" value="'.$sysfolder_id.'">'.chr(10);
@@ -251,7 +251,7 @@
 		*/
 		function deleteMappingTable() {
 			global $LANG;
-			$mapping_id = t3lib_div::_GP('mapping_id');
+			$mapping_id = intval(t3lib_div::_GP('mapping_id'));
 			if (t3lib_div::_GP('deleteit')) {
 				$res = $GLOBALS['TYPO3_DB']->exec_DELETEquery($this->table_properties, 'uid='.$mapping_id);
 				$res = $GLOBALS['TYPO3_DB']->exec_DELETEquery($this->table_usermap, 'mapping_id='.$mapping_id);
@@ -280,11 +280,11 @@
 		* @return void
 		*/
 		function saveMappingTable() {
-			$mapping_id = t3lib_div::_GP('mapping_id');
-			$sysfolder_id = t3lib_div::_GP('sysfolder_id');
-			$mapping_tablename = t3lib_div::_GP('mapping_tablename');
+			$mapping_id = intval(t3lib_div::_GP('mapping_id'));
+			$sysfolder_id = intval(t3lib_div::_GP('sysfolder_id'));
+			$mapping_tablename = t3lib_div::_GP('mapping_tablename'),$this->table_properties;
 			$mapping_defaultmapping = t3lib_div::_GP('mapping_defaultmapping');
-			$offset = t3lib_div::_GP('offset');
+			$offset = intval(t3lib_div::_GP('offset'));
 			$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['naw_single_signon']);
 			$maxUsersPerPage = $this->extConf['maxUsersPerPage'];
 			 
@@ -346,9 +346,9 @@
 		*/
 		function editMappingTable() {
 			global $LANG;
-			$sysfolder_id = t3lib_div::_GP('sysfolder_id');
-			$mapping_id = t3lib_div::_GP('mapping_id');
-			$offset = t3lib_div::_GP('offset');
+			$sysfolder_id = intval(t3lib_div::_GP('sysfolder_id'));
+			$mapping_id = intval(t3lib_div::_GP('mapping_id'));
+			$offset = intval(t3lib_div::_GP('offset'));
 			if (!isset($mapping_id)) {
 				$mapping_id = 0;
 			}

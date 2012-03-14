@@ -49,7 +49,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 		// debug switch
 		//$debugflag=true;
 
-		$GLOBALS['TSFE']->set_no_cache();
+		//$GLOBALS['TSFE']->set_no_cache();
 		$this->conf = $conf;
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
@@ -98,7 +98,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 					$groupsdata_splitchar='';
 					$userdata_tmp.=$userdata_splitchar.$i['Field'].'=';
 					foreach ($groups as $j){
-						$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'fe_groups', 'uid='.$j);
+						$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'fe_groups', 'uid='.intval($j));
 						while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){
 							$userdata_tmp.=$groupsdata_splitchar.$row['title'] ;
 						}
@@ -122,7 +122,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 
 		if ($this->extConf['externalOpenssl']) {
 			$keyfile = $this->extConf['SSLPrivateKeyFile'];
-			$external_command = "echo -n \"$this->data\" |/usr/bin/openssl dgst -sha1 -sign $keyfile";
+			$external_command = 'echo -n "' . escapeshellcmd($this->data) . '" |/usr/bin/openssl dgst -sha1 -sign' . escapeshellcmd($keyfile);
 			$this->signature = shell_exec("$external_command");
 			if ($debugflag) {
 				print ('<br>calling OpenSSL via command line');
@@ -240,7 +240,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 	*/
 	function getMappedUser($uid) {
 		if (!$uid) return;
-		$mapping_id = $this->pi_getFFvalue($this->cObj->data['pi_flexform'],'usermapping','sDEF3');
+		$mapping_id = intval($this->pi_getFFvalue($this->cObj->data['pi_flexform'],'usermapping','sDEF3'));
 
 		// Default Table (mapping as it is)
 		if ($mapping_id == 0) {
@@ -260,7 +260,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 		//$res = mysql_query($query);
 		//$row = mysql_fetch_array($res);
 
-		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*','tx_nawsinglesignon_usermap', 'mapping_id='.$mapping_id.' AND fe_uid='.$uid);
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*','tx_nawsinglesignon_usermap', 'mapping_id='.$mapping_id.' AND fe_uid='.intval($uid));
 		$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 
 		if ($GLOBALS['TSFE']->fe_user->user['pid'] != $sysfolder_id) {

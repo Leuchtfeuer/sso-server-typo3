@@ -174,7 +174,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 		$this->sign = bin2hex($this->signature);
 
 		# Generate the URL
-		$this->URL = htmlspecialchars($this->pi_getFFvalue($this->cObj->data['pi_flexform'],'targeturl','sDEF').'?'.$this->dataURL.'&signature='.$this->sign);
+		$this->URL = $this->pi_getFFvalue($this->cObj->data['pi_flexform'],'targeturl','sDEF').'?'.$this->dataURL.'&signature='.$this->sign;
 		//$this->URL = $this->cObj->data['tx_nawsinglesignon_targeturl'].'?'.$this->data.'&amp;signature='.$this->sign;
 
 		// Insert Link/Redirect/Popup
@@ -192,7 +192,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 				$this->LinkText = $this->pi_getFFvalue($this->cObj->data['pi_flexform'],'tpaid','sDEF');
 			}
 			$content .= $this->pi_getFFvalue($this->cObj->data['pi_flexform'],'html_before','sDEF2');
-			$content .= '<a href="'.$this->URL.'" target='.$this->target.'>'.$this->LinkText.'</a>';
+			$content .= '<a href="'.htmlspecialchars($this->URL).'" target='.$this->target.'>'.$this->LinkText.'</a>';
 			$content .= $this->pi_getFFvalue($this->cObj->data['pi_flexform'],'html_after','sDEF2');
 		}
 		elseif ($this->pi_getFFvalue($this->cObj->data['pi_flexform'],'contenttype','sDEF2') == 1) {
@@ -208,7 +208,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 								//--></script>';
 			$GLOBALS['TSFE']->additionalHeaderData += Array ('Window_onload_'.$this->pi_getFFvalue($this->cObj->data['pi_flexform'],'tpaid','sDEF') => $jscode);
 			$content .= $this->pi_getFFvalue($this->cObj->data['pi_flexform'],'html_before','sDEF2');
-			$content .= '<a href="'.$this->URL.'" target='.$this->target.'>'.$this->pi_getFFvalue($this->cObj->data['pi_flexform'],'linkdescription','sDEF').'</a>';
+			$content .= '<a href="'.htmlspecialchars($this->URL).'" target='.$this->target.'>'.$this->pi_getFFvalue($this->cObj->data['pi_flexform'],'linkdescription','sDEF').'</a>';
 			$content .= $this->pi_getFFvalue($this->cObj->data['pi_flexform'],'html_after','sDEF2');
 		}
 		elseif ($this->pi_getFFvalue($this->cObj->data['pi_flexform'],'contenttype','sDEF2') == 0) {
@@ -221,7 +221,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 		}
 		elseif ($this->pi_getFFvalue($this->cObj->data['pi_flexform'],'contenttype','sDEF2') == 4) {
 			// Output URL as string only
-			$content .= $this->URL;
+			$content .= htmlspecialchars($this->URL);
 			return $content;
 		}
 

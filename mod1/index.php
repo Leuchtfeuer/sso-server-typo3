@@ -282,7 +282,7 @@
 		function saveMappingTable() {
 			$mapping_id = intval(t3lib_div::_GP('mapping_id'));
 			$sysfolder_id = intval(t3lib_div::_GP('sysfolder_id'));
-			$mapping_tablename = t3lib_div::_GP('mapping_tablename'),$this->table_properties;
+			$mapping_tablename = t3lib_div::_GP('mapping_tablename',$this->table_properties);
 			$mapping_defaultmapping = t3lib_div::_GP('mapping_defaultmapping');
 			$offset = intval(t3lib_div::_GP('offset'));
 			$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['naw_single_signon']);

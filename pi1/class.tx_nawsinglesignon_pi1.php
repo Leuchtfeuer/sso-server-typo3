@@ -158,67 +158,32 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 	 */
 	protected function getPluginContent($tpaLogonUrl) {
 		$content = '';
-
-		// Insert Link/Redirect/Popup
-		if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'frametargetcustom', 'sDEF2')) {
-			$linkTarget = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'frametargetcustom', 'sDEF2');
-		} else {
-			$linkTarget = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'frametarget', 'sDEF2');
-		}
-
-		switch ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'contenttype', 'sDEF2')) {
+		$contentType = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'contenttype', 'sDEF2');
+		switch ($contentType) {
 			// Open in new window (requires JavaScript) (0)
 			case 0:
-				$jscode = '<script type="text/javascript">
-									<!--
-									' . $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'tpaid', 'sDEF') . ' = window.open(' . t3lib_div::quoteJSvalue($tpaLogonUrl) . ');
-									//--></script>';
-				$GLOBALS['TSFE']->additionalHeaderData += array('Window_onload_' . $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'tpaid', 'sDEF') => $jscode);
+				$this->addTpaUrlInNewWindowJavaScriptToHtmlHeader($tpaLogonUrl);
 			break;
-
 			// Open here (HTTP redirect) (works well without frames) (1)
 			case 1:
-				header('Location: ' . $tpaLogonUrl);
-				exit;
+				t3lib_utility_Http::redirect($tpaLogonUrl);
 			break;
-
 			// Display Link in Content (2)
 			case 2:
-				if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'linkdescription', 'sDEF')) {
-					// if no linkdescription is set use the tpa_id
-					$linkText = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'linkdescription', 'sDEF');
-				} else {
-					$linkText = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'tpaid', 'sDEF');
-				}
-				$content .= $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'html_before', 'sDEF2');
-				$additionalAttributes = array();
-				if ($linkTarget === '_blank') {
-					$additionalAttributes[] = 'onmousedown="location.reload()"';
-				}
-				$content .= '<a ' . implode(' ', $additionalAttributes) . ' href="' . htmlspecialchars($tpaLogonUrl) . '" target="' . htmlspecialchars($linkTarget) . '">' . htmlspecialchars($linkText) . '</a>';
-				$content .= $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'html_after', 'sDEF2');
+				$content = $this->getTpaLinkTag($tpaLogonUrl);
 			break;
-
 			// New Window (JavaScript) AND Link in Content (3)
 			case 3:
-				$jscode = '<script type="text/javascript">
-									<!--
-									' . $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'tpaid', 'sDEF') . ' = window.open(' . t3lib_div::quoteJSvalue($tpaLogonUrl) . ');
-									//--></script>';
-				$GLOBALS['TSFE']->additionalHeaderData += Array('Window_onload_' . $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'tpaid', 'sDEF') => $jscode);
-				$content .= $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'html_before', 'sDEF2');
-				$content .= '<a href="' . htmlspecialchars($tpaLogonUrl) . '" target="' . htmlspecialchars($linkTarget) . '">' . $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'linkdescription', 'sDEF') . '</a>';
-				$content .= $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'html_after', 'sDEF2');
+				$this->addTpaUrlInNewWindowJavaScriptToHtmlHeader($tpaLogonUrl);
+				$content = $this->getTpaLinkTag($tpaLogonUrl);
 			break;
-
 			// Output URL as string only
 			case 4:
-				$content .= htmlspecialchars($tpaLogonUrl);
+				$content = htmlspecialchars($tpaLogonUrl);
 			break;
-
 			// Output error message
 			default:
-				throw new Exception('Action invalid: ' . htmlspecialchars($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'contenttype', 'sDEF2')));
+				throw new Exception('Action invalid: ' . htmlspecialchars($contentType));
 		}
 
 		return $content;
@@ -275,7 +240,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 		# debug mode: save binary signature to file
 		if (self::$debug) {
 			$tmp_signature_file = '/tmp/sigsso_debug.signature';
-			$tmp_file = @ fopen($tmp_signature_file, "w");
+			$tmp_file = @fopen($tmp_signature_file, "w");
 			fwrite($tmp_file, $signature);
 			fclose($tmp_file);
 			print ('<br>Stored binary signature into ' . $tmp_signature_file);
@@ -405,9 +370,47 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 			echo '<pre>' . htmlspecialchars(print_r($variable, TRUE)) . '</pre>';
 		}
 	}
+
+	/**
+	 * Generates a link tag with TPA target URL
+	 *
+	 * @param $tpaLogonUrl
+	 * @return string
+	 */
+	protected function getTpaLinkTag($tpaLogonUrl) {
+		if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'frametargetcustom', 'sDEF2')) {
+			$linkTarget = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'frametargetcustom', 'sDEF2');
+		} else {
+			$linkTarget = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'frametarget', 'sDEF2');
+		}
+
+		// if no link description is set use the tpa_id
+		if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'linkdescription', 'sDEF')) {
+			$linkText = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'linkdescription', 'sDEF');
+		} else {
+			$linkText = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'tpaid', 'sDEF');
+		}
+
+		$content = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'html_before', 'sDEF2');
+		$additionalAttributes = array();
+		if ($linkTarget === '_blank') {
+			$additionalAttributes[] = 'onMouseDown="location.reload()"';
+		}
+		$content .= '<a ' . implode(' ', $additionalAttributes) . ' href="' . htmlspecialchars($tpaLogonUrl) . '" target="' . htmlspecialchars($linkTarget) . '">' . htmlspecialchars($linkText) . '</a>';
+		$content .= $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'html_after', 'sDEF2');
+		return $content;
+	}
+
+	/**
+	 * Add JavaScript to HTML header to open a new browser window or tab with TPA URL
+	 *
+	 * @param string $tpaLogonUrl
+	 */
+	protected function addTpaUrlInNewWindowJavaScriptToHtmlHeader($tpaLogonUrl) {
+		$GLOBALS['TSFE']->additionalHeaderData['Window_onload_' . $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'tpaid', 'sDEF')] = t3lib_div::wrapJS('window.open(' . t3lib_div::quoteJSvalue($tpaLogonUrl) . ');');
+	}
 }
 
 if (defined('TYPO3_MODE') && isset($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/naw_single_signon/pi1/class.tx_nawsinglesignon_pi1.php'])) {
 	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/naw_single_signon/pi1/class.tx_nawsinglesignon_pi1.php']);
 }
-?>

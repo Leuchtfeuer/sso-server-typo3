@@ -4,7 +4,7 @@
  *  Copyright notice
  *
  *  (c) 2003-2012 Dietrich Heise (typo3-ext@naw.info)
- *  (c) 2012 Helmut Hummel (helmut.hummel@typo3.org)
+ *  (c) 2012-2015 Helmut Hummel (info@helhum.io)
  *  All rights reserved
  *
  *  This script is part of the Typo3 project. The Typo3 project is
@@ -23,16 +23,15 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-require_once(PATH_tslib . 'class.tslib_pibase.php');
-
 /**
  * Plugin 'Single Sign-On' for the 'naw_single_signon' extension.
  * The Main Class of this extenstion to display Content in the Frontend
  *
  * @author Dietrich Heise <typo3-ext@naw.info>
- * @author Helmut Hummel (helmut.hummel@typo3.org)
+ * @author Helmut Hummel (info@helhum.io)
  */
 class tx_nawsinglesignon_pi1 extends tslib_pibase {
+
 	var $prefixId = 'tx_nawsinglesignon_pi1';
 	// Same as class name
 	var $scriptRelPath = 'pi1/class.tx_nawsinglesignon_pi1.php'; // Path to this script relative to the extension dir.
@@ -101,7 +100,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 	 */
 	protected function generateTpaLogonUrl() {
 		// Calculate link expire time
-		$validUntilTimestamp = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'linklifetime', 'sDEF3') + time();
+		$validUntilTimestamp = intval($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'linklifetime', 'sDEF3')) + time();
 
 		$userId = ($this->getMappedUser($GLOBALS['TSFE']->fe_user->user['uid']));
 		if (!$userId) {
@@ -136,7 +135,6 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 		);
 
 		$this->debug($ssoData);
-//		$this->debug($this->implodeSsoData($ssoData));
 
 		# encode the signature in hex format
 		$ssoData['signature'] = bin2hex($this->getSslSignatureForString($this->implodeSsoData($ssoData)));
@@ -173,6 +171,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 				$content = $this->getTpaLinkTag($tpaLogonUrl);
 			break;
 			// New Window (JavaScript) AND Link in Content (3)
+			// TODO: This mode make absolutely no sense. Remove it?
 			case 3:
 				$this->addTpaUrlInNewWindowJavaScriptToHtmlHeader($tpaLogonUrl);
 				$content = $this->getTpaLinkTag($tpaLogonUrl);

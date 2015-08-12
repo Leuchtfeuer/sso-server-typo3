@@ -191,7 +191,11 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 					$linkText = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'tpaid', 'sDEF');
 				}
 				$content .= $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'html_before', 'sDEF2');
-				$content .= '<a href="' . htmlspecialchars($tpaLogonUrl) . '" target="' . htmlspecialchars($linkTarget) . '">' . htmlspecialchars($linkText) . '</a>';
+				$additionalAttributes = array();
+				if ($linkTarget === '_blank') {
+					$additionalAttributes[] = 'onmousedown="location.reload()"';
+				}
+				$content .= '<a ' . implode(' ', $additionalAttributes) . ' href="' . htmlspecialchars($tpaLogonUrl) . '" target="' . htmlspecialchars($linkTarget) . '">' . htmlspecialchars($linkText) . '</a>';
 				$content .= $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'html_after', 'sDEF2');
 			break;
 

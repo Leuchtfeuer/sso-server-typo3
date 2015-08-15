@@ -134,18 +134,18 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 		$tpaId = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'tpaid', 'sDEF');
 		$flags = base64_encode('create_modify=' . $create_modify);
 		$userData = $this->getUserData();
-		$this->debug($userData);
 
 		$ssoData = array(
 			'version' => $this->sso_version,
-			'user' => $userId,
-			'tpa_id' => $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'tpaid', 'sDEF'),
+			'user' => $userName,
+			'tpa_id' => $tpaId,
 			'expires' => $validUntilTimestamp,
 			'action' => 'logon',
 			'flags' => $flags,
 			'userdata' => base64_encode($userData),
 		);
 
+		$this->debug($userData);
 		$this->debug($ssoData);
 
 		# encode the signature in hex format
@@ -264,10 +264,11 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 	}
 
 	/**
-	 * return the mapped username for $uid
+	 * Return the mapped username for $uid
 	 *
 	 * @param integer  $uid: the uid of the current fe_user
 	 * @return string  mapped username
+	 * @throws Exception
 	 */
 	protected function getMappedUser($uid) {
 		if (!$uid) {

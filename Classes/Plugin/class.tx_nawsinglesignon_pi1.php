@@ -32,10 +32,24 @@
  */
 class tx_nawsinglesignon_pi1 extends tslib_pibase {
 
-	var $prefixId = 'tx_nawsinglesignon_pi1';
-	// Same as class name
-	var $scriptRelPath = 'pi1/class.tx_nawsinglesignon_pi1.php'; // Path to this script relative to the extension dir.
-	var $extKey = 'naw_single_signon'; // The extension key.
+	/**
+	 * @var string
+	 */
+	public $prefixId = 'tx_nawsinglesignon_pi1';
+
+	/**
+	 * Path to this script relative to the extension dir.
+	 *
+	 * @var string
+	 */
+	public $scriptRelPath = 'Classes/Plugin/class.tx_nawsinglesignon_pi1.php';
+
+	/**
+	 * The extension key.
+	 *
+	 * @var string
+	 */
+	public $extKey = 'naw_single_signon'; //
 
 	/**
 	 * @var bool
@@ -55,7 +69,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 	protected $extConf;
 
 	/**
-	 * create a link or redirect for a third party application (tpa)
+	 * Create a link or redirect for a third party application (tpa)
 	 *
 	 * @param string  $content: Here the content will given
 	 * @param array  $conf: the conf array

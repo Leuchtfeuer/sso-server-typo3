@@ -86,11 +86,11 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 			return $this->pi_wrapInBaseClass($this->pi_getLL('no_usermapping'));
 		}
 
-		$this->conf = $conf;
+		$this->conf = array_replace_recursive($conf, Tx_NawSingleSignon_Configuration_FlexFormArrayConverter::convertFlexFormContentToArray($this->cObj->data['pi_flexform']));
+		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['naw_single_signon']);
+
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
-		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['naw_single_signon']);
-		$this->pi_initPIflexForm();
 
 		try {
 			$this->checkSsl();
@@ -109,7 +109,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 	 * @throws Exception
 	 */
 	protected function checkSsl() {
-		if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'forcessl', 'sDEF3') && !t3lib_div::getIndpEnv('TYPO3_SSL')) {
+		if ($this->conf['forcessl'] && !t3lib_div::getIndpEnv('TYPO3_SSL')) {
 			// no SSL page but required!
 			throw new Exception($this->pi_getLL('no_ssl'));
 		}
@@ -123,15 +123,15 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 	 */
 	protected function generateTpaLogonUrl() {
 		// Calculate link expire time
-		$linkLifetime = intval($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'linklifetime', 'sDEF3'));
+		$linkLifetime = intval($this->conf['linklifetime']);
 		$this->calculateAndStoreMinimumLifetime($linkLifetime);
 		$validUntilTimestamp = $linkLifetime + time();
 
 		$userName = $this->getMappedUser($this->getTypoScriptFrontendController()->fe_user->user['uid']);
 
 		// Create Signing Data
-		$create_modify = (string)intval((bool)$this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'flag_create', 'sDEF3'));
-		$tpaId = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'tpaid', 'sDEF');
+		$create_modify = (string)intval((bool)$this->conf['flag_create']);
+		$tpaId = $this->conf['tpaid'];
 		$flags = base64_encode('create_modify=' . $create_modify);
 		$userData = $this->getUserData();
 
@@ -153,7 +153,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 		$ssoData['returnTo'] = $this->validateReturnToUrl(t3lib_div::_GET('returnTo'));
 
 		# Compose the final URL
-		$finalUrl =  $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'targeturl', 'sDEF') . '?' . t3lib_div::implodeArrayForUrl('', $ssoData, '', FALSE, TRUE);
+		$finalUrl =  $this->conf['targeturl'] . '?' . t3lib_div::implodeArrayForUrl('', $ssoData, '', FALSE, TRUE);
 		$this->debug($finalUrl);
 
 		return $finalUrl;
@@ -168,7 +168,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 	 */
 	protected function getPluginContent($tpaLogonUrl) {
 		$content = '';
-		$contentType = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'contenttype', 'sDEF2');
+		$contentType = $this->conf['contenttype'];
 		switch ($contentType) {
 			// Open in new window (requires JavaScript) (0)
 			case 0:
@@ -274,7 +274,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 		if (!$uid) {
 			throw new Exception($this->pi_getLL('no_usermapping'), 1439646263);
 		}
-		$mapping_id = (int)$this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'usermapping', 'sDEF3');
+		$mapping_id = (int)$this->conf['usermapping'];
 
 		// Default Table (mapping as it is)
 		if ($mapping_id === 0) {
@@ -321,7 +321,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 		$userdata_splitchar = ''; // set blank for first entry
 
 		$tmp_enable = explode(',', $this->extConf['enable_fields']);
-		$tmp2_enable = explode(',', $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'enable_fields', 'sDEF3'));
+		$tmp2_enable = explode(',', $this->conf['enable_fields']);
 		$fields_enable = array_merge($tmp_enable, $tmp2_enable);
 		foreach ($tablefields as $i) {
 			if ($this->getTypoScriptFrontendController()->fe_user->user[$i['Field']] AND in_array($i['Field'], $fields_enable)) {
@@ -397,26 +397,26 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 	 * @return string
 	 */
 	protected function getTpaLinkTag($tpaLogonUrl) {
-		if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'frametargetcustom', 'sDEF2')) {
-			$linkTarget = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'frametargetcustom', 'sDEF2');
+		if ($this->conf['frametargetcustom']) {
+			$linkTarget = $this->conf['frametargetcustom'];
 		} else {
-			$linkTarget = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'frametarget', 'sDEF2');
+			$linkTarget = $this->conf['frametarget'];
 		}
 
 		// if no link description is set use the tpa_id
-		if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'linkdescription', 'sDEF')) {
-			$linkText = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'linkdescription', 'sDEF');
+		if ($this->conf['linkdescription']) {
+			$linkText = $this->conf['linkdescription'];
 		} else {
-			$linkText = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'tpaid', 'sDEF');
+			$linkText = $this->conf['tpaid'];
 		}
 
-		$content = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'html_before', 'sDEF2');
+		$content = $this->conf['html_before'];
 		$additionalAttributes = array();
 		if ($linkTarget === '_blank') {
 			$additionalAttributes[] = 'onMouseDown="location.reload()"';
 		}
 		$content .= '<a ' . implode(' ', $additionalAttributes) . ' href="' . htmlspecialchars($tpaLogonUrl) . '" target="' . htmlspecialchars($linkTarget) . '">' . htmlspecialchars($linkText) . '</a>';
-		$content .= $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'html_after', 'sDEF2');
+		$content .= $this->conf['html_after'];
 		return $content;
 	}
 
@@ -426,7 +426,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 	 * @param string $tpaLogonUrl
 	 */
 	protected function addTpaUrlInNewWindowJavaScriptToHtmlHeader($tpaLogonUrl) {
-		$this->getTypoScriptFrontendController()->additionalHeaderData['Window_onload_' . $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'tpaid', 'sDEF')] = t3lib_div::wrapJS('window.open(' . t3lib_div::quoteJSvalue($tpaLogonUrl) . ');');
+		$this->getTypoScriptFrontendController()->additionalHeaderData['Window_onload_' . $this->conf['tpaid']] = t3lib_div::wrapJS('window.open(' . t3lib_div::quoteJSvalue($tpaLogonUrl) . ');');
 	}
 
 	/**

@@ -65,7 +65,7 @@ class tx_nawsinglesignon_module1 extends t3lib_SCbase {
 	 */
 	function menuConfig() {
 		global $LANG;
-		$this->MOD_MENU = Array('function' => Array('1' => $LANG->getLL('function1'), //Info
+		$this->MOD_MENU = array('function' => array('1' => $LANG->getLL('function1'), //Info
 				'6' => $LANG->getLL('function6'), //Create a new Mapping
 				'2' => $LANG->getLL('function2'), //Edit a mapping Table
 				'4' => $LANG->getLL('function4'), //Delete a mapping Table
@@ -290,10 +290,10 @@ class tx_nawsinglesignon_module1 extends t3lib_SCbase {
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', $this->table_properties, 'uid=' . $mapping_id);
 		$numrows = $GLOBALS['TYPO3_DB']->sql_num_rows($result);
 		if ($numrows == 1) {
-			$values = Array('mapping_tablename' => $mapping_tablename, 'mapping_defaultmapping' => $mapping_defaultmapping, 'allowall' => $allowall,);
+			$values = array('mapping_tablename' => $mapping_tablename, 'mapping_defaultmapping' => $mapping_defaultmapping, 'allowall' => $allowall,);
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($this->table_properties, 'uid=' . $mapping_id, $values);
 		} else {
-			$values = Array('sysfolder_id' => $sysfolder_id, 'mapping_tablename' => $mapping_tablename, 'mapping_defaultmapping' => $mapping_defaultmapping, 'allowall' => $allowall,);
+			$values = array('sysfolder_id' => $sysfolder_id, 'mapping_tablename' => $mapping_tablename, 'mapping_defaultmapping' => $mapping_defaultmapping, 'allowall' => $allowall,);
 			$GLOBALS['TYPO3_DB']->exec_INSERTquery($this->table_properties, $values);
 			$mapping_id = $GLOBALS['TYPO3_DB']->sql_insert_id();
 		}
@@ -309,11 +309,11 @@ class tx_nawsinglesignon_module1 extends t3lib_SCbase {
 				$username = t3lib_div::_GP($feuid);
 				if ($GLOBALS['TYPO3_DB']->sql_num_rows($result2) == 1) {
 					// Update DB
-					$values = Array('mapping_username' => $username,);
+					$values = array('mapping_username' => $username,);
 					$GLOBALS['TYPO3_DB']->exec_UPDATEquery($this->table_usermap, 'mapping_id=' . $mapping_id . ' AND fe_uid=' . $row['uid'], $values);
 				} else {
 					// Insert in DB
-					$values = Array('mapping_id' => $mapping_id, 'fe_uid' => $row['uid'], 'mapping_username' => $username,);
+					$values = array('mapping_id' => $mapping_id, 'fe_uid' => $row['uid'], 'mapping_username' => $username,);
 					$GLOBALS['TYPO3_DB']->exec_INSERTquery($this->table_usermap, $values);
 				}
 			}

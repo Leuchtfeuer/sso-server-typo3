@@ -594,5 +594,3 @@
 	 
 	$SOBE->main();
 	$SOBE->printContent();
-	 
-?>

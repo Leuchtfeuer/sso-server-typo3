@@ -42,7 +42,7 @@ class tx_nawsinglesignon_usermapping {
         }
         
 }
+
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/naw_single_signon/class.tx_nawsinglesignon_usermapping.php'])   {
         include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/naw_single_signon/class.tx_nawsinglesignon_usermapping.php']);
 }
-?>

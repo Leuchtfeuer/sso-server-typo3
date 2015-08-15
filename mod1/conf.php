@@ -11,4 +11,3 @@
 
 	$MLANG['default']['tabs_images']['tab'] = 'usermapping.gif';
 	$MLANG['default']['ll_ref'] = 'LLL:EXT:naw_single_signon/mod1/locallang_mod.php';
-?>

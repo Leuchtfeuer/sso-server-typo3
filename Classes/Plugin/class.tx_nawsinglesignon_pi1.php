@@ -74,6 +74,18 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 	protected $extConf;
 
 	/**
+	 * @var tx_nawsinglesignon_usermapping
+	 */
+	protected $userMapping;
+
+	/**
+	 * @param tx_nawsinglesignon_usermapping $userMapping
+	 */
+	public function __construct(tx_nawsinglesignon_usermapping $userMapping = NULL) {
+		$this->userMapping = $userMapping ?: new tx_nawsinglesignon_usermapping();
+	}
+
+	/**
 	 * Create a link or redirect for a third party application (tpa)
 	 *
 	 * @param string  $content: Here the content will given
@@ -124,23 +136,22 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 	protected function generateTpaLogonUrl() {
 		// Calculate link expire time
 		$linkLifetime = intval($this->conf['linklifetime']);
-		$this->calculateAndStoreMinimumLifetime($linkLifetime);
-		$validUntilTimestamp = $linkLifetime + time();
-
-		$userName = $this->getMappedUser($this->getTypoScriptFrontendController()->fe_user->user['uid']);
 
 		// Create Signing Data
-		$create_modify = (string)intval((bool)$this->conf['flag_create']);
+		$version = $this->sso_version;
+		$userName = $this->userMapping->findUsernameForUserAndMapping($this->getTypoScriptFrontendController()->fe_user, $this->conf['usermapping']);
 		$tpaId = $this->conf['tpaid'];
-		$flags = base64_encode('create_modify=' . $create_modify);
+		$validUntilTimestamp = $linkLifetime + $GLOBALS['EXEC_TIME'];
+		$action = 'logon';
+		$flags = base64_encode('create_modify=' . (string)intval((bool)$this->conf['flag_create']));
 		$userData = $this->getUserData();
 
 		$ssoData = array(
-			'version' => $this->sso_version,
+			'version' => $version,
 			'user' => $userName,
 			'tpa_id' => $tpaId,
 			'expires' => $validUntilTimestamp,
-			'action' => 'logon',
+			'action' => $action,
 			'flags' => $flags,
 			'userdata' => base64_encode($userData),
 		);
@@ -154,8 +165,9 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 
 		# Compose the final URL
 		$finalUrl =  $this->conf['targeturl'] . '?' . t3lib_div::implodeArrayForUrl('', $ssoData, '', FALSE, TRUE);
-		$this->debug($finalUrl);
 
+		$this->calculateAndStoreMinimumLifetime($linkLifetime);
+		$this->debug($finalUrl);
 		return $finalUrl;
 	}
 
@@ -261,53 +273,6 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 		}
 
 		return $signature;
-	}
-
-	/**
-	 * Return the mapped username for $uid
-	 *
-	 * @param integer  $uid: the uid of the current fe_user
-	 * @return string  mapped username
-	 * @throws Exception
-	 */
-	protected function getMappedUser($uid) {
-		if (!$uid) {
-			throw new Exception('no_usermapping', 1439646263);
-		}
-		$mapping_id = (int)$this->conf['usermapping'];
-
-		// Default Table (mapping as it is)
-		if ($mapping_id === 0) {
-			return $this->getTypoScriptFrontendController()->fe_user->user['username'];
-		}
-
-		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'tx_nawsinglesignon_properties', 'deleted=0 AND uid=' . (int)$mapping_id);
-		$row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
-
-		// If allowall map undef-users to fe_usernames, else deny
-		$allowAll = (bool)$row['allowall'];
-		$sysfolder_id = (int)$row['sysfolder_id'];
-		$mapping_defaultmapping = $row['mapping_defaultmapping'];
-
-		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'tx_nawsinglesignon_usermap', 'mapping_id=' . (int)$mapping_id . ' AND fe_uid=' . (int)$uid);
-		$row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
-
-		if ((int)$this->getTypoScriptFrontendController()->fe_user->user['pid'] !== $sysfolder_id) {
-			throw new Exception('no_usermapping', 1439646264);
-		}
-
-		if (empty($row['mapping_username']) && $allowAll) {
-			return $mapping_defaultmapping ?: $this->getTypoScriptFrontendController()->fe_user->user['username'];
-		}
-
-		if (empty($row['mapping_username'])) {
-			if (!$allowAll) {
-				throw new Exception('No mapping was found and allow all was denied!', 1439646541);
-			}
-			return $mapping_defaultmapping ?: $this->getTypoScriptFrontendController()->fe_user->user['username'];
-		}
-
-		return $row['mapping_username'];
 	}
 
 	/**

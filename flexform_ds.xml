@@ -187,7 +187,7 @@
 							<label>LLL:EXT:naw_single_signon/locallang_tca.php:naw_single_signon.pi_flexform.usermapping</label>
 							<config>
 								<type>select</type>
-								<itemsProcFunc>tx_nawsinglesignon_usermapping-&gt;usermapping</itemsProcFunc>
+								<itemsProcFunc>tx_nawsinglesignon_usermapping-&gt;getAvailableMappings</itemsProcFunc>
 								<maxitems>1</maxitems>
 								<size>1</size>
 								<multiple>1</multiple>

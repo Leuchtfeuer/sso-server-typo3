@@ -48,7 +48,11 @@ class Tx_NawSingleSignon_Domain_Repository_SessionRepository {
 	 * @param Tx_NawSingleSignon_Domain_Model_Session $session
 	 */
 	public function addOrUpdateSession(Tx_NawSingleSignon_Domain_Model_Session $session) {
-		$insertQuery = $this->databaseConnection->INSERTquery($this->tableName, $session->getValues());
+		$values = array();
+		foreach ($session->getValues() as $name => $value) {
+			$values[$name] = is_scalar($value) ? $value : serialize($value);
+		}
+		$insertQuery = $this->databaseConnection->INSERTquery($this->tableName, $values);
 		$this->databaseConnection->sql_query($insertQuery . $this->getOnDuplicateKeyStatement($session));
 	}
 
@@ -63,7 +67,6 @@ class Tx_NawSingleSignon_Domain_Repository_SessionRepository {
 		foreach (array_slice($session->getValues(), 3) as $name => $value) {
 			$updateValues[] = "$name=VALUES($name)";
 		}
-
 		return ' ON DUPLICATE KEY UPDATE ' . implode(', ', $updateValues);
 	}
 

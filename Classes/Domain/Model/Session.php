@@ -70,7 +70,7 @@ class Tx_NawSingleSignon_Domain_Model_Session {
 	public function getValues() {
 		$values = array();
 		foreach (get_object_vars($this) as $name => $value) {
-			$values[t3lib_div::camelCaseToLowerCaseUnderscored($name)] = $name === 'data' ? serialize($value) : $value;
+			$values[t3lib_div::camelCaseToLowerCaseUnderscored($name)] = $value;
 		}
 
 		return $values;

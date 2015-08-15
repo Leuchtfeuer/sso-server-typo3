@@ -82,6 +82,10 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 	 */
 	function main($content, $conf) {
 
+		if (empty($this->getTypoScriptFrontendController()->fe_user->user['uid'])) {
+			return '';
+		}
+
 		$this->conf = $conf;
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();

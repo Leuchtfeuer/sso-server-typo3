@@ -79,9 +79,16 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 	protected $userMapping;
 
 	/**
+	 * @var Tx_NawSingleSignon_Domain_Repository_SessionRepository
+	 */
+	protected $sessionRepository;
+
+	/**
+	 * @param Tx_NawSingleSignon_Domain_Repository_SessionRepository $sessionRepository
 	 * @param tx_nawsinglesignon_usermapping $userMapping
 	 */
-	public function __construct(tx_nawsinglesignon_usermapping $userMapping = NULL) {
+	public function __construct(Tx_NawSingleSignon_Domain_Repository_SessionRepository $sessionRepository = NULL, tx_nawsinglesignon_usermapping $userMapping = NULL) {
+		$this->sessionRepository = $sessionRepository ?: new Tx_NawSingleSignon_Domain_Repository_SessionRepository($GLOBALS['TYPO3_DB']);
 		$this->userMapping = $userMapping ?: new tx_nawsinglesignon_usermapping();
 	}
 
@@ -168,6 +175,16 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 
 		$this->calculateAndStoreMinimumLifetime($linkLifetime);
 		$this->debug($finalUrl);
+
+		$this->sessionRepository->addOrUpdateSession(
+			new Tx_NawSingleSignon_Domain_Model_Session(
+				$this->getTypoScriptFrontendController()->fe_user->id,
+				$this->getTypoScriptFrontendController()->fe_user->user['uid'],
+				$tpaId,
+				$ssoData
+			)
+		);
+
 		return $finalUrl;
 	}
 

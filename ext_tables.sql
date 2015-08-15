@@ -35,3 +35,16 @@ CREATE TABLE tx_nawsinglesignon_properties (
   PRIMARY KEY (uid),
   KEY parent (pid)
 );
+
+#
+# Table structure for table 'fe_session_data'
+#
+CREATE TABLE tx_nawsinglesignon_sessions (
+  session_hash varchar(32) DEFAULT '' NOT NULL,
+  user_id int(11) unsigned DEFAULT '0' NOT NULL,
+  tpa_id varchar(128) DEFAULT '' NOT NULL,
+  data mediumblob,
+  timestamp int(11) unsigned DEFAULT '0' NOT NULL,
+  PRIMARY KEY (session_hash,user_id,tpa_id)
+) ENGINE=InnoDB;
+

@@ -559,10 +559,6 @@ class tx_nawsinglesignon_module1 extends t3lib_SCbase {
 	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/naw_single_signon/mod1/index.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/naw_single_signon/mod1/index.php']);
-}
-
 // Make instance:
 $SOBE = t3lib_div::makeInstance('tx_nawsinglesignon_module1');
 $SOBE->init();

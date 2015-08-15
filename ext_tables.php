@@ -14,5 +14,5 @@
 	$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY . '_pi1'] = 'pi_flexform';
 
 	t3lib_extMgm::addPiFlexFormValue($_EXTKEY . '_pi1', 'FILE:EXT:naw_single_signon/flexform_ds.xml');
-	t3lib_extMgm::addPlugin(array('LLL:EXT:naw_single_signon/locallang_tca.php:naw_single_signon', 'naw_single_signon_pi1'));
+	t3lib_extMgm::addPlugin(array('LLL:EXT:naw_single_signon/Resources/Private/Language/locallang_tca.php:naw_single_signon', 'naw_single_signon_pi1'));
 

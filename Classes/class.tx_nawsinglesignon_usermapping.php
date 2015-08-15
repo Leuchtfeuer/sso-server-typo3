@@ -35,7 +35,7 @@ class tx_nawsinglesignon_usermapping {
 	 */
 	public function getAvailableMappingItems($config) {
 		// No Usermapping =0
-		$config['items'][] = array($this->getLanguageService()->sL('LLL:EXT:naw_single_signon/locallang_tca.php:naw_single_signon.pi_flexform.no_usermapping'), '0');
+		$config['items'][] = array($this->getLanguageService()->sL('LLL:EXT:naw_single_signon/Resources/Private/Language/locallang_tca.php:naw_single_signon.pi_flexform.no_usermapping'), '0');
 
 		// configured Mappings
 		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'tx_nawsinglesignon_properties', 'deleted=0');

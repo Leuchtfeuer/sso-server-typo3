@@ -83,7 +83,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 	function main($content, $conf) {
 
 		if (empty($this->getTypoScriptFrontendController()->fe_user->user['uid'])) {
-			return '';
+			return $this->pi_wrapInBaseClass($this->pi_getLL('no_usermapping'));
 		}
 
 		$this->conf = $conf;
@@ -127,24 +127,12 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 		$this->calculateAndStoreMinimumLifetime($linkLifetime);
 		$validUntilTimestamp = $linkLifetime + time();
 
-		$userId = ($this->getMappedUser($this->getTypoScriptFrontendController()->fe_user->user['uid']));
-		if (!$userId) {
-			throw new Exception($this->pi_getLL('no_usermapping'));
-		}
-
-		if (!$this->getMappedUser($this->getTypoScriptFrontendController()->fe_user->user['uid'])) {
-			throw new Exception($this->pi_getLL('no_user'));
-		}
+		$userName = $this->getMappedUser($this->getTypoScriptFrontendController()->fe_user->user['uid']);
 
 		// Create Signing Data
-		if ($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'flag_create', 'sDEF3')) {
-			$create_modify = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'flag_create', 'sDEF3');
-		} else {
-			$create_modify = '0';
-		}
-
+		$create_modify = (string)intval((bool)$this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'flag_create', 'sDEF3'));
+		$tpaId = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'tpaid', 'sDEF');
 		$flags = base64_encode('create_modify=' . $create_modify);
-
 		$userData = $this->getUserData();
 		$this->debug($userData);
 
@@ -283,34 +271,39 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 	 */
 	protected function getMappedUser($uid) {
 		if (!$uid) {
-			return '';
+			throw new Exception($this->pi_getLL('no_usermapping'), 1439646263);
 		}
-		$mapping_id = intval($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'usermapping', 'sDEF3'));
+		$mapping_id = (int)$this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'usermapping', 'sDEF3');
 
 		// Default Table (mapping as it is)
-		if ($mapping_id == 0) {
+		if ($mapping_id === 0) {
 			return $this->getTypoScriptFrontendController()->fe_user->user['username'];
 		}
 
-		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'tx_nawsinglesignon_properties', 'deleted=0 AND uid=' . intval($mapping_id));
+		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'tx_nawsinglesignon_properties', 'deleted=0 AND uid=' . (int)$mapping_id);
 		$row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
 
 		// If allowall map undef-users to fe_usernames, else deny
-		$allowall = $row['allowall'];
-		$sysfolder_id = $row['sysfolder_id'];
+		$allowAll = (bool)$row['allowall'];
+		$sysfolder_id = (int)$row['sysfolder_id'];
 		$mapping_defaultmapping = $row['mapping_defaultmapping'];
 
-		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'tx_nawsinglesignon_usermap', 'mapping_id=' . intval($mapping_id) . ' AND fe_uid=' . intval($uid));
+		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'tx_nawsinglesignon_usermap', 'mapping_id=' . (int)$mapping_id . ' AND fe_uid=' . (int)$uid);
 		$row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
 
-		if ($this->getTypoScriptFrontendController()->fe_user->user['pid'] != $sysfolder_id) {
-			return '';
+		if ((int)$this->getTypoScriptFrontendController()->fe_user->user['pid'] !== $sysfolder_id) {
+			throw new Exception($this->pi_getLL('no_usermapping'), 1439646264);
 		}
 
-		if (($row['mapping_username'] == '') && ($allowall == 1) && $mapping_defaultmapping) {
-			return $mapping_defaultmapping;
-		} elseif (($row['mapping_username'] == '') && ($allowall == 1)) {
-			return $this->getTypoScriptFrontendController()->fe_user->user['username'];
+		if (empty($row['mapping_username']) && $allowAll) {
+			return $mapping_defaultmapping ?: $this->getTypoScriptFrontendController()->fe_user->user['username'];
+		}
+
+		if (empty($row['mapping_username'])) {
+			if (!$allowAll) {
+				throw new Exception('No mapping was found and allow all was denied!', 1439646541);
+			}
+			return $mapping_defaultmapping ?: $this->getTypoScriptFrontendController()->fe_user->user['username'];
 		}
 
 		return $row['mapping_username'];

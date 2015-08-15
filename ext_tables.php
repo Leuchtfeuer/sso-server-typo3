@@ -13,6 +13,6 @@ if (is_callable('t3lib_div::loadTCA')) {
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY . '_pi1'] = 'layout,select_key,pages';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY . '_pi1'] = 'pi_flexform';
 
-t3lib_extMgm::addPiFlexFormValue($_EXTKEY . '_pi1', 'FILE:EXT:naw_single_signon/flexform_ds.xml');
+t3lib_extMgm::addPiFlexFormValue($_EXTKEY . '_pi1', 'FILE:EXT:naw_single_signon/Configuration/Flexform/flexform_ds.xml');
 t3lib_extMgm::addPlugin(array('LLL:EXT:naw_single_signon/Resources/Private/Language/locallang_tca.php:naw_single_signon', 'naw_single_signon_pi1'));
 

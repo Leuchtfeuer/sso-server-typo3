@@ -57,6 +57,37 @@ class Tx_NawSingleSignon_Domain_Repository_SessionRepository {
 	}
 
 	/**
+	 * @param string $sessionId
+	 * @return array|NULL
+	 */
+	public function findBySessionId($sessionId) {
+		$activeSessions = $this->databaseConnection->exec_SELECTgetRows(
+			'*',
+			$this->tableName,
+			'session_hash=' . $this->databaseConnection->fullQuoteStr($sessionId, $this->tableName)
+		);
+
+		return $activeSessions;
+	}
+
+	/**
+	 * @param string $sessionHash
+	 * @param string $userId
+	 * @param string $tpaId
+	 */
+	public function deleteBySessionHashUserIdTpaId($sessionHash, $userId, $tpaId) {
+		$this->databaseConnection->exec_DELETEquery(
+			$this->tableName,
+			sprintf(
+				'session_hash=%s AND user_id=%s AND tpa_id=%s',
+				$this->databaseConnection->fullQuoteStr($sessionHash, $this->tableName),
+				$this->databaseConnection->fullQuoteStr($userId, $this->tableName),
+				$this->databaseConnection->fullQuoteStr($tpaId, $this->tableName)
+			)
+		);
+	}
+
+	/**
 	 * Removes the identifiers and adds ON DUPLICATE KEY statement for data values
 	 *
 	 * @param Tx_NawSingleSignon_Domain_Model_Session $session

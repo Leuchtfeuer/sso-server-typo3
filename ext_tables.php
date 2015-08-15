@@ -16,3 +16,5 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY . '_
 t3lib_extMgm::addPiFlexFormValue($_EXTKEY . '_pi1', 'FILE:EXT:naw_single_signon/Configuration/Flexform/flexform_ds.xml');
 t3lib_extMgm::addPlugin(array('LLL:EXT:naw_single_signon/Resources/Private/Language/locallang_tca.php:naw_single_signon', 'naw_single_signon_pi1'));
 
+t3lib_extMgm::addStaticFile($_EXTKEY, 'pi1/static/', 'Bitmotion SSO');
+

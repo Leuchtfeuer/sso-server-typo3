@@ -33,6 +33,11 @@
 class tx_nawsinglesignon_pi1 extends tslib_pibase {
 
 	/**
+	 * @var tslib_feUserAuth
+	 */
+	public static $loggedOffUserAuthenticationObject;
+
+	/**
 	 * @var string
 	 */
 	public $prefixId = 'tx_nawsinglesignon_pi1';
@@ -64,7 +69,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 	/**
 	 * @var string
 	 */
-	protected $sso_version = '2.0';
+	protected $sso_version = '2.1';
 
 	/**
 	 * Extension configuration
@@ -123,6 +128,49 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 	}
 
 	/**
+	 * Create logoff URLs
+	 *
+	 * @param string  $content: Here the content will given
+	 * @param array  $conf: the conf array
+	 * @return string  $content
+	 */
+	function logoff($content, $conf) {
+		if (empty(self::$loggedOffUserAuthenticationObject)) {
+			return '';
+		}
+		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['naw_single_signon']);
+		$activeSessions = $this->sessionRepository->findBySessionId(self::$loggedOffUserAuthenticationObject->id);
+
+		$logoffUrls = array();
+		foreach ($activeSessions as $session) {
+			$metaData = unserialize($session['data']);
+			$this->conf = $metaData['config'];
+
+			$ssoData = array(
+				'version' => $metaData['ssoData']['version'],
+				'user' => $metaData['ssoData']['user'],
+				'tpa_id' => $metaData['ssoData']['tpa_id'],
+				'expires' => intval($this->conf['linklifetime']) + $GLOBALS['EXEC_TIME'],
+				'action' => 'logoff',
+			);
+
+			$logoffUrls[] = $this->generateTpaUrl($ssoData);
+			$this->sessionRepository->deleteBySessionHashUserIdTpaId(
+				$session['session_hash'],
+				$session['user_id'],
+				$session['tpa_id']
+			);
+		}
+
+		foreach ($logoffUrls as $url) {
+			$content .= '<img src="' . htmlspecialchars($url) . '" style="display: none; "/>';
+			$content .= htmlspecialchars('<img src="' . htmlspecialchars($url) . '" style="display: none; "/>');
+		}
+
+		return $content;
+	}
+
+	/**
 	 * Check if force SSL has been set an throw exception if the page is not requesteg via https then
 	 *
 	 * @throws Exception
@@ -163,25 +211,22 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 			'userdata' => base64_encode($userData),
 		);
 
+		$finalUrl = $this->generateTpaUrl($ssoData);
+
 		$this->debug($userData);
 		$this->debug($ssoData);
-
-		# encode the signature in hex format
-		$ssoData['signature'] = bin2hex($this->getSslSignatureForString($this->implodeSsoData($ssoData)));
-		$ssoData['returnTo'] = $this->validateReturnToUrl(t3lib_div::_GET('returnTo'));
-
-		# Compose the final URL
-		$finalUrl =  $this->conf['targeturl'] . '?' . t3lib_div::implodeArrayForUrl('', $ssoData, '', FALSE, TRUE);
-
-		$this->calculateAndStoreMinimumLifetime($linkLifetime);
 		$this->debug($finalUrl);
 
+		$this->calculateAndStoreMinimumLifetime($linkLifetime);
 		$this->sessionRepository->addOrUpdateSession(
 			new Tx_NawSingleSignon_Domain_Model_Session(
 				$this->getTypoScriptFrontendController()->fe_user->id,
 				$this->getTypoScriptFrontendController()->fe_user->user['uid'],
 				$tpaId,
-				$ssoData
+				array(
+					'ssoData' => $ssoData,
+					'config' => $this->conf,
+				)
 			)
 		);
 
@@ -443,6 +488,21 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 		} else {
 			self::$minimumLinkLifetime = min(self::$minimumLinkLifetime, $linkLifetime);
 		}
+	}
+
+	/**
+	 * @param $ssoData
+	 * @return string
+	 * @throws Exception
+	 */
+	protected function generateTpaUrl($ssoData) {
+		# encode the signature in hex format
+		$ssoData['signature'] = bin2hex($this->getSslSignatureForString($this->implodeSsoData($ssoData)));
+		$ssoData['returnTo'] = $this->validateReturnToUrl(t3lib_div::_GET('returnTo'));
+
+		# Compose the final URL
+		$finalUrl = $this->conf['targeturl'] . '?' . t3lib_div::implodeArrayForUrl('', $ssoData, '', FALSE, TRUE);
+		return $finalUrl;
 	}
 
 }

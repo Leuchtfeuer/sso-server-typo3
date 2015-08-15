@@ -9,4 +9,5 @@ return array(
 	'tx_nawsinglesignon_configuration_flexformarrayconverter' => $extPath . 'Classes/Configuration/FlexFormService.php',
 	'tx_nawsinglesignon_domain_model_session' => $extPath . 'Classes/Domain/Model/Session.php',
 	'tx_nawsinglesignon_domain_repository_sessionrepository' => $extPath . 'Classes/Domain/Repository/SessionRepository.php',
+	'tx_nawsinglesignon_hook_logofflistener' => $extPath . 'Classes/Hook/LogoffListener.php',
 );

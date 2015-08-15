@@ -28,13 +28,40 @@
  * @author  Dietrich Heise <typo3-ext@naw.info>
  */
 class tx_nawsinglesignon_module1 extends t3lib_SCbase {
-	var $pageinfo;
-	var $table_properties = 'tx_nawsinglesignon_properties';
-	var $table_usermap = 'tx_nawsinglesignon_usermap';
+	/**
+	 * @var template
+	 */
+	public $doc;
+
+	/**
+	 * @var
+	 */
+	protected $pageinfo;
+
+	/**
+	 * @var string
+	 */
+	protected $table_properties = 'tx_nawsinglesignon_properties';
+
+	/**
+	 * @var string
+	 */
+	protected $table_usermap = 'tx_nawsinglesignon_usermap';
+
+	/**
+	 * @var array
+	 */
+	protected $extConf = array();
+
+	/**
+	 * @var array
+	 */
+	protected $userlist = array();
 
 	public function __construct() {
 		$this->doc = t3lib_div::makeInstance('mediumDoc');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
+		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['naw_single_signon']);
 	}
 
 	/**
@@ -81,7 +108,6 @@ class tx_nawsinglesignon_module1 extends t3lib_SCbase {
 					';
 			$this->content .= $this->doc->startPage($this->getLanguageService()->getLL('title'));
 			$this->content .= $this->doc->header($this->getLanguageService()->getLL('title'));
-			$this->content .= $this->style;
 			$this->content .= $this->doc->spacer(5);
 			$this->content .= $this->doc->section('', $this->doc->funcMenu('', t3lib_BEfunc::getFuncMenu($this->id, 'SET[function]', $this->MOD_SETTINGS['function'], $this->MOD_MENU['function'])));
 
@@ -104,7 +130,7 @@ class tx_nawsinglesignon_module1 extends t3lib_SCbase {
 	 * @return string  Print out the HTML Code.
 	 */
 	function printContent() {
-		$this->content .= $this->doc->divider();
+		$this->content .= $this->doc->divider(10);
 		$this->content .= $this->doc->endPage();
 		echo $this->content;
 	}
@@ -175,15 +201,15 @@ class tx_nawsinglesignon_module1 extends t3lib_SCbase {
 	 * @return void
 	 */
 	function copyMappingTable() {
-		$old_mapping_id = intval(t3lib_div::_GP('mapping_id'));
+		$old_mapping_id = (int)t3lib_div::_GP('mapping_id');
 		$mapping_id = 0;
-		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', $this->table_properties, 'uid=' . $old_mapping_id);
+		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', $this->table_properties, 'uid=' . (int)$old_mapping_id);
 		$row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
 		$sysfolder_id = intval($row['sysfolder_id']);
 
-		$this->content .= '<form action="index.php?SET[function]=' . (string)$this->MOD_SETTINGS['function'] . '">' . chr(10);
-		$this->content .= '<input type="hidden" name="sysfolder_id" value="' . $sysfolder_id . '">' . chr(10);
-		$this->content .= '<input type="hidden" name="mapping_id" value="' . $mapping_id . '">' . chr(10);
+		$this->content .= '<form action="index.php?SET[function]=' . htmlspecialchars($this->MOD_SETTINGS['function']) . '">' . chr(10);
+		$this->content .= '<input type="hidden" name="sysfolder_id" value="' . (int)$sysfolder_id . '">' . chr(10);
+		$this->content .= '<input type="hidden" name="mapping_id" value="' . (int)$mapping_id . '">' . chr(10);
 		$this->content .= '<input type="hidden" name="saveit" value="true">' . chr(10);
 
 		# Table Properties
@@ -194,17 +220,15 @@ class tx_nawsinglesignon_module1 extends t3lib_SCbase {
 
 		# Fill the Userlist form
 		foreach ($this->userlist as $id => $name) {
-			$result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'fe_users', 'pid=' . $sysfolder_id . ' AND uid=' . $id . ' AND deleted=\'0\'');
-			$row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
-			$this->content .= '<input name="fe_uid"' . $id . '" type="hidden" value="' . $name . '" size="30">' . chr(10);
+			$this->content .= '<input name="fe_uid"' . (int)$id . '" type="hidden" value="' . htmlspecialchars($name) . '" size="30">' . chr(10);
 		}
-		$this->content .= '<table><tr><td><form action="index.php?SET[function]=' . (string)$this->MOD_SETTINGS['function'] . '">' . chr(10);
-		$this->content .= '<input type="hidden" name="sysfolder_id" value="' . $sysfolder_id . '">' . chr(10);
-		$this->content .= '<input type="hidden" name="mapping_id" value="' . $mapping_id . '">' . chr(10);
+		$this->content .= '<table><tr><td><form action="index.php?SET[function]=' . htmlspecialchars($this->MOD_SETTINGS['function']) . '">' . chr(10);
+		$this->content .= '<input type="hidden" name="sysfolder_id" value="' . (int)$sysfolder_id . '">' . chr(10);
+		$this->content .= '<input type="hidden" name="mapping_id" value="' . (int)$mapping_id . '">' . chr(10);
 		$this->content .= '<input type="hidden" name="deleteit" value="true">' . chr(10);
-		$this->content .= '<input type="submit" value="' . $this->getLanguageService()->getLL('submit') . '"></form></td><td>' . chr(10);
+		$this->content .= '<input type="submit" value="' . htmlspecialchars($this->getLanguageService()->getLL('submit')) . '"></form></td><td>' . chr(10);
 		$this->content .= '<form action="index.php?SET[function]=1" method="POST">' . chr(10);
-		$this->content .= '<input type="submit" value="' . $this->getLanguageService()->getLL('cancel') . '">' . chr(10);
+		$this->content .= '<input type="submit" value="' . htmlspecialchars($this->getLanguageService()->getLL('cancel')) . '">' . chr(10);
 		$this->content .= '</td></tr></table>';
 	}
 
@@ -216,19 +240,19 @@ class tx_nawsinglesignon_module1 extends t3lib_SCbase {
 	function deleteMappingTable() {
 		$mapping_id = intval(t3lib_div::_GP('mapping_id'));
 		if (t3lib_div::_GP('deleteit')) {
-			$this->getDatabaseConnection()->exec_DELETEquery($this->table_properties, 'uid=' . $mapping_id);
-			$this->getDatabaseConnection()->exec_DELETEquery($this->table_usermap, 'mapping_id=' . $mapping_id);
-			$this->content .= $this->doc->section($this->getLanguageService()->getLL('deleteTitle'), $this->getLanguageService()->getLL('deleteText'), 1, 1);
+			$this->getDatabaseConnection()->exec_DELETEquery($this->table_properties, 'uid=' . (int)$mapping_id);
+			$this->getDatabaseConnection()->exec_DELETEquery($this->table_usermap, 'mapping_id=' . (int)$mapping_id);
+			$this->content .= $this->doc->section($this->getLanguageService()->getLL('deleteTitle'), htmlspecialchars($this->getLanguageService()->getLL('deleteText')), 1, 1);
 		} else {
 			$this->editTableProperties($mapping_id, 1);
 			$this->content .= $this->doc->section('Are you Sure?', '', 0, 1);
 
-			$this->content .= '<table><tr><td><form action="index.php?SET[function]=' . (string)$this->MOD_SETTINGS['function'] . '">' . chr(10);
-			$this->content .= '<input type="hidden" name="mapping_id" value="' . $mapping_id . '">' . chr(10);
+			$this->content .= '<table><tr><td><form action="index.php?SET[function]=' . htmlspecialchars($this->MOD_SETTINGS['function']) . '">' . chr(10);
+			$this->content .= '<input type="hidden" name="mapping_id" value="' . (int)$mapping_id . '">' . chr(10);
 			$this->content .= '<input type="hidden" name="deleteit" value="true">' . chr(10);
-			$this->content .= '<input type="submit" value="' . $this->getLanguageService()->getLL('submit') . '"></form></td><td>' . chr(10);
+			$this->content .= '<input type="submit" value="' . htmlspecialchars($this->getLanguageService()->getLL('submit')) . '"></form></td><td>' . chr(10);
 			$this->content .= '<form action="index.php?SET[function]=1" method="POST">' . chr(10);
-			$this->content .= '<input type="submit" value="' . $this->getLanguageService()->getLL('cancel') . '">' . chr(10);
+			$this->content .= '<input type="submit" value="' . htmlspecialchars($this->getLanguageService()->getLL('cancel')) . '">' . chr(10);
 			$this->content .= '</form></td></tr></table>';
 		}
 	}
@@ -241,44 +265,56 @@ class tx_nawsinglesignon_module1 extends t3lib_SCbase {
 	 * @return void
 	 */
 	function saveMappingTable() {
-		$mapping_id = intval(t3lib_div::_GP('mapping_id'));
-		$sysfolder_id = intval(t3lib_div::_GP('sysfolder_id'));
+		$mapping_id = (int)t3lib_div::_GP('mapping_id');
+		$sysfolder_id = (int)t3lib_div::_GP('sysfolder_id');
 		$mapping_tablename = t3lib_div::_GP('mapping_tablename', $this->table_properties);
 		$mapping_defaultmapping = t3lib_div::_GP('mapping_defaultmapping');
-		$offset = intval(t3lib_div::_GP('offset'));
-		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['naw_single_signon']);
+		$offset = (int)t3lib_div::_GP('offset');
 		$maxUsersPerPage = $this->extConf['maxUsersPerPage'];
 
-		$allowall = t3lib_div::_GP('allowall') ? 1 : 0;
+		$allowall = intval((bool)t3lib_div::_GP('allowall'));
 
 		// Save Table Properties (name and default mapping)
-		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', $this->table_properties, 'uid=' . $mapping_id);
+		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', $this->table_properties, 'uid=' . (int)$mapping_id);
 		$numrows = $this->getDatabaseConnection()->sql_num_rows($result);
 		if ($numrows == 1) {
-			$values = array('mapping_tablename' => $mapping_tablename, 'mapping_defaultmapping' => $mapping_defaultmapping, 'allowall' => $allowall,);
-			$this->getDatabaseConnection()->exec_UPDATEquery($this->table_properties, 'uid=' . $mapping_id, $values);
+			$values = array(
+				'mapping_tablename' => $mapping_tablename,
+				'mapping_defaultmapping' => $mapping_defaultmapping,
+				'allowall' => $allowall
+			);
+			$this->getDatabaseConnection()->exec_UPDATEquery($this->table_properties, 'uid=' . (int)$mapping_id, $values);
 		} else {
-			$values = array('sysfolder_id' => $sysfolder_id, 'mapping_tablename' => $mapping_tablename, 'mapping_defaultmapping' => $mapping_defaultmapping, 'allowall' => $allowall,);
+			$values = array(
+				'sysfolder_id' => $sysfolder_id,
+				'mapping_tablename' => $mapping_tablename,
+				'mapping_defaultmapping' => $mapping_defaultmapping,
+				'allowall' => $allowall
+			);
 			$this->getDatabaseConnection()->exec_INSERTquery($this->table_properties, $values);
 			$mapping_id = $this->getDatabaseConnection()->sql_insert_id();
 		}
 
 		// Save User Mappings (from $offset to $offset+$maxUsersPerPage)
-		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'fe_users', 'pid=' . $sysfolder_id . ' AND deleted =0');
+		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'fe_users', 'pid=' . (int)$sysfolder_id . ' AND deleted =0');
 		$menge = $this->getDatabaseConnection()->sql_num_rows($result);
 		for ($i = 0; $i < $menge; $i++) {
 			$row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
 			if (($i >= $offset) && ($i < $offset + $maxUsersPerPage)) {
-				$result2 = $this->getDatabaseConnection()->exec_SELECTquery('*', $this->table_usermap, 'mapping_id=' . $mapping_id . ' AND fe_uid=' . $row['uid']);
+				$result2 = $this->getDatabaseConnection()->exec_SELECTquery('*', $this->table_usermap, 'mapping_id=' . (int)$mapping_id . ' AND fe_uid=' . (int)$row['uid']);
 				$feuid = 'fe_uid' . $row['uid'];
 				$username = t3lib_div::_GP($feuid);
 				if ($this->getDatabaseConnection()->sql_num_rows($result2) == 1) {
 					// Update DB
 					$values = array('mapping_username' => $username,);
-					$this->getDatabaseConnection()->exec_UPDATEquery($this->table_usermap, 'mapping_id=' . $mapping_id . ' AND fe_uid=' . $row['uid'], $values);
+					$this->getDatabaseConnection()->exec_UPDATEquery($this->table_usermap, 'mapping_id=' . (int)$mapping_id . ' AND fe_uid=' . (int)$row['uid'], $values);
 				} else {
 					// Insert in DB
-					$values = array('mapping_id' => $mapping_id, 'fe_uid' => $row['uid'], 'mapping_username' => $username,);
+					$values = array(
+						'mapping_id' => $mapping_id,
+						'fe_uid' => $row['uid'],
+						'mapping_username' => $username
+					);
 					$this->getDatabaseConnection()->exec_INSERTquery($this->table_usermap, $values);
 				}
 			}
@@ -291,9 +327,9 @@ class tx_nawsinglesignon_module1 extends t3lib_SCbase {
 	 * @return void
 	 */
 	function editMappingTable() {
-		$sysfolder_id = intval(t3lib_div::_GP('sysfolder_id'));
-		$mapping_id = intval(t3lib_div::_GP('mapping_id'));
-		$offset = intval(t3lib_div::_GP('offset'));
+		$sysfolder_id = (int)t3lib_div::_GP('sysfolder_id');
+		$mapping_id = (int)t3lib_div::_GP('mapping_id');
+		$offset = (int)t3lib_div::_GP('offset');
 		if (!isset($mapping_id)) {
 			$mapping_id = 0;
 		}
@@ -301,11 +337,11 @@ class tx_nawsinglesignon_module1 extends t3lib_SCbase {
 			$this->content .= $this->doc->section('Error: No Sysfolder id', '', 0, 1);
 			return;
 		}
-		$this->content .= '<form action="index.php?SET[function]=' . (string)$this->MOD_SETTINGS['function'] . '">' . chr(10);
-		$this->content .= '<input type="hidden" name="sysfolder_id" value="' . $sysfolder_id . '">' . chr(10);
-		$this->content .= '<input type="hidden" name="mapping_id" value="' . $mapping_id . '">' . chr(10);
+		$this->content .= '<form action="index.php?SET[function]=' . htmlspecialchars($this->MOD_SETTINGS['function']) . '">' . chr(10);
+		$this->content .= '<input type="hidden" name="sysfolder_id" value="' . (int)$sysfolder_id . '">' . chr(10);
+		$this->content .= '<input type="hidden" name="mapping_id" value="' . (int)$mapping_id . '">' . chr(10);
 		$this->content .= '<input type="hidden" name="saveit" value="true">' . chr(10);
-		$this->content .= '<input type="hidden" name="offset" value="' . $offset . '">' . chr(10);
+		$this->content .= '<input type="hidden" name="offset" value="' . (int)$offset . '">' . chr(10);
 
 		# Table Properties
 		$this->editTableProperties($mapping_id);
@@ -315,12 +351,10 @@ class tx_nawsinglesignon_module1 extends t3lib_SCbase {
 		$numberofusers = count($this->userlist);
 
 		# Fill the Userlist form (more pages)
-		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['naw_single_signon']);
 		$maxUsersPerPage = $this->extConf['maxUsersPerPage'];
-		$numPages = (int)$numberofusers / $maxUsersPerPage;
 
 		$this->content .= '<h3>';
-		$this->content .= $this->generate_pagination("index.php?SET[function]=" . (string)$this->MOD_SETTINGS['function'] . '&amp;sysfolder_id=' . $sysfolder_id . '&amp;mapping_id=' . $mapping_id, $numberofusers, $maxUsersPerPage, $offset);
+		$this->content .= $this->generate_pagination("index.php?SET[function]=" . (string)$this->MOD_SETTINGS['function'] . '&sysfolder_id=' . $sysfolder_id . '&mapping_id=' . $mapping_id, $numberofusers, $maxUsersPerPage, $offset);
 		$this->content .= '</h3>';
 
 		$this->content .= '<table>' . chr(10);
@@ -331,20 +365,20 @@ class tx_nawsinglesignon_module1 extends t3lib_SCbase {
 				$result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'fe_users', 'pid=' . $sysfolder_id . ' AND uid=' . $id . ' AND deleted=\'0\'');
 				$row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
 				$this->content .= '<tr>' . chr(10);
-				$this->content .= '<td class="td1">' . $this->getLanguageService()->getLL('username') . '</td><td class="td2">' . $row['username'] . '</td>' . chr(10);
-				$this->content .= '<td class="td1">' . $this->getLanguageService()->getLL('realname') . '</td><td class="td2">' . $row['name'] . '</td>' . chr(10);
-				$this->content .= '<td class="td1">' . $this->getLanguageService()->getLL('mapname') . '</td><td class="td2"><input name="fe_uid' . $id . '" type="text" value="' . $name . '" size="30"></td></tr>' . chr(10);
+				$this->content .= '<td class="td1">' . htmlspecialchars($this->getLanguageService()->getLL('username')) . '</td><td class="td2">' . htmlspecialchars($row['username']) . '</td>' . chr(10);
+				$this->content .= '<td class="td1">' . htmlspecialchars($this->getLanguageService()->getLL('realname')) . '</td><td class="td2">' . htmlspecialchars($row['name']) . '</td>' . chr(10);
+				$this->content .= '<td class="td1">' . htmlspecialchars($this->getLanguageService()->getLL('mapname')) . '</td><td class="td2"><input name="fe_uid' . (int)$id . '" type="text" value="' . htmlspecialchars($name) . '" size="30"></td></tr>' . chr(10);
 			}
 			$tmp_num++;
 		}
 		$this->content .= '</table>' . chr(10);
-		$this->content .= '<table><tr><td><form action="index.php?SET[function]=' . (string)$this->MOD_SETTINGS['function'] . '">' . chr(10);
-		$this->content .= '<input type="hidden" name="sysfolder_id" value="' . $sysfolder_id . '">' . chr(10);
-		$this->content .= '<input type="hidden" name="mapping_id" value="' . $mapping_id . '">' . chr(10);
+		$this->content .= '<table><tr><td><form action="index.php?SET[function]=' . htmlspecialchars($this->MOD_SETTINGS['function']) . '">' . chr(10);
+		$this->content .= '<input type="hidden" name="sysfolder_id" value="' . (int)$sysfolder_id . '">' . chr(10);
+		$this->content .= '<input type="hidden" name="mapping_id" value="' . (int)$mapping_id . '">' . chr(10);
 		$this->content .= '<input type="hidden" name="deleteit" value="true">' . chr(10);
-		$this->content .= '<input type="submit" value="' . $this->getLanguageService()->getLL('submit') . '"></form></td><td>' . chr(10);
+		$this->content .= '<input type="submit" value="' . htmlspecialchars($this->getLanguageService()->getLL('submit')) . '"></form></td><td>' . chr(10);
 		$this->content .= '<form action="index.php?SET[function]=1" method="POST">' . chr(10);
-		$this->content .= '<input type="submit" value="' . $this->getLanguageService()->getLL('cancel') . '">' . chr(10);
+		$this->content .= '<input type="submit" value="' . htmlspecialchars($this->getLanguageService()->getLL('cancel')) . '">' . chr(10);
 		$this->content .= '</form></td></tr></table>';
 	}
 
@@ -365,7 +399,7 @@ class tx_nawsinglesignon_module1 extends t3lib_SCbase {
 		if ($total_pages > 10) {
 			$init_page_max = ($total_pages > 3) ? 3 : $total_pages;
 			for ($i = 1; $i < $init_page_max + 1; $i++) {
-				$page_string .= ($i == $on_page) ? '<b>' . $i . '</b>' : '<a href="' . $base_url . "&amp;offset=" . (($i - 1) * $per_page) . '">' . $i . '</a>';
+				$page_string .= ($i == $on_page) ? '<b>' . $i . '</b>' : '<a href="' . htmlspecialchars($base_url . "&offset=" . (($i - 1) * $per_page)) . '">' . $i . '</a>';
 				if ($i < $init_page_max) {
 					$page_string .= ", ";
 				}
@@ -376,7 +410,7 @@ class tx_nawsinglesignon_module1 extends t3lib_SCbase {
 					$init_page_min = ($on_page > 4) ? $on_page : 5;
 					$init_page_max = ($on_page < $total_pages - 4) ? $on_page : $total_pages - 4;
 					for ($i = $init_page_min - 1; $i < $init_page_max + 2; $i++) {
-						$page_string .= ($i == $on_page) ? '<b>' . $i . '</b>' : '<a href="' . $base_url . "&amp;offset=" . (($i - 1) * $per_page) . '">' . $i . '</a>';
+						$page_string .= ($i == $on_page) ? '<b>' . $i . '</b>' : '<a href="' . htmlspecialchars($base_url . "&offset=" . (($i - 1) * $per_page) ). '">' . $i . '</a>';
 						if ($i < $init_page_max + 1) {
 							$page_string .= ', ';
 						}
@@ -386,7 +420,7 @@ class tx_nawsinglesignon_module1 extends t3lib_SCbase {
 					$page_string .= ' ... ';
 				}
 				for ($i = $total_pages - 2; $i < $total_pages + 1; $i++) {
-					$page_string .= ($i == $on_page) ? '<b>' . $i . '</b>' : '<a href="' . $base_url . "&amp;offset=" . (($i - 1) * $per_page) . '">' . $i . '</a>';
+					$page_string .= ($i == $on_page) ? '<b>' . $i . '</b>' : '<a href="' . htmlspecialchars($base_url . "&offset=" . (($i - 1) * $per_page)) . '">' . $i . '</a>';
 					if ($i < $total_pages) {
 						$page_string .= ", ";
 					}
@@ -394,7 +428,7 @@ class tx_nawsinglesignon_module1 extends t3lib_SCbase {
 			}
 		} else {
 			for ($i = 1; $i < $total_pages + 1; $i++) {
-				$page_string .= ($i == $on_page) ? '<b>' . $i . '</b>' : '<a href="' . $base_url . "&amp;offset=" . (($i - 1) * $per_page) . '">' . $i . '</a>';
+				$page_string .= ($i == $on_page) ? '<b>' . $i . '</b>' : '<a href="' . htmlspecialchars($base_url . "&offset=" . (($i - 1) * $per_page)) . '">' . $i . '</a>';
 				if ($i < $total_pages) {
 					$page_string .= ', ';
 				}
@@ -402,13 +436,13 @@ class tx_nawsinglesignon_module1 extends t3lib_SCbase {
 		}
 		if ($add_prevnext_text) {
 			if ($on_page > 1) {
-				$page_string = ' <a href="' . $base_url . "&amp;offset=" . (($on_page - 2) * $per_page) . '">' . $this->getLanguageService()->getLL('goBack') . '</a>&nbsp;&nbsp;' . $page_string;
+				$page_string = ' <a href="' . htmlspecialchars($base_url . "&offset=" . (($on_page - 2) * $per_page)) . '">' . htmlspecialchars($this->getLanguageService()->getLL('goBack')) . '</a>&nbsp;&nbsp;' . $page_string;
 			}
 			if ($on_page < $total_pages) {
-				$page_string .= '&nbsp;&nbsp;<a href="' . $base_url . "&amp;offset=" . ($on_page * $per_page) . '">' . $this->getLanguageService()->getLL('goForward') . '</a>';
+				$page_string .= '&nbsp;&nbsp;<a href="' . htmlspecialchars($base_url . "&offset=" . ($on_page * $per_page)) . '">' . htmlspecialchars($this->getLanguageService()->getLL('goForward')) . '</a>';
 			}
 		}
-		$page_string = $this->getLanguageService()->getLL('gotoPage') . ' ' . $page_string;
+		$page_string = htmlspecialchars($this->getLanguageService()->getLL('gotoPage')) . ' ' . $page_string;
 		return $page_string;
 	}
 
@@ -424,13 +458,13 @@ class tx_nawsinglesignon_module1 extends t3lib_SCbase {
 		$content1 = '<table>';
 		for ($i = 0; $i < $menge; $i++) {
 			$row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
-			$ahref = '<a href="index.php?SET[function]=' . (string)$this->MOD_SETTINGS['function'] . '&amp;sysfolder_id=' . $row['uid'] . '" class="link1">' . chr(10);
-			$result1 = $this->getDatabaseConnection()->exec_SELECTquery('*', 'fe_users', 'pid=' . $row['uid'] . ' AND deleted=\'0\'');
+			$ahref = '<a href="index.php?SET[function]=' . htmlspecialchars($this->MOD_SETTINGS['function'] . '&sysfolder_id=' . $row['uid']) . '" class="link1">' . chr(10);
+			$result1 = $this->getDatabaseConnection()->exec_SELECTquery('*', 'fe_users', 'pid=' . (int)$row['uid'] . ' AND deleted=\'0\'');
 			$num = $this->getDatabaseConnection()->sql_num_rows($result1);
 			$content1 .= '<tr>' . chr(10);
-			$content1 .= '<td class="td1">' . $ahref . $this->getLanguageService()->getLL('foldername') . '</a></td><td class="td2">' . $ahref . $row['title'] . '</a></td>' . chr(10);
-			$content1 .= '<td class="td1">' . $ahref . $this->getLanguageService()->getLL('uid') . '</a></td><td class="td2">' . $ahref . $row['uid'] . '</a></td>' . chr(10);
-			$content1 .= '<td class="td1">' . $ahref . $this->getLanguageService()->getLL('nrUsers') . '</a></td><td class="td2">' . $ahref . $num . '</a></td></tr>' . chr(10);
+			$content1 .= '<td class="td1">' . $ahref . htmlspecialchars($this->getLanguageService()->getLL('foldername')) . '</a></td><td class="td2">' . $ahref . htmlspecialchars($row['title']) . '</a></td>' . chr(10);
+			$content1 .= '<td class="td1">' . $ahref . htmlspecialchars($this->getLanguageService()->getLL('uid')) . '</a></td><td class="td2">' . $ahref . (int)$row['uid'] . '</a></td>' . chr(10);
+			$content1 .= '<td class="td1">' . $ahref . htmlspecialchars($this->getLanguageService()->getLL('nrUsers')) . '</a></td><td class="td2">' . $ahref . (int)$num . '</a></td></tr>' . chr(10);
 		}
 		$content1 .= '</table>';
 		$this->getDatabaseConnection()->sql_free_result($result);
@@ -448,10 +482,10 @@ class tx_nawsinglesignon_module1 extends t3lib_SCbase {
 		$content1 = '<table>';
 		for ($i = 0; $i < $menge; $i++) {
 			$row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
-			$ahref = '<a href="index.php?SET[function]=' . (string)$this->MOD_SETTINGS['function'] . '&amp;sysfolder_id=' . $row['sysfolder_id'] . '&amp;mapping_id=' . $row['uid'] . '" class="link1">' . chr(10);
+			$ahref = '<a href="index.php?SET[function]=' . htmlspecialchars($this->MOD_SETTINGS['function'] . '&sysfolder_id=' . $row['sysfolder_id'] . '&mapping_id=' . $row['uid']) . '" class="link1">' . chr(10);
 			$content1 .= '<tr class="box">' . chr(10);
-			$content1 .= '<td class="td1">' . $ahref . $this->getLanguageService()->getLL('mappingTable') . '</a></td><td class="td2">' . $ahref . $row['mapping_tablename'] . '</a></td>' . chr(10);
-			$content1 .= '<td class="td1">' . $ahref . $this->getLanguageService()->getLL('sysfolderid') . '</a></td><td class="td2">' . $ahref . $row['sysfolder_id'] . '</a></td>' . chr(10);
+			$content1 .= '<td class="td1">' . $ahref . $this->getLanguageService()->getLL('mappingTable') . '</a></td><td class="td2">' . $ahref . htmlspecialchars($row['mapping_tablename']) . '</a></td>' . chr(10);
+			$content1 .= '<td class="td1">' . $ahref . $this->getLanguageService()->getLL('sysfolderid') . '</a></td><td class="td2">' . $ahref . (int)$row['sysfolder_id'] . '</a></td>' . chr(10);
 			$content1 .= '</tr>';
 		}
 		$content1 .= '</table>';
@@ -473,14 +507,14 @@ class tx_nawsinglesignon_module1 extends t3lib_SCbase {
 		$row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
 
 		$content = '<table><tr><td>' . $this->getLanguageService()->getLL('enterTableName') . '</td><td>' . chr(10);
-		$content .= '<input name="mapping_tablename" type="text"' . $editable . ' value="' . $row['mapping_tablename'] . '"></td></tr>' . chr(10);
-		$content .= '<tr><td>' . $this->getLanguageService()->getLL('allow') . '</td><td><input type="checkbox" name="allowall"' . $editable;
+		$content .= '<input name="mapping_tablename" type="text"' . htmlspecialchars($editable) . ' value="' . htmlspecialchars($row['mapping_tablename']) . '"></td></tr>' . chr(10);
+		$content .= '<tr><td>' . $this->getLanguageService()->getLL('allow') . '</td><td><input type="checkbox" name="allowall" ' . htmlspecialchars($editable);
 		if ($row['allowall'] == 1) {
 			$content .= ' CHECKED';
 		}
 		$content .= '></td></tr>';
 		$content .= '<tr><td>' . $this->getLanguageService()->getLL('defaultmapping') . '</td><td>' . chr(10);
-		$content .= '<input name="mapping_defaultmapping" type="text"' . $editable . ' value="' . $row['mapping_defaultmapping'] . '"></td></tr>' . chr(10);
+		$content .= '<input name="mapping_defaultmapping" type="text"' . htmlspecialchars($editable) . ' value="' . htmlspecialchars($row['mapping_defaultmapping']) . '"></td></tr>' . chr(10);
 		$content .= '</table>';
 
 		$mapping_id_print = $mapping_id;
@@ -500,17 +534,17 @@ class tx_nawsinglesignon_module1 extends t3lib_SCbase {
 	 *
 	 * @param integer $sysfolder_id : UID of the sysfolder where the fe_users are stored
 	 * @param integer $mapping_id : if given the UID of the mapping table
-	 * @return array   ([uid] => [mapped_username], )
+	 * @return array  ([uid] => [mapped_username], )
 	 */
 	function mapUserlist($sysfolder_id, $mapping_id = '0') {
-		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'fe_users', 'pid=' . $sysfolder_id . ' AND deleted=\'0\'');
+		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'fe_users', 'pid=' . (int)$sysfolder_id . ' AND deleted=\'0\'');
 		$menge = $this->getDatabaseConnection()->sql_num_rows($result);
 		$userarray = array();
 		for ($i = 0; $i < $menge; $i++) {
 			$row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
-			$result2 = $this->getDatabaseConnection()->exec_SELECTquery('*', $this->table_usermap, 'mapping_id=' . $mapping_id . ' AND fe_uid=' . $row['uid']);
+			$result2 = $this->getDatabaseConnection()->exec_SELECTquery('*', $this->table_usermap, 'mapping_id=' . (int)$mapping_id . ' AND fe_uid=' . (int)$row['uid']);
 			$row2 = $this->getDatabaseConnection()->sql_fetch_assoc($result2);
-			$userarray += array($row['uid'] => $row2['mapping_username']);
+			$userarray[$row['uid']] = $row2['mapping_username'];
 		}
 		return $userarray;
 	}

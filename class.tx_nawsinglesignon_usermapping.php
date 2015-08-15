@@ -23,24 +23,38 @@
  ***************************************************************/
 
 /**
- * @author      Dietrich Heise <typo3-ext@naw.info>
+ * @author  Dietrich Heise <typo3-ext@naw.info>
  */
 class tx_nawsinglesignon_usermapping {
 
-	function usermapping($config) {
+	public function usermapping($config) {
 		// No Usermapping =0
-		$config['items'][] = Array($GLOBALS['LANG']->sL('LLL:EXT:naw_single_signon/locallang_tca.php:naw_single_signon.pi_flexform.no_usermapping'), '0');
+		$config['items'][] = array($this->getLanguageService()->sL('LLL:EXT:naw_single_signon/locallang_tca.php:naw_single_signon.pi_flexform.no_usermapping'), '0');
 
 		// configured Mappings
-		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_nawsinglesignon_properties', 'deleted=0');
-		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-			$config['items'][] = Array($row['mapping_tablename'], $row['uid']);
+		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'tx_nawsinglesignon_properties', 'deleted=0');
+		while ($row = $this->getDatabaseConnection()->sql_fetch_assoc($result)) {
+			$config['items'][] = array($row['mapping_tablename'], $row['uid']);
 		}
 		return $config;
 	}
 
+	/**
+	 * @return t3lib_DB
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * @return language
+	 */
+	protected function getLanguageService() {
+		return $GLOBALS['LANG'];
+	}
+
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/naw_single_signon/class.tx_nawsinglesignon_usermapping.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/naw_single_signon/class.tx_nawsinglesignon_usermapping.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/naw_single_signon/class.tx_nawsinglesignon_usermapping.php']) {
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/naw_single_signon/class.tx_nawsinglesignon_usermapping.php']);
 }

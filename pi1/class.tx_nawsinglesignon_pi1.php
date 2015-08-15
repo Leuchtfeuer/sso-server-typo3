@@ -102,12 +102,12 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 		// Calculate link expire time
 		$validUntilTimestamp = intval($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'linklifetime', 'sDEF3')) + time();
 
-		$userId = ($this->getMappedUser($GLOBALS['TSFE']->fe_user->user['uid']));
+		$userId = ($this->getMappedUser($this->getTypoScriptFrontendController()->fe_user->user['uid']));
 		if (!$userId) {
 			throw new Exception($this->pi_getLL('no_usermapping'));
 		}
 
-		if (!$this->getMappedUser($GLOBALS['TSFE']->fe_user->user['uid'])) {
+		if (!$this->getMappedUser($this->getTypoScriptFrontendController()->fe_user->user['uid'])) {
 			throw new Exception($this->pi_getLL('no_user'));
 		}
 
@@ -263,28 +263,28 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 
 		// Default Table (mapping as it is)
 		if ($mapping_id == 0) {
-			return $GLOBALS['TSFE']->fe_user->user['username'];
+			return $this->getTypoScriptFrontendController()->fe_user->user['username'];
 		}
 
-		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_nawsinglesignon_properties', 'deleted=0 AND uid=' . intval($mapping_id));
-		$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'tx_nawsinglesignon_properties', 'deleted=0 AND uid=' . intval($mapping_id));
+		$row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
 
 		// If allowall map undef-users to fe_usernames, else deny
 		$allowall = $row['allowall'];
 		$sysfolder_id = $row['sysfolder_id'];
 		$mapping_defaultmapping = $row['mapping_defaultmapping'];
 
-		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_nawsinglesignon_usermap', 'mapping_id=' . intval($mapping_id) . ' AND fe_uid=' . intval($uid));
-		$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'tx_nawsinglesignon_usermap', 'mapping_id=' . intval($mapping_id) . ' AND fe_uid=' . intval($uid));
+		$row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
 
-		if ($GLOBALS['TSFE']->fe_user->user['pid'] != $sysfolder_id) {
+		if ($this->getTypoScriptFrontendController()->fe_user->user['pid'] != $sysfolder_id) {
 			return '';
 		}
 
 		if (($row['mapping_username'] == '') && ($allowall == 1) && $mapping_defaultmapping) {
 			return $mapping_defaultmapping;
 		} elseif (($row['mapping_username'] == '') && ($allowall == 1)) {
-			return $GLOBALS['TSFE']->fe_user->user['username'];
+			return $this->getTypoScriptFrontendController()->fe_user->user['username'];
 		}
 
 		return $row['mapping_username'];
@@ -296,7 +296,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 	 * @return string
 	 */
 	protected function getUserData() {
-		$tablefields = $GLOBALS['TYPO3_DB']->admin_get_fields('fe_users');
+		$tablefields = $this->getDatabaseConnection()->admin_get_fields('fe_users');
 		$userdata_tmp = '';
 		$userdata_splitchar = ''; // set blank for first entry
 
@@ -304,20 +304,20 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 		$tmp2_enable = explode(',', $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'enable_fields', 'sDEF3'));
 		$fields_enable = array_merge($tmp_enable, $tmp2_enable);
 		foreach ($tablefields as $i) {
-			if ($GLOBALS['TSFE']->fe_user->user[$i['Field']] AND in_array($i['Field'], $fields_enable)) {
+			if ($this->getTypoScriptFrontendController()->fe_user->user[$i['Field']] AND in_array($i['Field'], $fields_enable)) {
 				if ($i['Field'] == 'usergroup') {
-					$groups = explode(',', $GLOBALS['TSFE']->fe_user->user[$i['Field']]);
+					$groups = explode(',', $this->getTypoScriptFrontendController()->fe_user->user[$i['Field']]);
 					$groupsdata_splitchar = '';
 					$userdata_tmp .= $userdata_splitchar . $i['Field'] . '=';
 					foreach ($groups as $j) {
-						$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'fe_groups', 'uid=' . intval($j));
-						while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+						$result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'fe_groups', 'uid=' . intval($j));
+						while ($row = $this->getDatabaseConnection()->sql_fetch_assoc($result)) {
 							$userdata_tmp .= $groupsdata_splitchar . $row['title'];
 						}
 						$groupsdata_splitchar = ',';
 					}
 				} else {
-					$userdata_tmp .= $userdata_splitchar . $i['Field'] . '=' . $GLOBALS['TSFE']->fe_user->user[$i['Field']];
+					$userdata_tmp .= $userdata_splitchar . $i['Field'] . '=' . $this->getTypoScriptFrontendController()->fe_user->user[$i['Field']];
 				}
 				$userdata_splitchar = '|'; //splitchar after first entry...
 			}
@@ -406,10 +406,25 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 	 * @param string $tpaLogonUrl
 	 */
 	protected function addTpaUrlInNewWindowJavaScriptToHtmlHeader($tpaLogonUrl) {
-		$GLOBALS['TSFE']->additionalHeaderData['Window_onload_' . $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'tpaid', 'sDEF')] = t3lib_div::wrapJS('window.open(' . t3lib_div::quoteJSvalue($tpaLogonUrl) . ');');
+		$this->getTypoScriptFrontendController()->additionalHeaderData['Window_onload_' . $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'tpaid', 'sDEF')] = t3lib_div::wrapJS('window.open(' . t3lib_div::quoteJSvalue($tpaLogonUrl) . ');');
 	}
+
+	/**
+	 * @return t3lib_DB
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * @return tslib_fe
+	 */
+	protected function getTypoScriptFrontendController() {
+		return $GLOBALS['TSFE'];
+	}
+
 }
 
-if (defined('TYPO3_MODE') && isset($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/naw_single_signon/pi1/class.tx_nawsinglesignon_pi1.php'])) {
-	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/naw_single_signon/pi1/class.tx_nawsinglesignon_pi1.php']);
+if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/naw_single_signon/pi1/class.tx_nawsinglesignon_pi1.php'])) {
+	include_once ($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/naw_single_signon/pi1/class.tx_nawsinglesignon_pi1.php']);
 }

@@ -57,6 +57,11 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 	protected static $debug = FALSE;
 
 	/**
+	 * @var int
+	 */
+	protected static $minimumLinkLifetime;
+
+	/**
 	 * @var string
 	 */
 	protected $sso_version = '2.0';
@@ -114,7 +119,9 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 	 */
 	protected function generateTpaLogonUrl() {
 		// Calculate link expire time
-		$validUntilTimestamp = intval($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'linklifetime', 'sDEF3')) + time();
+		$linkLifetime = intval($this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'linklifetime', 'sDEF3'));
+		$this->calculateAndStoreMinimumLifetime($linkLifetime);
+		$validUntilTimestamp = $linkLifetime + time();
 
 		$userId = ($this->getMappedUser($this->getTypoScriptFrontendController()->fe_user->user['uid']));
 		if (!$userId) {
@@ -183,12 +190,14 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 			// Display Link in Content (2)
 			case 2:
 				$content = $this->getTpaLinkTag($tpaLogonUrl);
+				$this->addMetaRefreshToHtmlHeader();
 			break;
 			// New Window (JavaScript) AND Link in Content (3)
 			// TODO: This mode make absolutely no sense. Remove it?
 			case 3:
 				$this->addTpaUrlInNewWindowJavaScriptToHtmlHeader($tpaLogonUrl);
 				$content = $this->getTpaLinkTag($tpaLogonUrl);
+				$this->addMetaRefreshToHtmlHeader();
 			break;
 			// Output URL as string only
 			case 4:
@@ -435,6 +444,26 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 	 */
 	protected function getTypoScriptFrontendController() {
 		return $GLOBALS['TSFE'];
+	}
+
+	/**
+	 * @return void
+	 */
+	protected function addMetaRefreshToHtmlHeader() {
+		if (!empty($this->extConf['refreshLinkPage'])) {
+			$this->getTypoScriptFrontendController()->additionalHeaderData['tx_sso_meta_refresh'] = '<meta http-equiv="refresh" content="' . t3lib_div::intInRange(self::$minimumLinkLifetime - 5, 5) . '; URL="' . htmlspecialchars($this->cObj->getUrlToCurrentLocation()) . '">';
+		}
+	}
+
+	/**
+	 * @param $linkLifetime
+	 */
+	protected function calculateAndStoreMinimumLifetime($linkLifetime) {
+		if (!self::$minimumLinkLifetime) {
+			self::$minimumLinkLifetime = $linkLifetime;
+		} else {
+			self::$minimumLinkLifetime = min(self::$minimumLinkLifetime, $linkLifetime);
+		}
 	}
 
 }

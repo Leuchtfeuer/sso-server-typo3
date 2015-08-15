@@ -151,8 +151,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 		$ssoData = array(
 			'version' => $this->sso_version,
 			'user' => $userId,
-			'tpa_id' => $this->pi_getFFvalue($this->cObj->data['pi_flexform'],
-			'tpaid', 'sDEF'),
+			'tpa_id' => $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'tpaid', 'sDEF'),
 			'expires' => $validUntilTimestamp,
 			'action' => 'logon',
 			'flags' => $flags,

@@ -97,7 +97,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 			$tpaLogonUrl = $this->generateTpaLogonUrl();
 			$content .= $this->getPluginContent($tpaLogonUrl);
 		} catch (Exception $exception) {
-			$content .= $exception->getMessage();
+			$content .= htmlspecialchars($this->pi_getLL($exception->getMessage(), $exception->getMessage()));
 		}
 
 		return $this->pi_wrapInBaseClass($content);
@@ -111,7 +111,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 	protected function checkSsl() {
 		if ($this->conf['forcessl'] && !t3lib_div::getIndpEnv('TYPO3_SSL')) {
 			// no SSL page but required!
-			throw new Exception($this->pi_getLL('no_ssl'));
+			throw new Exception('no_ssl', 1439646265);
 		}
 	}
 
@@ -196,7 +196,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 			break;
 			// Output error message
 			default:
-				throw new Exception('Action invalid: ' . htmlspecialchars($contentType));
+				throw new Exception('Action invalid: ' . $contentType, 1439646266);
 		}
 
 		return $content;
@@ -235,7 +235,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 				// OPENSSL Sign (PHP - function)
 				$filePointer = @fopen($this->extConf['SSLPrivateKeyFile'], 'r');
 				if (!$filePointer) {
-					throw new Exception($this->pi_getLL('no_ssl_key_found'));
+					throw new Exception('no_ssl_key_found', 1439646267);
 				}
 				$privateKeyString = fread($filePointer, 8192);
 				fclose($filePointer);
@@ -246,7 +246,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 				openssl_free_key($privateKeyResource);
 				// END OPENSSL Sign
 			} else {
-				throw new Exception($this->pi_getLL('no_openssl_inPHP'));
+				throw new Exception('no_openssl_inPHP', 1439646268);
 			}
 		}
 
@@ -272,7 +272,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 	 */
 	protected function getMappedUser($uid) {
 		if (!$uid) {
-			throw new Exception($this->pi_getLL('no_usermapping'), 1439646263);
+			throw new Exception('no_usermapping', 1439646263);
 		}
 		$mapping_id = (int)$this->conf['usermapping'];
 
@@ -293,7 +293,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 		$row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
 
 		if ((int)$this->getTypoScriptFrontendController()->fe_user->user['pid'] !== $sysfolder_id) {
-			throw new Exception($this->pi_getLL('no_usermapping'), 1439646264);
+			throw new Exception('no_usermapping', 1439646264);
 		}
 
 		if (empty($row['mapping_username']) && $allowAll) {

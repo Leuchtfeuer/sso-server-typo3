@@ -36,6 +36,12 @@
 			<label index="naw_single_signon.pi_flexform.enable_fields">FE-Userdata that should be updated or commited to the tpa</label>
 			<label index="naw_single_signon.pi_flexform.usermapping">Select a Usermapping Table</label>
 			<label index="naw_single_signon.pi_flexform.no_usermapping">No Usermapping</label>
+			<label index="pi1_title">Single Sign-On</label>
+			<label index="pi1_plus_wiz_description">Provides Single Sign-On access to Third Party Application in the front end</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="pi1_title">Single Sign-On</label>
+			<label index="pi1_plus_wiz_description">Single Sign-On: Zugriff auf Front-End Applikationen ausserhalb von TYPO3, ohne erneutes Anmelden</label>
 		</languageKey>
 	</data>
 	<orig_hash type="array">
@@ -66,6 +72,12 @@
 			<label index="naw_single_signon.pi_flexform.disabled_fields" type="integer">185256564</label>
 			<label index="naw_single_signon.pi_flexform.usermapping" type="integer">182519704</label>
 			<label index="naw_single_signon.pi_flexform.no_usermapping" type="integer">37854139</label>
+			<label index="pi1_title" type="integer">76275195</label>
+			<label index="pi1_plus_wiz_description" type="integer">42624287</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="pi1_title" type="integer">76275195</label>
+			<label index="pi1_plus_wiz_description" type="integer">42624287</label>
 		</languageKey>
 	</orig_hash>
 	<orig_text type="array">

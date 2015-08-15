@@ -51,7 +51,7 @@ class tx_nawsinglesignon_pi1_wizicon {
 	* @return array  the language translation for this extension
 	*/
 	protected function includeLocalLang() {
-		return $this->getLanguageService()->includeLLFile('EXT:naw_single_signon/locallang.xml', FALSE);
+		return $this->getLanguageService()->includeLLFile('EXT:naw_single_signon/Resources/Private/Language/locallang_tca.xml', FALSE);
 	}
 
 	/**

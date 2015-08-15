@@ -79,7 +79,7 @@ class tx_nawsinglesignon_module1 extends t3lib_SCbase {
 			$this->doc->form = '<a href="http://www.single-signon.com" target="_blank" title="www.single-signon.com"><span class="banner"></span></a><img src="/clear.gif" width="1" height="34" alt=""><form action="" method="POST">';
 			// JavaScript
 			$this->doc->JScode = '
-					<link rel="stylesheet" type="text/css" href="../mod1/single-signon.css" />
+					<link rel="stylesheet" type="text/css" href="../../mod1/single-signon.css" />
 					<script type="text/javascript" language="javascript">
 					script_ended = 0; function jumpToUrl(URL) { document.location = URL; }
 					</script>

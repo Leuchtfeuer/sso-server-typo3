@@ -2,8 +2,8 @@
 	defined ('TYPO3_MODE') or die('Access denied.');
 
 	if (TYPO3_MODE == 'BE') {
-		t3lib_extMgm::addModule('tools', 'txnawsinglesignonM1', '', t3lib_extMgm::extPath($_EXTKEY).'mod1/');
-		$GLOBALS['TBE_MODULES_EXT']['xMOD_db_new_content_el']['addElClasses']['tx_nawsinglesignon_pi1_wizicon'] = t3lib_extMgm::extPath($_EXTKEY).'pi1/class.tx_nawsinglesignon_pi1_wizicon.php';
+		t3lib_extMgm::addModule('tools', 'txnawsinglesignonM1', '', t3lib_extMgm::extPath($_EXTKEY) . 'mod1/');
+		$GLOBALS['TBE_MODULES_EXT']['xMOD_db_new_content_el']['addElClasses']['tx_nawsinglesignon_pi1_wizicon'] = t3lib_extMgm::extPath($_EXTKEY) . 'Classes/Plugin/class.tx_nawsinglesignon_pi1_wizicon.php';
 	}
 
 	if (is_callable('t3lib_div::loadTCA')) {

@@ -93,6 +93,11 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 	 * @param tx_nawsinglesignon_usermapping $userMapping
 	 */
 	public function __construct(Tx_NawSingleSignon_Domain_Repository_SessionRepository $sessionRepository = NULL, tx_nawsinglesignon_usermapping $userMapping = NULL) {
+		if (is_callable(array('parent', 'tslib_pibase'))) {
+			parent::tslib_pibase();
+		} elseif (is_callable(array('parent', '__construct'))) {
+			parent::__construct();
+		}
 		$this->sessionRepository = $sessionRepository ?: new Tx_NawSingleSignon_Domain_Repository_SessionRepository($GLOBALS['TYPO3_DB']);
 		$this->userMapping = $userMapping ?: new tx_nawsinglesignon_usermapping();
 	}

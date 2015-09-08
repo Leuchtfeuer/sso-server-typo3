@@ -213,7 +213,7 @@ class tx_singlesignon_pi1 extends tslib_pibase {
 			'expires' => $validUntilTimestamp,
 			'action' => $action,
 			'flags' => $flags,
-			'userdata' => base64_encode($userData),
+			'userdata' => $this->encodeUserData($userData),
 		);
 
 		$finalUrl = $this->generateSsoAppUrl($ssoData);
@@ -345,37 +345,46 @@ class tx_singlesignon_pi1 extends tslib_pibase {
 	/**
 	 * Determine, extract and base64 encode the user data which is going to be sent to the application
 	 *
-	 * @return string
+	 * @return array
 	 */
 	protected function getUserData() {
-		$tablefields = $this->getDatabaseConnection()->admin_get_fields('fe_users');
-		$userdata_tmp = '';
-		$userdata_splitchar = ''; // set blank for first entry
+		$requestedUserDataFields = array_merge(
+			explode(',', $this->extConf['enable_fields']),
+			explode(',', $this->conf['enable_fields'])
+		);
 
-		$tmp_enable = explode(',', $this->extConf['enable_fields']);
-		$tmp2_enable = explode(',', $this->conf['enable_fields']);
-		$fields_enable = array_merge($tmp_enable, $tmp2_enable);
-		foreach ($tablefields as $i) {
-			if ($this->getTypoScriptFrontendController()->fe_user->user[$i['Field']] AND in_array($i['Field'], $fields_enable)) {
-				if ($i['Field'] == 'usergroup') {
-					$groups = explode(',', $this->getTypoScriptFrontendController()->fe_user->user[$i['Field']]);
-					$groupsdata_splitchar = '';
-					$userdata_tmp .= $userdata_splitchar . $i['Field'] . '=';
-					foreach ($groups as $j) {
-						$result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'fe_groups', 'uid=' . intval($j));
-						while ($row = $this->getDatabaseConnection()->sql_fetch_assoc($result)) {
-							$userdata_tmp .= $groupsdata_splitchar . $row['title'];
-						}
-						$groupsdata_splitchar = ',';
-					}
-				} else {
-					$userdata_tmp .= $userdata_splitchar . $i['Field'] . '=' . $this->getTypoScriptFrontendController()->fe_user->user[$i['Field']];
-				}
-				$userdata_splitchar = '|'; //splitchar after first entry...
+		$compiledUserData = array_intersect_key(
+			$this->getTypoScriptFrontendController()->fe_user->user,
+			array_flip($requestedUserDataFields)
+		);
+
+		if (!empty($compiledUserData['usergroup'])) {
+			$groupIds = explode(',', $compiledUserData['usergroup']);
+			$userGroupNames = array();
+			foreach ($groupIds as $groupId) {
+				$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow('*', 'fe_groups', 'uid=' . (int)$groupId);
+				$userGroupNames[] = $row['title'];
 			}
+			$compiledUserData['usergroup'] = implode(',', $userGroupNames);
 		}
 
-		return $userdata_tmp;
+		return $compiledUserData;
+	}
+
+	/**
+	 * Currently encodes in the form: "name=John|email=info@example.com"
+	 * which is base64 encoded in the end.
+	 *
+	 * @param array $userData associative array
+	 * @return string
+	 */
+	protected function encodeUserData(array $userData) {
+		return base64_encode(
+			implode(
+				'|',
+				array_map(function($v, $k) { return $k . '=' . $v; }, $userData, array_keys($userData))
+			)
+		);
 	}
 
 	/**

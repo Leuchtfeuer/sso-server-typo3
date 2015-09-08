@@ -16,7 +16,7 @@
 /**
  * Utilities to process flexForms
  */
-class Tx_NawSingleSignon_Configuration_FlexFormArrayConverter {
+class Tx_SingleSignon_Configuration_FlexFormArrayConverter {
 
 	/**
 	 * Parses the flexForm content and converts it to an array

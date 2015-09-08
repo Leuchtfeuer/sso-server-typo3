@@ -21,9 +21,9 @@
  ***************************************************************/
 
 /**
- * Class Tx_NawSingleSignon_Domain_Model_Session
+ * Class Tx_SingleSignon_Domain_Model_Session
  */
-class Tx_NawSingleSignon_Domain_Model_Session {
+class Tx_SingleSignon_Domain_Model_Session {
 
 	/**
 	 * @var string

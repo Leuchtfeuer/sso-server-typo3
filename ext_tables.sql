@@ -1,7 +1,7 @@
 #
-# Table structure for table 'tx_nawsinglesignon_usermap'
+# Table structure for table 'tx_singlesignon_usermap'
 #
-CREATE TABLE tx_nawsinglesignon_usermap (
+CREATE TABLE tx_singlesignon_usermap (
   uid int(11) unsigned DEFAULT '0' NOT NULL auto_increment,
   pid int(11) unsigned DEFAULT '0' NOT NULL,
   tstamp int(11) unsigned DEFAULT '0' NOT NULL,
@@ -18,9 +18,9 @@ CREATE TABLE tx_nawsinglesignon_usermap (
 
 
 #
-# Table structure for table 'tx_nawsinglesignon_properties'
+# Table structure for table 'tx_singlesignon_properties'
 #
-CREATE TABLE tx_nawsinglesignon_properties (
+CREATE TABLE tx_singlesignon_properties (
   uid int(11) unsigned DEFAULT '0' NOT NULL auto_increment,
   pid int(11) unsigned DEFAULT '0' NOT NULL,
   tstamp int(11) unsigned DEFAULT '0' NOT NULL,
@@ -39,7 +39,7 @@ CREATE TABLE tx_nawsinglesignon_properties (
 #
 # Table structure for table 'fe_session_data'
 #
-CREATE TABLE tx_nawsinglesignon_sessions (
+CREATE TABLE tx_singlesignon_sessions (
   session_hash varchar(32) DEFAULT '' NOT NULL,
   user_id int(11) unsigned DEFAULT '0' NOT NULL,
   tpa_id varchar(128) DEFAULT '' NOT NULL,

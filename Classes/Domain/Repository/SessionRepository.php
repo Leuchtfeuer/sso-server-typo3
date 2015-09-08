@@ -21,14 +21,14 @@
  ***************************************************************/
 
 /**
- * Class Tx_NawSingleSignon_Domain_Repository_SessionRepository
+ * Class Tx_SingleSignon_Domain_Repository_SessionRepository
  */
-class Tx_NawSingleSignon_Domain_Repository_SessionRepository {
+class Tx_SingleSignon_Domain_Repository_SessionRepository {
 
 	/**
 	 * @var string
 	 */
-	protected $tableName = 'tx_nawsinglesignon_sessions';
+	protected $tableName = 'tx_singlesignon_sessions';
 
 	/**
 	 * @var t3lib_DB
@@ -45,9 +45,9 @@ class Tx_NawSingleSignon_Domain_Repository_SessionRepository {
 	/**
 	 * Adds or updates the session table
 	 *
-	 * @param Tx_NawSingleSignon_Domain_Model_Session $session
+	 * @param Tx_SingleSignon_Domain_Model_Session $session
 	 */
-	public function addOrUpdateSession(Tx_NawSingleSignon_Domain_Model_Session $session) {
+	public function addOrUpdateSession(Tx_SingleSignon_Domain_Model_Session $session) {
 		$values = array();
 		foreach ($session->getValues() as $name => $value) {
 			$values[$name] = is_scalar($value) ? $value : serialize($value);
@@ -90,10 +90,10 @@ class Tx_NawSingleSignon_Domain_Repository_SessionRepository {
 	/**
 	 * Removes the identifiers and adds ON DUPLICATE KEY statement for data values
 	 *
-	 * @param Tx_NawSingleSignon_Domain_Model_Session $session
+	 * @param Tx_SingleSignon_Domain_Model_Session $session
 	 * @return string
 	 */
-	protected function getOnDuplicateKeyStatement(Tx_NawSingleSignon_Domain_Model_Session $session) {
+	protected function getOnDuplicateKeyStatement(Tx_SingleSignon_Domain_Model_Session $session) {
 		$updateValues = array();
 		foreach (array_slice($session->getValues(), 3) as $name => $value) {
 			$updateValues[] = "$name=VALUES($name)";

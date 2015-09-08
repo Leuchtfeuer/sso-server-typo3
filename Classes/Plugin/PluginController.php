@@ -3,7 +3,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2003-2012 Dietrich Heise (typo3-ext@naw.info)
+ *  (c) 2003-2012 Dietrich Heise (typo3-ext@bitmotion.de)
  *  (c) 2012-2015 Helmut Hummel (info@helhum.io)
  *  All rights reserved
  *
@@ -24,13 +24,13 @@
  ***************************************************************/
 
 /**
- * Plugin 'Single Sign-On' for the 'naw_single_signon' extension.
+ * Plugin 'Single Sign-On' for the 'single_signon' extension.
  * The Main Class of this extenstion to display Content in the Frontend
  *
- * @author Dietrich Heise <typo3-ext@naw.info>
+ * @author Dietrich Heise <typo3-ext@bitmotion.de>
  * @author Helmut Hummel (info@helhum.io)
  */
-class tx_nawsinglesignon_pi1 extends tslib_pibase {
+class tx_singlesignon_pi1 extends tslib_pibase {
 
 	/**
 	 * @var tslib_feUserAuth
@@ -40,21 +40,21 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 	/**
 	 * @var string
 	 */
-	public $prefixId = 'tx_nawsinglesignon_pi1';
+	public $prefixId = 'tx_singlesignon_pi1';
 
 	/**
 	 * Path to this script relative to the extension dir.
 	 *
 	 * @var string
 	 */
-	public $scriptRelPath = 'Classes/Plugin/class.tx_nawsinglesignon_pi1.php';
+	public $scriptRelPath = 'Classes/Plugin/class.tx_singlesignon_pi1.php';
 
 	/**
 	 * The extension key.
 	 *
 	 * @var string
 	 */
-	public $extKey = 'naw_single_signon'; //
+	public $extKey = 'single_signon'; //
 
 	/**
 	 * @var bool
@@ -79,27 +79,27 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 	protected $extConf;
 
 	/**
-	 * @var tx_nawsinglesignon_usermapping
+	 * @var tx_singlesignon_usermapping
 	 */
 	protected $userMapping;
 
 	/**
-	 * @var Tx_NawSingleSignon_Domain_Repository_SessionRepository
+	 * @var Tx_SingleSignon_Domain_Repository_SessionRepository
 	 */
 	protected $sessionRepository;
 
 	/**
-	 * @param Tx_NawSingleSignon_Domain_Repository_SessionRepository $sessionRepository
-	 * @param tx_nawsinglesignon_usermapping $userMapping
+	 * @param Tx_SingleSignon_Domain_Repository_SessionRepository $sessionRepository
+	 * @param tx_singlesignon_usermapping $userMapping
 	 */
-	public function __construct(Tx_NawSingleSignon_Domain_Repository_SessionRepository $sessionRepository = NULL, tx_nawsinglesignon_usermapping $userMapping = NULL) {
+	public function __construct(Tx_SingleSignon_Domain_Repository_SessionRepository $sessionRepository = NULL, tx_singlesignon_usermapping $userMapping = NULL) {
 		if (is_callable(array('parent', 'tslib_pibase'))) {
 			parent::tslib_pibase();
 		} elseif (is_callable(array('parent', '__construct'))) {
 			parent::__construct();
 		}
-		$this->sessionRepository = $sessionRepository ?: new Tx_NawSingleSignon_Domain_Repository_SessionRepository($GLOBALS['TYPO3_DB']);
-		$this->userMapping = $userMapping ?: new tx_nawsinglesignon_usermapping();
+		$this->sessionRepository = $sessionRepository ?: new Tx_SingleSignon_Domain_Repository_SessionRepository($GLOBALS['TYPO3_DB']);
+		$this->userMapping = $userMapping ?: new tx_singlesignon_usermapping();
 	}
 
 	/**
@@ -115,8 +115,8 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 			return $this->pi_wrapInBaseClass($this->pi_getLL('no_usermapping'));
 		}
 
-		$this->conf = array_replace_recursive($conf, Tx_NawSingleSignon_Configuration_FlexFormArrayConverter::convertFlexFormContentToArray($this->cObj->data['pi_flexform']));
-		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['naw_single_signon']);
+		$this->conf = array_replace_recursive($conf, Tx_SingleSignon_Configuration_FlexFormArrayConverter::convertFlexFormContentToArray($this->cObj->data['pi_flexform']));
+		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['single_signon']);
 
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
@@ -143,7 +143,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 		if (empty(self::$loggedOffUserAuthenticationObject)) {
 			return '';
 		}
-		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['naw_single_signon']);
+		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['single_signon']);
 		$activeSessions = $this->sessionRepository->findBySessionId(self::$loggedOffUserAuthenticationObject->id);
 
 		$logoffUrls = array();
@@ -224,7 +224,7 @@ class tx_nawsinglesignon_pi1 extends tslib_pibase {
 
 		$this->calculateAndStoreMinimumLifetime($linkLifetime);
 		$this->sessionRepository->addOrUpdateSession(
-			new Tx_NawSingleSignon_Domain_Model_Session(
+			new Tx_SingleSignon_Domain_Model_Session(
 				$this->getTypoScriptFrontendController()->fe_user->id,
 				$this->getTypoScriptFrontendController()->fe_user->user['uid'],
 				$tpaId,

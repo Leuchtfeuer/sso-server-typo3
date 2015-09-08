@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2005-2006 Dietrich Heise <typo3-ext@naw.info>
+ *  (c) 2005-2006 Dietrich Heise <typo3-ext@bitmotion.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -23,9 +23,9 @@
  ***************************************************************/
 
 /**
- * @author  Dietrich Heise <typo3-ext@naw.info>
+ * @author  Dietrich Heise <typo3-ext@bitmotion.de>
  */
-class tx_nawsinglesignon_usermapping {
+class tx_singlesignon_usermapping {
 
 	/**
 	 * Used as itemProcFunc in Flexform
@@ -35,10 +35,10 @@ class tx_nawsinglesignon_usermapping {
 	 */
 	public function getAvailableMappingItems($config) {
 		// No Usermapping =0
-		$config['items'][] = array($this->getLanguageService()->sL('LLL:EXT:naw_single_signon/Resources/Private/Language/locallang_tca.php:naw_single_signon.pi_flexform.no_usermapping'), '0');
+		$config['items'][] = array($this->getLanguageService()->sL('LLL:EXT:single_signon/Resources/Private/Language/locallang_tca.php:single_signon.pi_flexform.no_usermapping'), '0');
 
 		// configured Mappings
-		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'tx_nawsinglesignon_properties', 'deleted=0');
+		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'tx_singlesignon_properties', 'deleted=0');
 		while ($row = $this->getDatabaseConnection()->sql_fetch_assoc($result)) {
 			$config['items'][] = array($row['mapping_tablename'], $row['uid']);
 		}
@@ -63,7 +63,7 @@ class tx_nawsinglesignon_usermapping {
 			return $feUser->user['username'];
 		}
 
-		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'tx_nawsinglesignon_properties', 'deleted=0 AND uid=' . (int)$mappingId);
+		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'tx_singlesignon_properties', 'deleted=0 AND uid=' . (int)$mappingId);
 		$row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
 
 		// If allowall map undef-users to fe_usernames, else deny
@@ -71,7 +71,7 @@ class tx_nawsinglesignon_usermapping {
 		$sysfolder_id = (int)$row['sysfolder_id'];
 		$mapping_defaultmapping = $row['mapping_defaultmapping'];
 
-		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'tx_nawsinglesignon_usermap', 'mapping_id=' . (int)$mappingId . ' AND fe_uid=' . (int)$uid);
+		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'tx_singlesignon_usermap', 'mapping_id=' . (int)$mappingId . ' AND fe_uid=' . (int)$uid);
 		$row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
 
 		if ((int)$feUser->user['pid'] !== $sysfolder_id) {

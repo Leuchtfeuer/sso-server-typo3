@@ -3,7 +3,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2003 Dietrich Heise (typo3-ext@naw.info)
+*  (c) 2003 Dietrich Heise (typo3-ext@bitmotion.de)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -26,9 +26,9 @@
 /**
 * Class that adds the wizard icon.
 *
-* @author Dietrich Heise <typo3-ext@naw.info>
+* @author Dietrich Heise <typo3-ext@bitmotion.de>
 */
-class tx_nawsinglesignon_pi1_wizicon {
+class tx_singlesignon_pi1_wizicon {
 
 	/**
 	 * @param array $wizardItems
@@ -36,11 +36,11 @@ class tx_nawsinglesignon_pi1_wizicon {
 	 */
 	public function proc($wizardItems) {
 		$labelArray = $this->includeLocalLang();
-		$wizardItems['plugins_tx_nawsinglesignon_pi1'] = array(
-		'icon' => t3lib_extMgm::extRelPath('naw_single_signon')."pi1/ce_wiz.gif",
+		$wizardItems['plugins_tx_singlesignon_pi1'] = array(
+		'icon' => t3lib_extMgm::extRelPath('single_signon')."pi1/ce_wiz.gif",
 			'title' => $this->getLanguageService()->getLLL('pi1_title', $labelArray),
 			'description' => $this->getLanguageService()->getLLL('pi1_plus_wiz_description', $labelArray),
-			'params' => '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=naw_single_signon_pi1' );
+			'params' => '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=single_signon_pi1' );
 
 		return $wizardItems;
 	}
@@ -51,7 +51,7 @@ class tx_nawsinglesignon_pi1_wizicon {
 	* @return array  the language translation for this extension
 	*/
 	protected function includeLocalLang() {
-		return $this->getLanguageService()->includeLLFile('EXT:naw_single_signon/Resources/Private/Language/locallang_tca.xml', FALSE);
+		return $this->getLanguageService()->includeLLFile('EXT:single_signon/Resources/Private/Language/locallang_tca.xml', FALSE);
 	}
 
 	/**

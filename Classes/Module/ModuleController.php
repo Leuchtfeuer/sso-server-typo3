@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2005  (Dietrich Heise <typo3-ext@naw.info>)
+ *  (c) 2005  (Dietrich Heise <typo3-ext@bitmotion.de>)
  *  All rights reserved
  *
  *  This script is part of the Typo3 project. The Typo3 project is
@@ -25,9 +25,9 @@
 /**
  * Module 'mapping' for the 'usermapping' extension.
  * The Main Class of this extension to Display the BE
- * @author  Dietrich Heise <typo3-ext@naw.info>
+ * @author  Dietrich Heise <typo3-ext@bitmotion.de>
  */
-class tx_nawsinglesignon_module1 extends t3lib_SCbase {
+class tx_singlesignon_module1 extends t3lib_SCbase {
 	/**
 	 * @var template
 	 */
@@ -41,12 +41,12 @@ class tx_nawsinglesignon_module1 extends t3lib_SCbase {
 	/**
 	 * @var string
 	 */
-	protected $table_properties = 'tx_nawsinglesignon_properties';
+	protected $table_properties = 'tx_singlesignon_properties';
 
 	/**
 	 * @var string
 	 */
-	protected $table_usermap = 'tx_nawsinglesignon_usermap';
+	protected $table_usermap = 'tx_singlesignon_usermap';
 
 	/**
 	 * @var array
@@ -61,7 +61,7 @@ class tx_nawsinglesignon_module1 extends t3lib_SCbase {
 	public function __construct() {
 		$this->doc = t3lib_div::makeInstance('mediumDoc');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
-		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['naw_single_signon']);
+		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['single_signon']);
 	}
 
 	/**

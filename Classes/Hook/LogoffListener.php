@@ -21,9 +21,9 @@
  ***************************************************************/
 
 /**
- * Class Tx_NawSingleSignon_Hook_LogoffListener
+ * Class Tx_SingleSignon_Hook_LogoffListener
  */
-class Tx_NawSingleSignon_Hook_LogoffListener {
+class Tx_SingleSignon_Hook_LogoffListener {
 
 	/**
 	 * fetchUserSession also triggers the logoff hook, so we must no only react on first call
@@ -50,11 +50,11 @@ class Tx_NawSingleSignon_Hook_LogoffListener {
 			return;
 		}
 		// This global var is used to trigger the condition which wraps the logoff URL generator
-		$GLOBALS['TX_NAW_SINGLE_SIGNON']['logout'] = TRUE;
+		$GLOBALS['TX_SINGLE_SIGNON']['logout'] = TRUE;
 
 		// Attach the user authentication object for URL generation during this request
 		$userAuthentication->user = $userData;
-		tx_nawsinglesignon_pi1::$loggedOffUserAuthenticationObject = $userAuthentication;
+		tx_singlesignon_pi1::$loggedOffUserAuthenticationObject = $userAuthentication;
 	}
 
 }

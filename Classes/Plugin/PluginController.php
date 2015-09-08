@@ -24,8 +24,8 @@
  ***************************************************************/
 
 /**
- * Plugin 'Single Sign-On' for the 'single_signon' extension.
- * The Main Class of this extenstion to display Content in the Frontend
+ * Plugin Controller of the SSO Server.
+ * It generates frontend output (SSO App logon url) or directly redirects to one SSO App
  *
  * @author Dietrich Heise <typo3-ext@bitmotion.de>
  * @author Helmut Hummel (info@helhum.io)
@@ -331,7 +331,7 @@ class tx_singlesignon_pi1 extends tslib_pibase {
 
 		# debug mode: save binary signature to file
 		if (self::$debug) {
-			$tmp_signature_file = '/tmp/sigsso_debug.signature';
+			$tmp_signature_file = '/tmp/directsso_debug.signature';
 			$tmp_file = @fopen($tmp_signature_file, "w");
 			fwrite($tmp_file, $signature);
 			fclose($tmp_file);

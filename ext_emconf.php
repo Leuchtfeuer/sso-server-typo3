@@ -1,18 +1,8 @@
 <?php
 
-/***************************************************************
- * Extension Manager/Repository config file for ext "single_signon".
- *
- * Auto generated 26-06-2013 13:29
- *
- * Manual updates:
- * Only the data in the array - everything else is removed by next
- * writing. "version" and "dependencies" must not be touched!
- ***************************************************************/
-
 $EM_CONF[$_EXTKEY] = array(
 	'title' => 'Single Sign-On',
-	'description' => 'The TYPO3 Single Sign-On extension (SSO Server) provides seamless integration of third-party (i.e. non-TYPO3) applications (SSO Apps) into TYPO3. This includes end-user access to SSO Apps with no additional logon.',
+	'description' => 'The TYPO3 SSO Server provides seamless integration of third-party (i.e. non-TYPO3) applications (SSO Apps) into TYPO3. This includes end-user access to SSO Apps with no additional logon.',
 	'category' => 'plugin',
 	'shy' => 0,
 	'version' => '2.1.1',

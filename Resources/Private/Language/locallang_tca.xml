@@ -11,8 +11,8 @@
 		<languageKey index="default" type="array">
 			<label index="single_signon">Single Sign-On</label>
 			<label index="single_signon.pi_flexform.sheet_general">General</label>
-			<label index="single_signon.pi_flexform.appId">Third Party Application ID (as configured in Trust Agent)</label>
-			<label index="single_signon.pi_flexform.targeturl">Trust Agent URL</label>
+			<label index="single_signon.pi_flexform.appId">SSO App ID (as configured in SSO Client)</label>
+			<label index="single_signon.pi_flexform.targeturl">SSO Client URL</label>
 			<label index="single_signon.pi_flexform.linkdescription">Link Display Text (for &quot;Link in Content&quot;)</label>
 			<label index="single_signon.pi_flexform.style">Style</label>
 			<label index="single_signon.pi_flexform.frametarget">Frame Target (for &quot;Link in Content&quot;)</label>

@@ -348,27 +348,43 @@ class tx_singlesignon_pi1 extends tslib_pibase {
 	 * @return array
 	 */
 	protected function getUserData() {
+		if (empty($this->conf['userDataSources.'])) {
+			throw new \UnexpectedValueException('No user data source was found. Please check if the TypoScript is added and a data provider is configured.', 1441733003);
+		}
+
 		$requestedUserDataFields = array_merge(
 			explode(',', $this->extConf['enable_fields']),
 			explode(',', $this->conf['enable_fields'])
 		);
 
-		$compiledUserData = array_intersect_key(
-			$this->getTypoScriptFrontendController()->fe_user->user,
-			array_flip($requestedUserDataFields)
-		);
+		$userData = array();
+		$dataSources = $this->conf['userDataSources.'];
+		$dataSourcesKeys = t3lib_TStemplate::sortedKeyList($dataSources);
 
-		if (!empty($compiledUserData['usergroup'])) {
-			$groupIds = explode(',', $compiledUserData['usergroup']);
-			$userGroupNames = array();
-			foreach ($groupIds as $groupId) {
-				$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow('*', 'fe_groups', 'uid=' . (int)$groupId);
-				$userGroupNames[] = $row['title'];
+		foreach ($dataSourcesKeys as $key) {
+			$className = $dataSources[$key];
+			if (!class_exists($className)) {
+				throw new \UnexpectedValueException('Data source class name "' . $className . '" does not exist!',  1441731922);
 			}
-			$compiledUserData['usergroup'] = implode(',', $userGroupNames);
+			$dataSource = t3lib_div::makeInstance($className);
+			if (!$dataSource instanceof Tx_SingleSignon_UserData_FrontendUserDataSource) {
+				throw new \UnexpectedValueException(
+					'Data source with class name "' . $className . '" ' .
+					'must implement interface "Tx_SingleSignon_UserData_FrontendUserDataSource"',
+					1441731967
+				);
+			}
+
+			$dataSourceConfiguration = isset($dataSources[$key . '.']) ? $dataSources[$key . '.'] : array();
+			$dataSourceConfiguration['userDataFields'] = empty($dataSourceConfiguration['userDataFields']) ? $requestedUserDataFields : $dataSourceConfiguration['userDataFields'];
+
+			$userData = $dataSource->fetchUserData(
+				$userData,
+				$dataSourceConfiguration
+			);
 		}
 
-		return $compiledUserData;
+		return $userData;
 	}
 
 	/**

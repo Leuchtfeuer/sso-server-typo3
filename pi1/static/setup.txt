@@ -1,5 +1,9 @@
 plugin.tx_singlesignon_pi1 {
 	includeLibs >
+	userDataSources.10 = Tx_SingleSignon_UserData_FrontendUserDataSource
+	userDataSources.10 {
+		foo = bar
+	}
 }
 
 [globalVar = TX_SINGLE_SIGNON|logout = 1]

@@ -12,7 +12,7 @@
 
 $EM_CONF[$_EXTKEY] = array(
 	'title' => 'Single Sign-On',
-	'description' => 'The TYPO3 Single Sign-On (SSO) extension provides seamless integration of third-party (i.e. non-TYPO3) applications (TPAs) into TYPO3. This includes end-user access to TPAs with no additional logon.',
+	'description' => 'The TYPO3 Single Sign-On extension (SSO Server) provides seamless integration of third-party (i.e. non-TYPO3) applications (SSO Apps) into TYPO3. This includes end-user access to SSO Apps with no additional logon.',
 	'category' => 'plugin',
 	'shy' => 0,
 	'version' => '2.1.1',

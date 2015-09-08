@@ -73,16 +73,16 @@ class Tx_SingleSignon_Domain_Repository_SessionRepository {
 	/**
 	 * @param string $sessionHash
 	 * @param string $userId
-	 * @param string $tpaId
+	 * @param string $appId
 	 */
-	public function deleteBySessionHashUserIdTpaId($sessionHash, $userId, $tpaId) {
+	public function deleteBySessionHashUserIdAppId($sessionHash, $userId, $appId) {
 		$this->databaseConnection->exec_DELETEquery(
 			$this->tableName,
 			sprintf(
-				'session_hash=%s AND user_id=%s AND tpa_id=%s',
+				'session_hash=%s AND user_id=%s AND app_id=%s',
 				$this->databaseConnection->fullQuoteStr($sessionHash, $this->tableName),
 				$this->databaseConnection->fullQuoteStr($userId, $this->tableName),
-				$this->databaseConnection->fullQuoteStr($tpaId, $this->tableName)
+				$this->databaseConnection->fullQuoteStr($appId, $this->tableName)
 			)
 		);
 	}

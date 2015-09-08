@@ -11,7 +11,7 @@
 		<languageKey index="default" type="array">
 			<label index="single_signon">Single Sign-On</label>
 			<label index="single_signon.pi_flexform.sheet_general">General</label>
-			<label index="single_signon.pi_flexform.tpaid">Third Party Application ID (as configured in Trust Agent)</label>
+			<label index="single_signon.pi_flexform.appId">Third Party Application ID (as configured in Trust Agent)</label>
 			<label index="single_signon.pi_flexform.targeturl">Trust Agent URL</label>
 			<label index="single_signon.pi_flexform.linkdescription">Link Display Text (for &quot;Link in Content&quot;)</label>
 			<label index="single_signon.pi_flexform.style">Style</label>
@@ -32,8 +32,8 @@
 			<label index="single_signon.pi_flexform.security">Security</label>
 			<label index="single_signon.pi_flexform.linklifetime">Link Lifetime (sec)</label>
 			<label index="single_signon.pi_flexform.forcessl">Require SSL</label>
-			<label index="single_signon.pi_flexform.flag_create">Allow to create the user in tpa</label>
-			<label index="single_signon.pi_flexform.enable_fields">FE-Userdata that should be updated or commited to the tpa</label>
+			<label index="single_signon.pi_flexform.flag_create">Allow to create the user in SSO App</label>
+			<label index="single_signon.pi_flexform.enable_fields">FE-Userdata that should be updated or commited to the SSO App</label>
 			<label index="single_signon.pi_flexform.usermapping">Select a Usermapping Table</label>
 			<label index="single_signon.pi_flexform.no_usermapping">No Usermapping</label>
 			<label index="pi1_title">Single Sign-On</label>
@@ -48,7 +48,7 @@
 		<languageKey index="default" type="array">
 			<label index="single_signon" type="integer">76275195</label>
 			<label index="single_signon.pi_flexform.sheet_general" type="integer">14366585</label>
-			<label index="single_signon.pi_flexform.tpaid" type="integer">8894224</label>
+			<label index="single_signon.pi_flexform.appId" type="integer">8894224</label>
 			<label index="single_signon.pi_flexform.targeturl" type="integer">17764852</label>
 			<label index="single_signon.pi_flexform.linkdescription" type="integer">140149663</label>
 			<label index="single_signon.pi_flexform.style" type="integer">182617337</label>

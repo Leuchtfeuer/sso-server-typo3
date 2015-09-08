@@ -103,7 +103,7 @@ class tx_singlesignon_pi1 extends tslib_pibase {
 	}
 
 	/**
-	 * Create a link or redirect for a third party application (tpa)
+	 * Create a link or redirect for an SSO App
 	 *
 	 * @param string  $content: Here the content will given
 	 * @param array  $conf: the conf array
@@ -123,8 +123,8 @@ class tx_singlesignon_pi1 extends tslib_pibase {
 
 		try {
 			$this->checkSsl();
-			$tpaLogonUrl = $this->generateTpaLogonUrl();
-			$content .= $this->getPluginContent($tpaLogonUrl);
+			$appLogonUrl = $this->generateSsoAppLogonUrl();
+			$content .= $this->getPluginContent($appLogonUrl);
 		} catch (Exception $exception) {
 			$content .= htmlspecialchars($this->pi_getLL($exception->getMessage(), $exception->getMessage()));
 		}
@@ -154,16 +154,16 @@ class tx_singlesignon_pi1 extends tslib_pibase {
 			$ssoData = array(
 				'version' => $metaData['ssoData']['version'],
 				'user' => $metaData['ssoData']['user'],
-				'tpa_id' => $metaData['ssoData']['tpa_id'],
+				'app_id' => $metaData['ssoData']['app_id'],
 				'expires' => intval($this->conf['linklifetime']) + $GLOBALS['EXEC_TIME'],
 				'action' => 'logoff',
 			);
 
-			$logoffUrls[] = $this->generateTpaUrl($ssoData);
-			$this->sessionRepository->deleteBySessionHashUserIdTpaId(
+			$logoffUrls[] = $this->generateSsoAppUrl($ssoData);
+			$this->sessionRepository->deleteBySessionHashUserIdAppId(
 				$session['session_hash'],
 				$session['user_id'],
-				$session['tpa_id']
+				$session['app_id']
 			);
 		}
 
@@ -188,19 +188,19 @@ class tx_singlesignon_pi1 extends tslib_pibase {
 	}
 
 	/**
-	 * Generates the logon URL for the TPA
+	 * Generates the logon URL for the SSO App
 	 *
 	 * @return string
 	 * @throws Exception
 	 */
-	protected function generateTpaLogonUrl() {
+	protected function generateSsoAppLogonUrl() {
 		// Calculate link expire time
 		$linkLifetime = intval($this->conf['linklifetime']);
 
 		// Create Signing Data
 		$version = $this->sso_version;
 		$userName = $this->userMapping->findUsernameForUserAndMapping($this->getTypoScriptFrontendController()->fe_user, $this->conf['usermapping']);
-		$tpaId = $this->conf['tpaid'];
+		$appId = $this->conf['appId'];
 		$validUntilTimestamp = $linkLifetime + $GLOBALS['EXEC_TIME'];
 		$action = 'logon';
 		$flags = base64_encode('create_modify=' . (string)intval((bool)$this->conf['flag_create']));
@@ -209,14 +209,14 @@ class tx_singlesignon_pi1 extends tslib_pibase {
 		$ssoData = array(
 			'version' => $version,
 			'user' => $userName,
-			'tpa_id' => $tpaId,
+			'app_id' => $appId,
 			'expires' => $validUntilTimestamp,
 			'action' => $action,
 			'flags' => $flags,
 			'userdata' => base64_encode($userData),
 		);
 
-		$finalUrl = $this->generateTpaUrl($ssoData);
+		$finalUrl = $this->generateSsoAppUrl($ssoData);
 
 		$this->debug($userData);
 		$this->debug($ssoData);
@@ -227,7 +227,7 @@ class tx_singlesignon_pi1 extends tslib_pibase {
 			new Tx_SingleSignon_Domain_Model_Session(
 				$this->getTypoScriptFrontendController()->fe_user->id,
 				$this->getTypoScriptFrontendController()->fe_user->user['uid'],
-				$tpaId,
+				$appId,
 				array(
 					'ssoData' => $ssoData,
 					'config' => $this->conf,
@@ -241,37 +241,37 @@ class tx_singlesignon_pi1 extends tslib_pibase {
 	/**
 	 * Renders the Plugin and returns the content
 	 *
-	 * @param $tpaLogonUrl
+	 * @param $appLogonUrl
 	 * @return string
 	 * @throws Exception
 	 */
-	protected function getPluginContent($tpaLogonUrl) {
+	protected function getPluginContent($appLogonUrl) {
 		$content = '';
 		$contentType = $this->conf['contenttype'];
 		switch ($contentType) {
 			// Open in new window (requires JavaScript) (0)
 			case 0:
-				$this->addTpaUrlInNewWindowJavaScriptToHtmlHeader($tpaLogonUrl);
+				$this->addSsoAppUrlInNewWindowJavaScriptToHtmlHeader($appLogonUrl);
 			break;
 			// Open here (HTTP redirect) (works well without frames) (1)
 			case 1:
-				t3lib_utility_Http::redirect($tpaLogonUrl);
+				t3lib_utility_Http::redirect($appLogonUrl);
 			break;
 			// Display Link in Content (2)
 			case 2:
-				$content = $this->getTpaLinkTag($tpaLogonUrl);
+				$content = $this->getSsoAppLinkTag($appLogonUrl);
 				$this->addMetaRefreshToHtmlHeader();
 			break;
 			// New Window (JavaScript) AND Link in Content (3)
 			// TODO: This mode make absolutely no sense. Remove it?
 			case 3:
-				$this->addTpaUrlInNewWindowJavaScriptToHtmlHeader($tpaLogonUrl);
-				$content = $this->getTpaLinkTag($tpaLogonUrl);
+				$this->addSsoAppUrlInNewWindowJavaScriptToHtmlHeader($appLogonUrl);
+				$content = $this->getSsoAppLinkTag($appLogonUrl);
 				$this->addMetaRefreshToHtmlHeader();
 			break;
 			// Output URL as string only
 			case 4:
-				$content = htmlspecialchars($tpaLogonUrl);
+				$content = htmlspecialchars($appLogonUrl);
 			break;
 			// Output error message
 			default:
@@ -423,23 +423,23 @@ class tx_singlesignon_pi1 extends tslib_pibase {
 	}
 
 	/**
-	 * Generates a link tag with TPA target URL
+	 * Generates a link tag with SSO App target URL
 	 *
-	 * @param $tpaLogonUrl
+	 * @param $appLogonUrl
 	 * @return string
 	 */
-	protected function getTpaLinkTag($tpaLogonUrl) {
+	protected function getSsoAppLinkTag($appLogonUrl) {
 		if ($this->conf['frametargetcustom']) {
 			$linkTarget = $this->conf['frametargetcustom'];
 		} else {
 			$linkTarget = $this->conf['frametarget'];
 		}
 
-		// if no link description is set use the tpa_id
+		// if no link description is set use the app_id
 		if ($this->conf['linkdescription']) {
 			$linkText = $this->conf['linkdescription'];
 		} else {
-			$linkText = $this->conf['tpaid'];
+			$linkText = $this->conf['appId'];
 		}
 
 		$content = $this->conf['html_before'];
@@ -447,18 +447,18 @@ class tx_singlesignon_pi1 extends tslib_pibase {
 		if ($linkTarget === '_blank') {
 			$additionalAttributes[] = 'onMouseDown="location.reload()"';
 		}
-		$content .= '<a ' . implode(' ', $additionalAttributes) . ' href="' . htmlspecialchars($tpaLogonUrl) . '" target="' . htmlspecialchars($linkTarget) . '">' . htmlspecialchars($linkText) . '</a>';
+		$content .= '<a ' . implode(' ', $additionalAttributes) . ' href="' . htmlspecialchars($appLogonUrl) . '" target="' . htmlspecialchars($linkTarget) . '">' . htmlspecialchars($linkText) . '</a>';
 		$content .= $this->conf['html_after'];
 		return $content;
 	}
 
 	/**
-	 * Add JavaScript to HTML header to open a new browser window or tab with TPA URL
+	 * Add JavaScript to HTML header to open a new browser window or tab with SSO App URL
 	 *
-	 * @param string $tpaLogonUrl
+	 * @param string $appLogonUrl
 	 */
-	protected function addTpaUrlInNewWindowJavaScriptToHtmlHeader($tpaLogonUrl) {
-		$this->getTypoScriptFrontendController()->additionalHeaderData['Window_onload_' . $this->conf['tpaid']] = t3lib_div::wrapJS('window.open(' . t3lib_div::quoteJSvalue($tpaLogonUrl) . ');');
+	protected function addSsoAppUrlInNewWindowJavaScriptToHtmlHeader($appLogonUrl) {
+		$this->getTypoScriptFrontendController()->additionalHeaderData['Window_onload_' . $this->conf['appId']] = t3lib_div::wrapJS('window.open(' . t3lib_div::quoteJSvalue($appLogonUrl) . ');');
 	}
 
 	/**
@@ -500,7 +500,7 @@ class tx_singlesignon_pi1 extends tslib_pibase {
 	 * @return string
 	 * @throws Exception
 	 */
-	protected function generateTpaUrl($ssoData) {
+	protected function generateSsoAppUrl($ssoData) {
 		# encode the signature in hex format
 		$ssoData['signature'] = bin2hex($this->getSslSignatureForString($this->implodeSsoData($ssoData)));
 		$ssoData['returnTo'] = $this->validateReturnToUrl(t3lib_div::_GET('returnTo'));

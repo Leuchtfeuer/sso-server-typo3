@@ -38,7 +38,7 @@ class Tx_SingleSignon_Domain_Model_Session {
 	/**
 	 * @var string
 	 */
-	protected $tpaId;
+	protected $appId;
 
 	/**
 	 * @var array
@@ -53,13 +53,13 @@ class Tx_SingleSignon_Domain_Model_Session {
 	/**
 	 * @param string $sessionHash
 	 * @param string $userId
-	 * @param string $tpaId
+	 * @param string $appId
 	 * @param array $data
 	 */
-	public function __construct($sessionHash, $userId, $tpaId, array $data) {
+	public function __construct($sessionHash, $userId, $appId, array $data) {
 		$this->sessionHash = $sessionHash;
 		$this->userId = $userId;
-		$this->tpaId = $tpaId;
+		$this->appId = $appId;
 		$this->data = $data;
 		$this->timestamp = $GLOBALS['EXEC_TIME'];
 	}

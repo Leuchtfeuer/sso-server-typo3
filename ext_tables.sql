@@ -42,9 +42,9 @@ CREATE TABLE tx_singlesignon_properties (
 CREATE TABLE tx_singlesignon_sessions (
   session_hash varchar(32) DEFAULT '' NOT NULL,
   user_id int(11) unsigned DEFAULT '0' NOT NULL,
-  tpa_id varchar(128) DEFAULT '' NOT NULL,
+  app_id varchar(128) DEFAULT '' NOT NULL,
   data mediumblob,
   timestamp int(11) unsigned DEFAULT '0' NOT NULL,
-  PRIMARY KEY (session_hash,user_id,tpa_id)
+  PRIMARY KEY (session_hash,user_id,app_id)
 ) ENGINE=InnoDB;
 

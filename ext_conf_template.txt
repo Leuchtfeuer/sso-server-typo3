@@ -13,5 +13,5 @@ refreshLinkPage = 0
 # cat=basic; type=int; label=maxUsersPerPage:Maximum displayed Users in the Backend while editing and creating Usermappings
 maxUsersPerPage = 15
 
-# cat=basic; type=string; label=FE-Userdata that should be updated or committed to the tpa (separated by colon)
+# cat=basic; type=string; label=FE-Userdata that should be updated or committed to the SSO App (separated by comma)
 enable_fields = name,address,email

@@ -11,16 +11,16 @@
 				</TCEforms>
 				<type>array</type>
 				<el>
-					<tpaid>
+					<appId>
 						<TCEforms>
-							<label>LLL:EXT:single_signon/Resources/Private/Language/locallang_tca.php:single_signon.pi_flexform.tpaid</label>
+							<label>LLL:EXT:single_signon/Resources/Private/Language/locallang_tca.php:single_signon.pi_flexform.appId</label>
 							<config>
 								<type>input</type>
 								<size>25</size>
 								<eval>required</eval>
 							</config>
 						</TCEforms>
-					</tpaid>
+					</appId>
 					<targeturl>
 						<TCEforms>
 							<label>LLL:EXT:single_signon/Resources/Private/Language/locallang_tca.php:single_signon.pi_flexform.targeturl</label>

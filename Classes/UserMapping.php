@@ -71,7 +71,7 @@ class tx_singlesignon_usermapping {
 		$sysfolder_id = (int)$row['sysfolder_id'];
 		$mapping_defaultmapping = $row['mapping_defaultmapping'];
 
-		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'tx_singlesignon_usermap', 'mapping_id=' . (int)$mappingId . ' AND fe_uid=' . (int)$uid);
+		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'tx_singlesignon_usermap', 'mapping_id=' . (int)$mappingId . ' AND fe_uid=' . (int)$feUser->user['uid']);
 		$row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
 
 		if ((int)$feUser->user['pid'] !== $sysfolder_id) {

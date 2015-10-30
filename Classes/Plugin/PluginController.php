@@ -470,7 +470,7 @@ class tx_singlesignon_pi1 extends tslib_pibase {
 		$content = $this->conf['html_before'];
 		$additionalAttributes = array();
 		if ($linkTarget === '_blank') {
-			$additionalAttributes[] = 'onMouseDown="location.reload()"';
+			$additionalAttributes[] = 'onmousedown="location.reload();"';
 		}
 		$content .= '<a ' . implode(' ', $additionalAttributes) . ' href="' . htmlspecialchars($appLogonUrl) . '" target="' . htmlspecialchars($linkTarget) . '">' . htmlspecialchars($linkText) . '</a>';
 		$content .= $this->conf['html_after'];

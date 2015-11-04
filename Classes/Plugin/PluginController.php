@@ -33,7 +33,7 @@
 class tx_singlesignon_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
 	/**
-	 * @var tslib_feUserAuth
+	 * @var \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication
 	 */
 	public static $loggedOffUserAuthenticationObject;
 

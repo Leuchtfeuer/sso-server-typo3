@@ -48,12 +48,12 @@ class tx_singlesignon_usermapping {
 	/**
 	 * Return the mapped username for $feUser
 	 *
-	 * @param tslib_feUserAuth $feUser
+	 * @param \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication $feUser
 	 * @param int $mappingId
 	 * @return string  mapped username
 	 * @throws Exception
 	 */
-	public function findUsernameForUserAndMapping(tslib_feUserAuth $feUser, $mappingId) {
+	public function findUsernameForUserAndMapping(\TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication $feUser, $mappingId) {
 		if (empty($feUser)) {
 			throw new Exception('no_usermapping', 1439646263);
 		}

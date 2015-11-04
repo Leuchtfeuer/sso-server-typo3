@@ -34,9 +34,9 @@ class Tx_SingleSignon_Hook_LogoffListener {
 
 	/**
 	 * @param array $params
-	 * @param t3lib_userAuth $userAuthentication
+	 * @param \TYPO3\CMS\Core\Authentication\AbstractUserAuthentication $userAuthentication
 	 */
-	public function registerLogoff(array $params, t3lib_userAuth $userAuthentication) {
+	public function registerLogoff(array $params, \TYPO3\CMS\Core\Authentication\AbstractUserAuthentication $userAuthentication) {
 		if (self::$isProcessing || $userAuthentication->loginType !== 'FE') {
 			return;
 		}

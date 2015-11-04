@@ -6,10 +6,6 @@ if (TYPO3_MODE == 'BE') {
 	$GLOBALS['TBE_MODULES_EXT']['xMOD_db_new_content_el']['addElClasses']['tx_singlesignon_pi1_wizicon'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'Classes/Plugin/Wizicon.php';
 }
 
-if (is_callable('\TYPO3\CMS\Core\Utility\GeneralUtility::loadTCA')) {
-	\TYPO3\CMS\Core\Utility\GeneralUtility::loadTCA('tt_content');
-}
-
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY . '_pi1'] = 'layout,select_key,pages';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY . '_pi1'] = 'pi_flexform';
 

@@ -54,7 +54,7 @@ class Tx_SingleSignon_UserData_FrontendUserDataSource implements Tx_SingleSignon
 	}
 
 	/**
-	 * @return tslib_fe
+	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
 	 */
 	protected function getTypoScriptFrontendController() {
 		return $GLOBALS['TSFE'];

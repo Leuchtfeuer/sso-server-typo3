@@ -490,7 +490,7 @@ class tx_singlesignon_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	}
 
 	/**
-	 * @return tslib_fe
+	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
 	 */
 	protected function getTypoScriptFrontendController() {
 		return $GLOBALS['TSFE'];

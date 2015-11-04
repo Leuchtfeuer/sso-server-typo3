@@ -37,7 +37,7 @@ class tx_singlesignon_pi1_wizicon {
 	public function proc($wizardItems) {
 		$labelArray = $this->includeLocalLang();
 		$wizardItems['plugins_tx_singlesignon_pi1'] = array(
-		'icon' => t3lib_extMgm::extRelPath('single_signon')."pi1/ce_wiz.gif",
+		'icon' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('single_signon')."pi1/ce_wiz.gif",
 			'title' => $this->getLanguageService()->getLLL('pi1_title', $labelArray),
 			'description' => $this->getLanguageService()->getLLL('pi1_plus_wiz_description', $labelArray),
 			'params' => '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=single_signon_pi1' );

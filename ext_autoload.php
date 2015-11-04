@@ -1,5 +1,5 @@
 <?php
-$extPath = t3lib_extMgm::extPath('single_signon');
+$extPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('single_signon');
 
 return array(
 	'tx_singlesignon_pi1' => $extPath . 'Classes/Plugin/PluginController.php',

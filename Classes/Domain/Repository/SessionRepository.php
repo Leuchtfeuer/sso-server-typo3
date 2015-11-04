@@ -31,14 +31,14 @@ class Tx_SingleSignon_Domain_Repository_SessionRepository {
 	protected $tableName = 'tx_singlesignon_sessions';
 
 	/**
-	 * @var t3lib_DB
+	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
 	 */
 	protected $databaseConnection;
 
 	/**
-	 * @param t3lib_DB $databaseConnection
+	 * @param \TYPO3\CMS\Core\Database\DatabaseConnection $databaseConnection
 	 */
-	public function __construct(t3lib_DB $databaseConnection = NULL) {
+	public function __construct(\TYPO3\CMS\Core\Database\DatabaseConnection $databaseConnection = NULL) {
 		$this->databaseConnection = $databaseConnection ?: $GLOBALS['TYPO3_DB'];
 	}
 

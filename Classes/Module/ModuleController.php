@@ -564,7 +564,7 @@ class tx_singlesignon_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
 	}
 
 	/**
-	 * @return t3lib_DB
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
 	 */
 	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];

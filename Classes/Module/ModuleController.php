@@ -92,7 +92,7 @@ class tx_singlesignon_module1 extends t3lib_SCbase {
 
 		if (($this->id && $access) || ($this->getBackendUserAuthentication()->user['admin'] && !$this->id)) {
 			// Insert the Banner
-			$this->doc->form = '<a href="http://www.single-signon.com" target="_blank" title="www.single-signon.com"><span class="banner"></span></a><img src="/clear.gif" width="1" height="34" alt=""><form action="" method="POST">';
+			$this->doc->form = '<a href="http://www.single-signon.com" target="_blank" title="www.single-signon.com"><span class="banner"></span></a><img src="/clear.gif" width="1" height="34" alt=""><form action="' . htmlspecialchars(t3lib_BEfunc::getModuleUrl('tools_txsinglesignonM1')) . '" method="POST">';
 			// JavaScript
 			$this->doc->JScode = '
 					<link rel="stylesheet" type="text/css" href="../../mod1/single-signon.css" />
@@ -207,7 +207,7 @@ class tx_singlesignon_module1 extends t3lib_SCbase {
 		$row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
 		$sysfolder_id = intval($row['sysfolder_id']);
 
-		$this->content .= '<form action="index.php?SET[function]=' . htmlspecialchars($this->MOD_SETTINGS['function']) . '">' . chr(10);
+		$this->content .= '<form action="' . htmlspecialchars(t3lib_BEfunc::getModuleUrl('tools_txsinglesignonM1')) . '">' . chr(10);
 		$this->content .= '<input type="hidden" name="sysfolder_id" value="' . (int)$sysfolder_id . '">' . chr(10);
 		$this->content .= '<input type="hidden" name="mapping_id" value="' . (int)$mapping_id . '">' . chr(10);
 		$this->content .= '<input type="hidden" name="saveit" value="true">' . chr(10);
@@ -222,12 +222,12 @@ class tx_singlesignon_module1 extends t3lib_SCbase {
 		foreach ($this->userlist as $id => $name) {
 			$this->content .= '<input name="fe_uid"' . (int)$id . '" type="hidden" value="' . htmlspecialchars($name) . '" size="30">' . chr(10);
 		}
-		$this->content .= '<table><tr><td><form action="index.php?SET[function]=' . htmlspecialchars($this->MOD_SETTINGS['function']) . '">' . chr(10);
+		$this->content .= '<table><tr><td><form action="' . htmlspecialchars(t3lib_BEfunc::getModuleUrl('tools_txsinglesignonM1')) . '">' . chr(10);
 		$this->content .= '<input type="hidden" name="sysfolder_id" value="' . (int)$sysfolder_id . '">' . chr(10);
 		$this->content .= '<input type="hidden" name="mapping_id" value="' . (int)$mapping_id . '">' . chr(10);
 		$this->content .= '<input type="hidden" name="deleteit" value="true">' . chr(10);
 		$this->content .= '<input type="submit" value="' . htmlspecialchars($this->getLanguageService()->getLL('submit')) . '"></form></td><td>' . chr(10);
-		$this->content .= '<form action="index.php?SET[function]=1" method="POST">' . chr(10);
+		$this->content .= '<form action="' . htmlspecialchars(t3lib_BEfunc::getModuleUrl('tools_txsinglesignonM1')) . '" method="POST">' . chr(10);
 		$this->content .= '<input type="submit" value="' . htmlspecialchars($this->getLanguageService()->getLL('cancel')) . '">' . chr(10);
 		$this->content .= '</td></tr></table>';
 	}
@@ -247,11 +247,11 @@ class tx_singlesignon_module1 extends t3lib_SCbase {
 			$this->editTableProperties($mapping_id, 1);
 			$this->content .= $this->doc->section('Are you Sure?', '', 0, 1);
 
-			$this->content .= '<table><tr><td><form action="index.php?SET[function]=' . htmlspecialchars($this->MOD_SETTINGS['function']) . '">' . chr(10);
+			$this->content .= '<table><tr><td><form action="' . htmlspecialchars(t3lib_BEfunc::getModuleUrl('tools_txsinglesignonM1')) . '">' . chr(10);
 			$this->content .= '<input type="hidden" name="mapping_id" value="' . (int)$mapping_id . '">' . chr(10);
 			$this->content .= '<input type="hidden" name="deleteit" value="true">' . chr(10);
 			$this->content .= '<input type="submit" value="' . htmlspecialchars($this->getLanguageService()->getLL('submit')) . '"></form></td><td>' . chr(10);
-			$this->content .= '<form action="index.php?SET[function]=1" method="POST">' . chr(10);
+			$this->content .= '<form action="' . htmlspecialchars(t3lib_BEfunc::getModuleUrl('tools_txsinglesignonM1')) . '" method="POST">' . chr(10);
 			$this->content .= '<input type="submit" value="' . htmlspecialchars($this->getLanguageService()->getLL('cancel')) . '">' . chr(10);
 			$this->content .= '</form></td></tr></table>';
 		}
@@ -337,7 +337,7 @@ class tx_singlesignon_module1 extends t3lib_SCbase {
 			$this->content .= $this->doc->section('Error: No Sysfolder id', '', 0, 1);
 			return;
 		}
-		$this->content .= '<form action="index.php?SET[function]=' . htmlspecialchars($this->MOD_SETTINGS['function']) . '">' . chr(10);
+		$this->content .= '<form action="' . htmlspecialchars(t3lib_BEfunc::getModuleUrl('tools_txsinglesignonM1')) . '">' . chr(10);
 		$this->content .= '<input type="hidden" name="sysfolder_id" value="' . (int)$sysfolder_id . '">' . chr(10);
 		$this->content .= '<input type="hidden" name="mapping_id" value="' . (int)$mapping_id . '">' . chr(10);
 		$this->content .= '<input type="hidden" name="saveit" value="true">' . chr(10);
@@ -354,7 +354,7 @@ class tx_singlesignon_module1 extends t3lib_SCbase {
 		$maxUsersPerPage = $this->extConf['maxUsersPerPage'];
 
 		$this->content .= '<h3>';
-		$this->content .= $this->generate_pagination("index.php?SET[function]=" . (string)$this->MOD_SETTINGS['function'] . '&sysfolder_id=' . $sysfolder_id . '&mapping_id=' . $mapping_id, $numberofusers, $maxUsersPerPage, $offset);
+		$this->content .= $this->generate_pagination(t3lib_BEfunc::getModuleUrl('tools_txsinglesignonM1', array('sysfolder_id' => $sysfolder_id, 'mapping_id' => $mapping_id)), $numberofusers, $maxUsersPerPage, $offset);
 		$this->content .= '</h3>';
 
 		$this->content .= '<table>' . chr(10);
@@ -372,12 +372,12 @@ class tx_singlesignon_module1 extends t3lib_SCbase {
 			$tmp_num++;
 		}
 		$this->content .= '</table>' . chr(10);
-		$this->content .= '<table><tr><td><form action="index.php?SET[function]=' . htmlspecialchars($this->MOD_SETTINGS['function']) . '">' . chr(10);
+		$this->content .= '<table><tr><td><form action="' . htmlspecialchars(t3lib_BEfunc::getModuleUrl('tools_txsinglesignonM1')) . '">' . chr(10);
 		$this->content .= '<input type="hidden" name="sysfolder_id" value="' . (int)$sysfolder_id . '">' . chr(10);
 		$this->content .= '<input type="hidden" name="mapping_id" value="' . (int)$mapping_id . '">' . chr(10);
 		$this->content .= '<input type="hidden" name="deleteit" value="true">' . chr(10);
 		$this->content .= '<input type="submit" value="' . htmlspecialchars($this->getLanguageService()->getLL('submit')) . '"></form></td><td>' . chr(10);
-		$this->content .= '<form action="index.php?SET[function]=1" method="POST">' . chr(10);
+		$this->content .= '<form action="' . htmlspecialchars(t3lib_BEfunc::getModuleUrl('tools_txsinglesignonM1')) . '" method="POST">' . chr(10);
 		$this->content .= '<input type="submit" value="' . htmlspecialchars($this->getLanguageService()->getLL('cancel')) . '">' . chr(10);
 		$this->content .= '</form></td></tr></table>';
 	}
@@ -458,7 +458,7 @@ class tx_singlesignon_module1 extends t3lib_SCbase {
 		$content1 = '<table>';
 		for ($i = 0; $i < $menge; $i++) {
 			$row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
-			$ahref = '<a href="index.php?SET[function]=' . htmlspecialchars($this->MOD_SETTINGS['function'] . '&sysfolder_id=' . $row['uid']) . '" class="link1">' . chr(10);
+			$ahref = '<a href="' . htmlspecialchars(t3lib_BEfunc::getModuleUrl('tools_txsinglesignonM1', array('sysfolder_id' => $row['uid']))) . '" class="link1">' . chr(10);
 			$result1 = $this->getDatabaseConnection()->exec_SELECTquery('*', 'fe_users', 'pid=' . (int)$row['uid'] . ' AND deleted=\'0\'');
 			$num = $this->getDatabaseConnection()->sql_num_rows($result1);
 			$content1 .= '<tr>' . chr(10);
@@ -482,7 +482,7 @@ class tx_singlesignon_module1 extends t3lib_SCbase {
 		$content1 = '<table>';
 		for ($i = 0; $i < $menge; $i++) {
 			$row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
-			$ahref = '<a href="index.php?SET[function]=' . htmlspecialchars($this->MOD_SETTINGS['function'] . '&sysfolder_id=' . $row['sysfolder_id'] . '&mapping_id=' . $row['uid']) . '" class="link1">' . chr(10);
+			$ahref = '<a href="' . htmlspecialchars(t3lib_BEfunc::getModuleUrl('tools_txsinglesignonM1', array('sysfolder_id' => $row['sysfolder_id'], 'mapping_id' => $row['uid']))) . '" class="link1">' . chr(10);
 			$content1 .= '<tr class="box">' . chr(10);
 			$content1 .= '<td class="td1">' . $ahref . $this->getLanguageService()->getLL('mappingTable') . '</a></td><td class="td2">' . $ahref . htmlspecialchars($row['mapping_tablename']) . '</a></td>' . chr(10);
 			$content1 .= '<td class="td1">' . $ahref . $this->getLanguageService()->getLL('sysfolderid') . '</a></td><td class="td2">' . $ahref . (int)$row['sysfolder_id'] . '</a></td>' . chr(10);

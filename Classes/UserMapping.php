@@ -100,7 +100,7 @@ class tx_singlesignon_usermapping {
 	}
 
 	/**
-	 * @return language
+	 * @return \TYPO3\CMS\Lang\LanguageService
 	 */
 	protected function getLanguageService() {
 		return $GLOBALS['LANG'];

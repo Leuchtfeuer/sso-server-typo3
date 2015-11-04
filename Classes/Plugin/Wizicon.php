@@ -55,7 +55,7 @@ class tx_singlesignon_pi1_wizicon {
 	}
 
 	/**
-	 * @return language
+	 * @return \TYPO3\CMS\Lang\LanguageService
 	 */
 	protected function getLanguageService() {
 		return $GLOBALS['LANG'];

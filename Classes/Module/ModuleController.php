@@ -552,7 +552,7 @@ class tx_singlesignon_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
 	}
 
 	/**
-	 * @return language
+	 * @return \TYPO3\CMS\Lang\LanguageService
 	 */
 	protected function getLanguageService() {
 		return $GLOBALS['LANG'];

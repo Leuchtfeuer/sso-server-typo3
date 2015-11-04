@@ -27,7 +27,7 @@
  * The Main Class of this extension to Display the BE
  * @author  Dietrich Heise <typo3-ext@bitmotion.de>
  */
-class tx_singlesignon_module1 extends t3lib_SCbase {
+class tx_singlesignon_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	/**
 	 * @var template
 	 */

@@ -545,7 +545,7 @@ class tx_singlesignon_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
 	}
 
 	/**
-	 * @return t3lib_beUserAuth
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
 	 */
 	protected function getBackendUserAuthentication() {
 		return $GLOBALS['BE_USER'];

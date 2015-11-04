@@ -30,7 +30,7 @@
  * @author Dietrich Heise <typo3-ext@bitmotion.de>
  * @author Helmut Hummel (info@helhum.io)
  */
-class tx_singlesignon_pi1 extends tslib_pibase {
+class tx_singlesignon_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
 	/**
 	 * @var tslib_feUserAuth
@@ -93,11 +93,7 @@ class tx_singlesignon_pi1 extends tslib_pibase {
 	 * @param tx_singlesignon_usermapping $userMapping
 	 */
 	public function __construct(Tx_SingleSignon_Domain_Repository_SessionRepository $sessionRepository = NULL, tx_singlesignon_usermapping $userMapping = NULL) {
-		if (is_callable(array('parent', 'tslib_pibase'))) {
-			parent::tslib_pibase();
-		} elseif (is_callable(array('parent', '__construct'))) {
-			parent::__construct();
-		}
+		parent::__construct();
 		$this->sessionRepository = $sessionRepository ?: new Tx_SingleSignon_Domain_Repository_SessionRepository($GLOBALS['TYPO3_DB']);
 		$this->userMapping = $userMapping ?: new tx_singlesignon_usermapping();
 	}

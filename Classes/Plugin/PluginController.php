@@ -355,7 +355,7 @@ class tx_singlesignon_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
 		$userData = array();
 		$dataSources = $this->conf['userDataSources.'];
-		$dataSourcesKeys = t3lib_TStemplate::sortedKeyList($dataSources);
+		$dataSourcesKeys = \TYPO3\CMS\Core\TypoScript\TemplateService::sortedKeyList($dataSources);
 
 		foreach ($dataSourcesKeys as $key) {
 			$className = $dataSources[$key];

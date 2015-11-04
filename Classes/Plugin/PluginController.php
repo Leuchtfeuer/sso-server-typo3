@@ -501,7 +501,7 @@ class tx_singlesignon_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	 */
 	protected function addMetaRefreshToHtmlHeader() {
 		if (!empty($this->extConf['refreshLinkPage'])) {
-			$this->getTypoScriptFrontendController()->additionalHeaderData['tx_sso_meta_refresh'] = '<meta http-equiv="refresh" content="' . \TYPO3\CMS\Core\Utility\GeneralUtility::intInRange(self::$minimumLinkLifetime - 5, 5) . '; URL="' . htmlspecialchars($this->cObj->getUrlToCurrentLocation()) . '">';
+			$this->getTypoScriptFrontendController()->additionalHeaderData['tx_sso_meta_refresh'] = '<meta http-equiv="refresh" content="' . \TYPO3\CMS\Core\Utility\MathUtility::isIntegerInRange(self::$minimumLinkLifetime - 5, 5, 2000000000) . '; URL="' . htmlspecialchars($this->cObj->getUrlToCurrentLocation()) . '">';
 		}
 	}
 

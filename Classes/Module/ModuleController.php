@@ -108,19 +108,14 @@ class tx_singlesignon_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
 					';
 			$this->content .= $this->doc->startPage($this->getLanguageService()->getLL('title'));
 			$this->content .= $this->doc->header($this->getLanguageService()->getLL('title'));
-			$this->content .= $this->doc->spacer(5);
 			$this->content .= $this->doc->section('', $this->doc->funcMenu('', \TYPO3\CMS\Backend\Utility\BackendUtility::getFuncMenu($this->id, 'SET[function]', $this->MOD_SETTINGS['function'], $this->MOD_MENU['function'])));
 
 			// Render content:
 			$this->moduleContent();
-
-			$this->content .= $this->doc->spacer(10);
 		} else {
 			// If no access or if ID == zero
 			$this->content .= $this->doc->startPage($this->getLanguageService()->getLL('title'));
 			$this->content .= $this->doc->header($this->getLanguageService()->getLL('title'));
-			$this->content .= $this->doc->spacer(5);
-			$this->content .= $this->doc->spacer(10);
 		}
 	}
 

@@ -59,7 +59,7 @@ class tx_singlesignon_module1 extends t3lib_SCbase {
 	protected $userlist = array();
 
 	public function __construct() {
-		$this->doc = t3lib_div::makeInstance('mediumDoc');
+		$this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('mediumDoc');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['single_signon']);
 	}
@@ -149,10 +149,10 @@ class tx_singlesignon_module1 extends t3lib_SCbase {
 			case 6:
 				// Create new Mapping
 				$this->content .= $this->doc->section($this->getLanguageService()->getLL('function6'), '', 0, 1);
-				if (t3lib_div::_GP('sysfolder_id') && t3lib_div::_GP('saveit')) {
+				if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('sysfolder_id') && \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('saveit')) {
 					$this->saveMappingTable();
 					$this->content .= $this->doc->section($this->getLanguageService()->getLL('savedTitle'), $this->getLanguageService()->getLL('savedText'), 1, 1);
-				} elseif (t3lib_div::_GP('sysfolder_id')) {
+				} elseif (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('sysfolder_id')) {
 					$this->editMappingTable();
 				} else {
 					$this->selectUserFolder();
@@ -161,11 +161,11 @@ class tx_singlesignon_module1 extends t3lib_SCbase {
 			case 2:
 				// Edit Mapping
 				$this->content .= $this->doc->section($this->getLanguageService()->getLL('function2'), '', 0, 1);
-				if (t3lib_div::_GP('sysfolder_id') && t3lib_div::_GP('mapping_id') && t3lib_div::_GP('saveit')) {
+				if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('sysfolder_id') && \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('mapping_id') && \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('saveit')) {
 					$this->saveMappingTable();
 					$this->content .= $this->doc->section($this->getLanguageService()->getLL('savedTitle'), $this->getLanguageService()->getLL('editText'), 1, 1);
 					$this->editMappingTable();
-				} elseif (t3lib_div::_GP('sysfolder_id') && t3lib_div::_GP('mapping_id')) {
+				} elseif (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('sysfolder_id') && \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('mapping_id')) {
 					$this->editMappingTable();
 				} else {
 					$this->selectMappingTable();
@@ -174,7 +174,7 @@ class tx_singlesignon_module1 extends t3lib_SCbase {
 			case 4:
 				// Delete Mapping
 				$this->content .= $this->doc->section($this->getLanguageService()->getLL('function4'), '', 0, 1);
-				if (t3lib_div::_GP('mapping_id')) {
+				if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('mapping_id')) {
 					$this->deleteMappingTable();
 				} else {
 					$this->selectMappingTable();
@@ -183,10 +183,10 @@ class tx_singlesignon_module1 extends t3lib_SCbase {
 			case 5:
 				// Copy Mapping
 				$this->content .= $this->doc->section($this->getLanguageService()->getLL('function5'), '', 0, 1);
-				if (t3lib_div::_GP('sysfolder_id') && t3lib_div::_GP('saveit')) {
+				if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('sysfolder_id') && \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('saveit')) {
 					$this->saveMappingTable();
 					$this->content .= $this->doc->section('Saved', 'Done.', 0, 1);
-				} elseif (t3lib_div::_GP('mapping_id')) {
+				} elseif (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('mapping_id')) {
 					$this->copyMappingTable();
 				} else {
 					$this->selectMappingTable();
@@ -201,7 +201,7 @@ class tx_singlesignon_module1 extends t3lib_SCbase {
 	 * @return void
 	 */
 	function copyMappingTable() {
-		$old_mapping_id = (int)t3lib_div::_GP('mapping_id');
+		$old_mapping_id = (int)\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('mapping_id');
 		$mapping_id = 0;
 		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', $this->table_properties, 'uid=' . (int)$old_mapping_id);
 		$row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
@@ -238,8 +238,8 @@ class tx_singlesignon_module1 extends t3lib_SCbase {
 	 * @return void
 	 */
 	function deleteMappingTable() {
-		$mapping_id = intval(t3lib_div::_GP('mapping_id'));
-		if (t3lib_div::_GP('deleteit')) {
+		$mapping_id = intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('mapping_id'));
+		if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('deleteit')) {
 			$this->getDatabaseConnection()->exec_DELETEquery($this->table_properties, 'uid=' . (int)$mapping_id);
 			$this->getDatabaseConnection()->exec_DELETEquery($this->table_usermap, 'mapping_id=' . (int)$mapping_id);
 			$this->content .= $this->doc->section($this->getLanguageService()->getLL('deleteTitle'), htmlspecialchars($this->getLanguageService()->getLL('deleteText')), 1, 1);
@@ -258,21 +258,21 @@ class tx_singlesignon_module1 extends t3lib_SCbase {
 	}
 
 	/**
-	 * Saves the Mapping Table (from t3lib_div::_GP('offset')
-	 * to t3lib_div::_GP('offset')+$this->extConf['maxUsersPerPage']
+	 * Saves the Mapping Table (from \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('offset')
+	 * to \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('offset')+$this->extConf['maxUsersPerPage']
 	 * Only the actualy shown users will be saved
 	 *
 	 * @return void
 	 */
 	function saveMappingTable() {
-		$mapping_id = (int)t3lib_div::_GP('mapping_id');
-		$sysfolder_id = (int)t3lib_div::_GP('sysfolder_id');
-		$mapping_tablename = t3lib_div::_GP('mapping_tablename', $this->table_properties);
-		$mapping_defaultmapping = t3lib_div::_GP('mapping_defaultmapping');
-		$offset = (int)t3lib_div::_GP('offset');
+		$mapping_id = (int)\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('mapping_id');
+		$sysfolder_id = (int)\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('sysfolder_id');
+		$mapping_tablename = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('mapping_tablename', $this->table_properties);
+		$mapping_defaultmapping = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('mapping_defaultmapping');
+		$offset = (int)\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('offset');
 		$maxUsersPerPage = $this->extConf['maxUsersPerPage'];
 
-		$allowall = intval((bool)t3lib_div::_GP('allowall'));
+		$allowall = intval((bool)\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('allowall'));
 
 		// Save Table Properties (name and default mapping)
 		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', $this->table_properties, 'uid=' . (int)$mapping_id);
@@ -303,7 +303,7 @@ class tx_singlesignon_module1 extends t3lib_SCbase {
 			if (($i >= $offset) && ($i < $offset + $maxUsersPerPage)) {
 				$result2 = $this->getDatabaseConnection()->exec_SELECTquery('*', $this->table_usermap, 'mapping_id=' . (int)$mapping_id . ' AND fe_uid=' . (int)$row['uid']);
 				$feuid = 'fe_uid' . $row['uid'];
-				$username = t3lib_div::_GP($feuid);
+				$username = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP($feuid);
 				if ($this->getDatabaseConnection()->sql_num_rows($result2) == 1) {
 					// Update DB
 					$values = array('mapping_username' => $username,);
@@ -327,9 +327,9 @@ class tx_singlesignon_module1 extends t3lib_SCbase {
 	 * @return void
 	 */
 	function editMappingTable() {
-		$sysfolder_id = (int)t3lib_div::_GP('sysfolder_id');
-		$mapping_id = (int)t3lib_div::_GP('mapping_id');
-		$offset = (int)t3lib_div::_GP('offset');
+		$sysfolder_id = (int)\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('sysfolder_id');
+		$mapping_id = (int)\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('mapping_id');
+		$offset = (int)\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('offset');
 		if (!isset($mapping_id)) {
 			$mapping_id = 0;
 		}

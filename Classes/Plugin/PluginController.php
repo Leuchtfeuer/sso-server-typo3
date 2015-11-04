@@ -181,7 +181,7 @@ class tx_singlesignon_pi1 extends tslib_pibase {
 	 * @throws Exception
 	 */
 	protected function checkSsl() {
-		if ($this->conf['forcessl'] && !t3lib_div::getIndpEnv('TYPO3_SSL')) {
+		if ($this->conf['forcessl'] && !\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_SSL')) {
 			// no SSL page but required!
 			throw new Exception('no_ssl', 1439646265);
 		}
@@ -366,7 +366,7 @@ class tx_singlesignon_pi1 extends tslib_pibase {
 			if (!class_exists($className)) {
 				throw new \UnexpectedValueException('Data source class name "' . $className . '" does not exist!',  1441731922);
 			}
-			$dataSource = t3lib_div::makeInstance($className);
+			$dataSource = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($className);
 			if (!$dataSource instanceof Tx_SingleSignon_UserData_FrontendUserDataSource) {
 				throw new \UnexpectedValueException(
 					'Data source with class name "' . $className . '" ' .
@@ -483,7 +483,7 @@ class tx_singlesignon_pi1 extends tslib_pibase {
 	 * @param string $appLogonUrl
 	 */
 	protected function addSsoAppUrlInNewWindowJavaScriptToHtmlHeader($appLogonUrl) {
-		$this->getTypoScriptFrontendController()->additionalHeaderData['Window_onload_' . $this->conf['appId']] = t3lib_div::wrapJS('window.open(' . t3lib_div::quoteJSvalue($appLogonUrl) . ');');
+		$this->getTypoScriptFrontendController()->additionalHeaderData['Window_onload_' . $this->conf['appId']] = \TYPO3\CMS\Core\Utility\GeneralUtility::wrapJS('window.open(' . \TYPO3\CMS\Core\Utility\GeneralUtility::quoteJSvalue($appLogonUrl) . ');');
 	}
 
 	/**
@@ -505,7 +505,7 @@ class tx_singlesignon_pi1 extends tslib_pibase {
 	 */
 	protected function addMetaRefreshToHtmlHeader() {
 		if (!empty($this->extConf['refreshLinkPage'])) {
-			$this->getTypoScriptFrontendController()->additionalHeaderData['tx_sso_meta_refresh'] = '<meta http-equiv="refresh" content="' . t3lib_div::intInRange(self::$minimumLinkLifetime - 5, 5) . '; URL="' . htmlspecialchars($this->cObj->getUrlToCurrentLocation()) . '">';
+			$this->getTypoScriptFrontendController()->additionalHeaderData['tx_sso_meta_refresh'] = '<meta http-equiv="refresh" content="' . \TYPO3\CMS\Core\Utility\GeneralUtility::intInRange(self::$minimumLinkLifetime - 5, 5) . '; URL="' . htmlspecialchars($this->cObj->getUrlToCurrentLocation()) . '">';
 		}
 	}
 
@@ -528,10 +528,10 @@ class tx_singlesignon_pi1 extends tslib_pibase {
 	protected function generateSsoAppUrl($ssoData) {
 		# encode the signature in hex format
 		$ssoData['signature'] = bin2hex($this->getSslSignatureForString($this->implodeSsoData($ssoData)));
-		$ssoData['returnTo'] = $this->validateReturnToUrl(t3lib_div::_GET('returnTo'));
+		$ssoData['returnTo'] = $this->validateReturnToUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::_GET('returnTo'));
 
 		# Compose the final URL
-		$finalUrl = $this->conf['targeturl'] . '?' . t3lib_div::implodeArrayForUrl('', $ssoData, '', FALSE, TRUE);
+		$finalUrl = $this->conf['targeturl'] . '?' . \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('', $ssoData, '', FALSE, TRUE);
 		return $finalUrl;
 	}
 

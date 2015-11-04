@@ -70,7 +70,7 @@ class Tx_SingleSignon_Domain_Model_Session {
 	public function getValues() {
 		$values = array();
 		foreach (get_object_vars($this) as $name => $value) {
-			$values[t3lib_div::camelCaseToLowerCaseUnderscored($name)] = $value;
+			$values[\TYPO3\CMS\Core\Utility\GeneralUtility::camelCaseToLowerCaseUnderscored($name)] = $value;
 		}
 
 		return $values;

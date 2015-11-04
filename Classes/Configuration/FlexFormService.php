@@ -32,7 +32,7 @@ class Tx_SingleSignon_Configuration_FlexFormArrayConverter {
 	 */
 	public static function convertFlexFormContentToArray($flexFormContent, $languagePointer = 'lDEF', $valuePointer = 'vDEF') {
 		$settings = array();
-		$flexFormArray = \t3lib_div::xml2array($flexFormContent);
+		$flexFormArray = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($flexFormContent);
 		$flexFormArray = isset($flexFormArray['data']) ? $flexFormArray['data'] : array();
 		foreach (array_values($flexFormArray) as $languages) {
 			if (!is_array($languages[$languagePointer])) {

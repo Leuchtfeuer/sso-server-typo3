@@ -251,7 +251,7 @@ class tx_singlesignon_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 			break;
 			// Open here (HTTP redirect) (works well without frames) (1)
 			case 1:
-				t3lib_utility_Http::redirect($appLogonUrl);
+				\TYPO3\CMS\Core\Utility\HttpUtility::redirect($appLogonUrl);
 			break;
 			// Display Link in Content (2)
 			case 2:

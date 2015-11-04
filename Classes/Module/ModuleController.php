@@ -59,7 +59,7 @@ class tx_singlesignon_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
 	protected $userlist = array();
 
 	public function __construct() {
-		$this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('mediumDoc');
+		$this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['single_signon']);
 	}

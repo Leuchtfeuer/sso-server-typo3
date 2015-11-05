@@ -24,6 +24,7 @@ namespace Bitmotion\SingleSignon\Plugin;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Bitmotion\SingleSignon\Domain\Repository\SessionRepository;
 use Bitmotion\SingleSignon\UserMapping;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
@@ -95,17 +96,17 @@ class PluginController extends AbstractPlugin {
 	protected $userMapping;
 
 	/**
-	 * @var \Tx_SingleSignon_Domain_Repository_SessionRepository
+	 * @var SessionRepository
 	 */
 	protected $sessionRepository;
 
 	/**
-	 * @param \Tx_SingleSignon_Domain_Repository_SessionRepository $sessionRepository
+	 * @param SessionRepository $sessionRepository
 	 * @param UserMapping $userMapping
 	 */
-	public function __construct(\Tx_SingleSignon_Domain_Repository_SessionRepository $sessionRepository = NULL, UserMapping $userMapping = NULL) {
+	public function __construct(SessionRepository $sessionRepository = NULL, UserMapping $userMapping = NULL) {
 		parent::__construct();
-		$this->sessionRepository = $sessionRepository ?: new \Tx_SingleSignon_Domain_Repository_SessionRepository($GLOBALS['TYPO3_DB']);
+		$this->sessionRepository = $sessionRepository ?: new SessionRepository($GLOBALS['TYPO3_DB']);
 		$this->userMapping = $userMapping ?: new UserMapping();
 	}
 

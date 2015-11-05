@@ -24,6 +24,7 @@ namespace Bitmotion\SingleSignon\Plugin;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Bitmotion\SingleSignon\Configuration\FlexFormService;
 use Bitmotion\SingleSignon\Domain\Repository\SessionRepository;
 use Bitmotion\SingleSignon\UserMapping;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
@@ -123,7 +124,7 @@ class PluginController extends AbstractPlugin {
 			return $this->pi_wrapInBaseClass($this->pi_getLL('no_usermapping'));
 		}
 
-		$this->conf = array_replace_recursive($conf, \Tx_SingleSignon_Configuration_FlexFormArrayConverter::convertFlexFormContentToArray($this->cObj->data['pi_flexform']));
+		$this->conf = array_replace_recursive($conf, FlexFormService::convertFlexFormContentToArray($this->cObj->data['pi_flexform']));
 		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['single_signon']);
 
 		$this->pi_setPiVarDefaults();

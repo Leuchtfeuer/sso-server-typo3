@@ -1,4 +1,5 @@
 <?php
+namespace Bitmotion\SingleSignon\Configuration;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -13,10 +14,12 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Utilities to process flexForms
  */
-class Tx_SingleSignon_Configuration_FlexFormArrayConverter {
+class FlexFormService {
 
 	/**
 	 * Parses the flexForm content and converts it to an array
@@ -32,7 +35,7 @@ class Tx_SingleSignon_Configuration_FlexFormArrayConverter {
 	 */
 	public static function convertFlexFormContentToArray($flexFormContent, $languagePointer = 'lDEF', $valuePointer = 'vDEF') {
 		$settings = array();
-		$flexFormArray = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($flexFormContent);
+		$flexFormArray = GeneralUtility::xml2array($flexFormContent);
 		$flexFormArray = isset($flexFormArray['data']) ? $flexFormArray['data'] : array();
 		foreach (array_values($flexFormArray) as $languages) {
 			if (!is_array($languages[$languagePointer])) {

@@ -1,4 +1,6 @@
 <?php
+namespace Bitmotion\SingleSignon\Module;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -22,19 +24,20 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Backend\Module\BaseScriptClass;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Module 'mapping' for the 'usermapping' extension.
  * The Main Class of this extension to Display the BE
  * @author  Dietrich Heise <typo3-ext@bitmotion.de>
  */
-class tx_singlesignon_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
-	/**
-	 * @var template
-	 */
-	public $doc;
+class ModuleController extends BaseScriptClass {
 
 	/**
-	 * @var
+	 * @var array
 	 */
 	protected $pageinfo;
 
@@ -59,7 +62,7 @@ class tx_singlesignon_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
 	protected $userlist = array();
 
 	public function __construct() {
-		$this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
+		$this->doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['single_signon']);
 	}
@@ -87,12 +90,12 @@ class tx_singlesignon_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
 	function main() {
 		// Access check!
 		// The page will show only if there is a valid page and if this page may be viewed by the user
-		$this->pageinfo = \TYPO3\CMS\Backend\Utility\BackendUtility::readPageAccess($this->id, $this->perms_clause);
+		$this->pageinfo = BackendUtility::readPageAccess($this->id, $this->perms_clause);
 		$access = is_array($this->pageinfo) ? 1 : 0;
 
 		if (($this->id && $access) || ($this->getBackendUserAuthentication()->user['admin'] && !$this->id)) {
 			// Insert the Banner
-			$this->doc->form = '<a href="http://www.single-signon.com" target="_blank" title="www.single-signon.com"><span class="banner"></span></a><img src="/clear.gif" width="1" height="34" alt=""><form action="' . htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '" method="POST">';
+			$this->doc->form = '<a href="http://www.single-signon.com" target="_blank" title="www.single-signon.com"><span class="banner"></span></a><img src="/clear.gif" width="1" height="34" alt=""><form action="' . htmlspecialchars(BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '" method="POST">';
 			// JavaScript
 			$this->doc->JScode = '
 					<link rel="stylesheet" type="text/css" href="../../mod1/single-signon.css" />
@@ -108,7 +111,7 @@ class tx_singlesignon_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
 					';
 			$this->content .= $this->doc->startPage($this->getLanguageService()->getLL('title'));
 			$this->content .= $this->doc->header($this->getLanguageService()->getLL('title'));
-			$this->content .= $this->doc->section('', $this->doc->funcMenu('', \TYPO3\CMS\Backend\Utility\BackendUtility::getFuncMenu($this->id, 'SET[function]', $this->MOD_SETTINGS['function'], $this->MOD_MENU['function'])));
+			$this->content .= $this->doc->section('', $this->doc->funcMenu('', BackendUtility::getFuncMenu($this->id, 'SET[function]', $this->MOD_SETTINGS['function'], $this->MOD_MENU['function'])));
 
 			// Render content:
 			$this->moduleContent();
@@ -144,10 +147,10 @@ class tx_singlesignon_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
 			case 6:
 				// Create new Mapping
 				$this->content .= $this->doc->section($this->getLanguageService()->getLL('function6'), '', 0, 1);
-				if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('sysfolder_id') && \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('saveit')) {
+				if (GeneralUtility::_GP('sysfolder_id') && GeneralUtility::_GP('saveit')) {
 					$this->saveMappingTable();
 					$this->content .= $this->doc->section($this->getLanguageService()->getLL('savedTitle'), $this->getLanguageService()->getLL('savedText'), 1, 1);
-				} elseif (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('sysfolder_id')) {
+				} elseif (GeneralUtility::_GP('sysfolder_id')) {
 					$this->editMappingTable();
 				} else {
 					$this->selectUserFolder();
@@ -156,11 +159,11 @@ class tx_singlesignon_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
 			case 2:
 				// Edit Mapping
 				$this->content .= $this->doc->section($this->getLanguageService()->getLL('function2'), '', 0, 1);
-				if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('sysfolder_id') && \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('mapping_id') && \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('saveit')) {
+				if (GeneralUtility::_GP('sysfolder_id') && GeneralUtility::_GP('mapping_id') && GeneralUtility::_GP('saveit')) {
 					$this->saveMappingTable();
 					$this->content .= $this->doc->section($this->getLanguageService()->getLL('savedTitle'), $this->getLanguageService()->getLL('editText'), 1, 1);
 					$this->editMappingTable();
-				} elseif (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('sysfolder_id') && \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('mapping_id')) {
+				} elseif (GeneralUtility::_GP('sysfolder_id') && GeneralUtility::_GP('mapping_id')) {
 					$this->editMappingTable();
 				} else {
 					$this->selectMappingTable();
@@ -169,7 +172,7 @@ class tx_singlesignon_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
 			case 4:
 				// Delete Mapping
 				$this->content .= $this->doc->section($this->getLanguageService()->getLL('function4'), '', 0, 1);
-				if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('mapping_id')) {
+				if (GeneralUtility::_GP('mapping_id')) {
 					$this->deleteMappingTable();
 				} else {
 					$this->selectMappingTable();
@@ -178,10 +181,10 @@ class tx_singlesignon_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
 			case 5:
 				// Copy Mapping
 				$this->content .= $this->doc->section($this->getLanguageService()->getLL('function5'), '', 0, 1);
-				if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('sysfolder_id') && \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('saveit')) {
+				if (GeneralUtility::_GP('sysfolder_id') && GeneralUtility::_GP('saveit')) {
 					$this->saveMappingTable();
 					$this->content .= $this->doc->section('Saved', 'Done.', 0, 1);
-				} elseif (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('mapping_id')) {
+				} elseif (GeneralUtility::_GP('mapping_id')) {
 					$this->copyMappingTable();
 				} else {
 					$this->selectMappingTable();
@@ -196,13 +199,13 @@ class tx_singlesignon_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
 	 * @return void
 	 */
 	function copyMappingTable() {
-		$old_mapping_id = (int)\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('mapping_id');
+		$old_mapping_id = (int)GeneralUtility::_GP('mapping_id');
 		$mapping_id = 0;
 		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', $this->table_properties, 'uid=' . (int)$old_mapping_id);
 		$row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
 		$sysfolder_id = intval($row['sysfolder_id']);
 
-		$this->content .= '<form action="' . htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '">' . chr(10);
+		$this->content .= '<form action="' . htmlspecialchars(BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '">' . chr(10);
 		$this->content .= '<input type="hidden" name="sysfolder_id" value="' . (int)$sysfolder_id . '">' . chr(10);
 		$this->content .= '<input type="hidden" name="mapping_id" value="' . (int)$mapping_id . '">' . chr(10);
 		$this->content .= '<input type="hidden" name="saveit" value="true">' . chr(10);
@@ -217,12 +220,12 @@ class tx_singlesignon_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
 		foreach ($this->userlist as $id => $name) {
 			$this->content .= '<input name="fe_uid"' . (int)$id . '" type="hidden" value="' . htmlspecialchars($name) . '" size="30">' . chr(10);
 		}
-		$this->content .= '<table><tr><td><form action="' . htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '">' . chr(10);
+		$this->content .= '<table><tr><td><form action="' . htmlspecialchars(BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '">' . chr(10);
 		$this->content .= '<input type="hidden" name="sysfolder_id" value="' . (int)$sysfolder_id . '">' . chr(10);
 		$this->content .= '<input type="hidden" name="mapping_id" value="' . (int)$mapping_id . '">' . chr(10);
 		$this->content .= '<input type="hidden" name="deleteit" value="true">' . chr(10);
 		$this->content .= '<input type="submit" value="' . htmlspecialchars($this->getLanguageService()->getLL('submit')) . '"></form></td><td>' . chr(10);
-		$this->content .= '<form action="' . htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '" method="POST">' . chr(10);
+		$this->content .= '<form action="' . htmlspecialchars(BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '" method="POST">' . chr(10);
 		$this->content .= '<input type="submit" value="' . htmlspecialchars($this->getLanguageService()->getLL('cancel')) . '">' . chr(10);
 		$this->content .= '</td></tr></table>';
 	}
@@ -233,8 +236,8 @@ class tx_singlesignon_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
 	 * @return void
 	 */
 	function deleteMappingTable() {
-		$mapping_id = intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('mapping_id'));
-		if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('deleteit')) {
+		$mapping_id = intval(GeneralUtility::_GP('mapping_id'));
+		if (GeneralUtility::_GP('deleteit')) {
 			$this->getDatabaseConnection()->exec_DELETEquery($this->table_properties, 'uid=' . (int)$mapping_id);
 			$this->getDatabaseConnection()->exec_DELETEquery($this->table_usermap, 'mapping_id=' . (int)$mapping_id);
 			$this->content .= $this->doc->section($this->getLanguageService()->getLL('deleteTitle'), htmlspecialchars($this->getLanguageService()->getLL('deleteText')), 1, 1);
@@ -242,32 +245,32 @@ class tx_singlesignon_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
 			$this->editTableProperties($mapping_id, 1);
 			$this->content .= $this->doc->section('Are you Sure?', '', 0, 1);
 
-			$this->content .= '<table><tr><td><form action="' . htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '">' . chr(10);
+			$this->content .= '<table><tr><td><form action="' . htmlspecialchars(BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '">' . chr(10);
 			$this->content .= '<input type="hidden" name="mapping_id" value="' . (int)$mapping_id . '">' . chr(10);
 			$this->content .= '<input type="hidden" name="deleteit" value="true">' . chr(10);
 			$this->content .= '<input type="submit" value="' . htmlspecialchars($this->getLanguageService()->getLL('submit')) . '"></form></td><td>' . chr(10);
-			$this->content .= '<form action="' . htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '" method="POST">' . chr(10);
+			$this->content .= '<form action="' . htmlspecialchars(BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '" method="POST">' . chr(10);
 			$this->content .= '<input type="submit" value="' . htmlspecialchars($this->getLanguageService()->getLL('cancel')) . '">' . chr(10);
 			$this->content .= '</form></td></tr></table>';
 		}
 	}
 
 	/**
-	 * Saves the Mapping Table (from \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('offset')
-	 * to \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('offset')+$this->extConf['maxUsersPerPage']
+	 * Saves the Mapping Table (from GeneralUtility::_GP('offset')
+	 * to GeneralUtility::_GP('offset')+$this->extConf['maxUsersPerPage']
 	 * Only the actualy shown users will be saved
 	 *
 	 * @return void
 	 */
 	function saveMappingTable() {
-		$mapping_id = (int)\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('mapping_id');
-		$sysfolder_id = (int)\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('sysfolder_id');
-		$mapping_tablename = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('mapping_tablename', $this->table_properties);
-		$mapping_defaultmapping = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('mapping_defaultmapping');
-		$offset = (int)\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('offset');
+		$mapping_id = (int)GeneralUtility::_GP('mapping_id');
+		$sysfolder_id = (int)GeneralUtility::_GP('sysfolder_id');
+		$mapping_tablename = GeneralUtility::_GP('mapping_tablename', $this->table_properties);
+		$mapping_defaultmapping = GeneralUtility::_GP('mapping_defaultmapping');
+		$offset = (int)GeneralUtility::_GP('offset');
 		$maxUsersPerPage = $this->extConf['maxUsersPerPage'];
 
-		$allowall = intval((bool)\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('allowall'));
+		$allowall = intval((bool)GeneralUtility::_GP('allowall'));
 
 		// Save Table Properties (name and default mapping)
 		$result = $this->getDatabaseConnection()->exec_SELECTquery('*', $this->table_properties, 'uid=' . (int)$mapping_id);
@@ -298,7 +301,7 @@ class tx_singlesignon_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
 			if (($i >= $offset) && ($i < $offset + $maxUsersPerPage)) {
 				$result2 = $this->getDatabaseConnection()->exec_SELECTquery('*', $this->table_usermap, 'mapping_id=' . (int)$mapping_id . ' AND fe_uid=' . (int)$row['uid']);
 				$feuid = 'fe_uid' . $row['uid'];
-				$username = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP($feuid);
+				$username = GeneralUtility::_GP($feuid);
 				if ($this->getDatabaseConnection()->sql_num_rows($result2) == 1) {
 					// Update DB
 					$values = array('mapping_username' => $username,);
@@ -322,9 +325,9 @@ class tx_singlesignon_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
 	 * @return void
 	 */
 	function editMappingTable() {
-		$sysfolder_id = (int)\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('sysfolder_id');
-		$mapping_id = (int)\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('mapping_id');
-		$offset = (int)\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('offset');
+		$sysfolder_id = (int)GeneralUtility::_GP('sysfolder_id');
+		$mapping_id = (int)GeneralUtility::_GP('mapping_id');
+		$offset = (int)GeneralUtility::_GP('offset');
 		if (!isset($mapping_id)) {
 			$mapping_id = 0;
 		}
@@ -332,7 +335,7 @@ class tx_singlesignon_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
 			$this->content .= $this->doc->section('Error: No Sysfolder id', '', 0, 1);
 			return;
 		}
-		$this->content .= '<form action="' . htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '">' . chr(10);
+		$this->content .= '<form action="' . htmlspecialchars(BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '">' . chr(10);
 		$this->content .= '<input type="hidden" name="sysfolder_id" value="' . (int)$sysfolder_id . '">' . chr(10);
 		$this->content .= '<input type="hidden" name="mapping_id" value="' . (int)$mapping_id . '">' . chr(10);
 		$this->content .= '<input type="hidden" name="saveit" value="true">' . chr(10);
@@ -349,7 +352,7 @@ class tx_singlesignon_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
 		$maxUsersPerPage = $this->extConf['maxUsersPerPage'];
 
 		$this->content .= '<h3>';
-		$this->content .= $this->generate_pagination(\TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('tools_txsinglesignonM1', array('sysfolder_id' => $sysfolder_id, 'mapping_id' => $mapping_id)), $numberofusers, $maxUsersPerPage, $offset);
+		$this->content .= $this->generate_pagination(BackendUtility::getModuleUrl('tools_txsinglesignonM1', array('sysfolder_id' => $sysfolder_id, 'mapping_id' => $mapping_id)), $numberofusers, $maxUsersPerPage, $offset);
 		$this->content .= '</h3>';
 
 		$this->content .= '<table>' . chr(10);
@@ -367,12 +370,12 @@ class tx_singlesignon_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
 			$tmp_num++;
 		}
 		$this->content .= '</table>' . chr(10);
-		$this->content .= '<table><tr><td><form action="' . htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '">' . chr(10);
+		$this->content .= '<table><tr><td><form action="' . htmlspecialchars(BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '">' . chr(10);
 		$this->content .= '<input type="hidden" name="sysfolder_id" value="' . (int)$sysfolder_id . '">' . chr(10);
 		$this->content .= '<input type="hidden" name="mapping_id" value="' . (int)$mapping_id . '">' . chr(10);
 		$this->content .= '<input type="hidden" name="deleteit" value="true">' . chr(10);
 		$this->content .= '<input type="submit" value="' . htmlspecialchars($this->getLanguageService()->getLL('submit')) . '"></form></td><td>' . chr(10);
-		$this->content .= '<form action="' . htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '" method="POST">' . chr(10);
+		$this->content .= '<form action="' . htmlspecialchars(BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '" method="POST">' . chr(10);
 		$this->content .= '<input type="submit" value="' . htmlspecialchars($this->getLanguageService()->getLL('cancel')) . '">' . chr(10);
 		$this->content .= '</form></td></tr></table>';
 	}
@@ -453,7 +456,7 @@ class tx_singlesignon_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
 		$content1 = '<table>';
 		for ($i = 0; $i < $menge; $i++) {
 			$row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
-			$ahref = '<a href="' . htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('tools_txsinglesignonM1', array('sysfolder_id' => $row['uid']))) . '" class="link1">' . chr(10);
+			$ahref = '<a href="' . htmlspecialchars(BackendUtility::getModuleUrl('tools_txsinglesignonM1', array('sysfolder_id' => $row['uid']))) . '" class="link1">' . chr(10);
 			$result1 = $this->getDatabaseConnection()->exec_SELECTquery('*', 'fe_users', 'pid=' . (int)$row['uid'] . ' AND deleted=\'0\'');
 			$num = $this->getDatabaseConnection()->sql_num_rows($result1);
 			$content1 .= '<tr>' . chr(10);
@@ -477,7 +480,7 @@ class tx_singlesignon_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
 		$content1 = '<table>';
 		for ($i = 0; $i < $menge; $i++) {
 			$row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
-			$ahref = '<a href="' . htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('tools_txsinglesignonM1', array('sysfolder_id' => $row['sysfolder_id'], 'mapping_id' => $row['uid']))) . '" class="link1">' . chr(10);
+			$ahref = '<a href="' . htmlspecialchars(BackendUtility::getModuleUrl('tools_txsinglesignonM1', array('sysfolder_id' => $row['sysfolder_id'], 'mapping_id' => $row['uid']))) . '" class="link1">' . chr(10);
 			$content1 .= '<tr class="box">' . chr(10);
 			$content1 .= '<td class="td1">' . $ahref . $this->getLanguageService()->getLL('mappingTable') . '</a></td><td class="td2">' . $ahref . htmlspecialchars($row['mapping_tablename']) . '</a></td>' . chr(10);
 			$content1 .= '<td class="td1">' . $ahref . $this->getLanguageService()->getLL('sysfolderid') . '</a></td><td class="td2">' . $ahref . (int)$row['sysfolder_id'] . '</a></td>' . chr(10);
@@ -559,7 +562,7 @@ class tx_singlesignon_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass 
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 * @return DatabaseConnection
 	 */
 	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];

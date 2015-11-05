@@ -27,6 +27,7 @@ namespace Bitmotion\SingleSignon\Plugin;
 use Bitmotion\SingleSignon\Configuration\FlexFormService;
 use Bitmotion\SingleSignon\Domain\Model\Session;
 use Bitmotion\SingleSignon\Domain\Repository\SessionRepository;
+use Bitmotion\SingleSignon\UserData\FrontendUserDataSource;
 use Bitmotion\SingleSignon\UserMapping;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
@@ -377,10 +378,10 @@ class PluginController extends AbstractPlugin {
 				throw new \UnexpectedValueException('Data source class name "' . $className . '" does not exist!',  1441731922);
 			}
 			$dataSource = GeneralUtility::makeInstance($className);
-			if (!$dataSource instanceof \Tx_SingleSignon_UserData_FrontendUserDataSource) {
+			if (!$dataSource instanceof FrontendUserDataSource) {
 				throw new \UnexpectedValueException(
 					'Data source with class name "' . $className . '" ' .
-					'must implement interface "Tx_SingleSignon_UserData_FrontendUserDataSource"',
+					'must implement interface "Bitmotion\SingleSignon\UserData\FrontendUserDataSource"',
 					1441731967
 				);
 			}

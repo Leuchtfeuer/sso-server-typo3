@@ -1,4 +1,5 @@
 <?php
+namespace Bitmotion\SingleSignon\UserData;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -13,10 +14,13 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+
 /**
  * Fetches the user data from the frontend user record of the currently logged in user
  */
-class Tx_SingleSignon_UserData_FrontendUserDataSource implements Tx_SingleSignon_UserData_UserDataSourceInterface {
+class FrontendUserDataSource implements \Tx_SingleSignon_UserData_UserDataSourceInterface {
 
 	/**
 	 * @param array $preFetchedUserData
@@ -47,14 +51,14 @@ class Tx_SingleSignon_UserData_FrontendUserDataSource implements Tx_SingleSignon
 
 
 	/**
-	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 * @return DatabaseConnection
 	 */
 	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+	 * @return TypoScriptFrontendController
 	 */
 	protected function getTypoScriptFrontendController() {
 		return $GLOBALS['TSFE'];

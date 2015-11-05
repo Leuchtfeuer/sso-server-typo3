@@ -1,6 +1,6 @@
 plugin.tx_singlesignon_pi1 {
 	includeLibs >
-	userDataSources.10 = Tx_SingleSignon_UserData_FrontendUserDataSource
+	userDataSources.10 = Bitmotion\SingleSignon\UserData\FrontendUserDataSource
 	userDataSources.10 {
 		foo = bar
 	}

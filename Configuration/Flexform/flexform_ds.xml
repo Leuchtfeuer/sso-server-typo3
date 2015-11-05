@@ -187,7 +187,7 @@
 							<label>LLL:EXT:single_signon/Resources/Private/Language/locallang_tca.php:single_signon.pi_flexform.usermapping</label>
 							<config>
 								<type>select</type>
-								<itemsProcFunc>tx_singlesignon_usermapping-&gt;getAvailableMappingItems</itemsProcFunc>
+								<itemsProcFunc>Bitmotion\SingleSignon\UserMapping-&gt;getAvailableMappingItems</itemsProcFunc>
 								<maxitems>1</maxitems>
 								<size>1</size>
 								<multiple>1</multiple>

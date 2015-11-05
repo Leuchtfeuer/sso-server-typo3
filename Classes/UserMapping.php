@@ -1,4 +1,6 @@
 <?php
+namespace Bitmotion\SingleSignon;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -22,10 +24,14 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
+use TYPO3\CMS\Lang\LanguageService;
+
 /**
  * @author  Dietrich Heise <typo3-ext@bitmotion.de>
  */
-class tx_singlesignon_usermapping {
+class UserMapping {
 
 	/**
 	 * Used as itemProcFunc in Flexform
@@ -48,14 +54,14 @@ class tx_singlesignon_usermapping {
 	/**
 	 * Return the mapped username for $feUser
 	 *
-	 * @param \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication $feUser
+	 * @param FrontendUserAuthentication $feUser
 	 * @param int $mappingId
 	 * @return string  mapped username
-	 * @throws Exception
+	 * @throws \Exception
 	 */
-	public function findUsernameForUserAndMapping(\TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication $feUser, $mappingId) {
+	public function findUsernameForUserAndMapping(FrontendUserAuthentication $feUser, $mappingId) {
 		if (empty($feUser)) {
-			throw new Exception('no_usermapping', 1439646263);
+			throw new \Exception('no_usermapping', 1439646263);
 		}
 		$mappingId = (int)$mappingId;
 		// Default Table (mapping as it is)
@@ -75,7 +81,7 @@ class tx_singlesignon_usermapping {
 		$row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
 
 		if ((int)$feUser->user['pid'] !== $sysfolder_id) {
-			throw new Exception('no_usermapping', 1439646264);
+			throw new \Exception('no_usermapping', 1439646264);
 		}
 
 		if (empty($row['mapping_username']) && $allowAll) {
@@ -84,7 +90,7 @@ class tx_singlesignon_usermapping {
 
 		if (empty($row['mapping_username'])) {
 			if (!$allowAll) {
-				throw new Exception('No mapping was found and allow all was denied!', 1439646541);
+				throw new \Exception('No mapping was found and allow all was denied!', 1439646541);
 			}
 			return $mapping_defaultmapping ?: $feUser->user['username'];
 		}
@@ -93,14 +99,14 @@ class tx_singlesignon_usermapping {
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 * @return DatabaseConnection
 	 */
 	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Lang\LanguageService
+	 * @return LanguageService
 	 */
 	protected function getLanguageService() {
 		return $GLOBALS['LANG'];

@@ -20,7 +20,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 /**
  * Fetches the user data from the frontend user record of the currently logged in user
  */
-class FrontendUserDataSource implements \Tx_SingleSignon_UserData_UserDataSourceInterface {
+class FrontendUserDataSource implements UserDataSourceInterface {
 
 	/**
 	 * @param array $preFetchedUserData

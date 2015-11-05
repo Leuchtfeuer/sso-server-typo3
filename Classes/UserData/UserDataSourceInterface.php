@@ -1,4 +1,5 @@
 <?php
+namespace Bitmotion\SingleSignon\UserData;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -16,7 +17,7 @@
 /**
  * Contract for a user data provider
  */
-interface Tx_SingleSignon_UserData_UserDataSourceInterface {
+interface UserDataSourceInterface {
 
 	/**
 	 * @param array $preFetchedUserData

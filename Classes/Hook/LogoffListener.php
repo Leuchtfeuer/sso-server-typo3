@@ -1,4 +1,5 @@
 <?php
+namespace Bitmotion\SingleSignon\Hook;
 
 /***************************************************************
  *  Copyright notice
@@ -20,10 +21,13 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Bitmotion\SingleSignon\Plugin\PluginController;
+use TYPO3\CMS\Core\Authentication\AbstractUserAuthentication;
+
 /**
- * Class Tx_SingleSignon_Hook_LogoffListener
+ * Class LogoffListener
  */
-class Tx_SingleSignon_Hook_LogoffListener {
+class LogoffListener {
 
 	/**
 	 * fetchUserSession also triggers the logoff hook, so we must no only react on first call
@@ -34,9 +38,9 @@ class Tx_SingleSignon_Hook_LogoffListener {
 
 	/**
 	 * @param array $params
-	 * @param \TYPO3\CMS\Core\Authentication\AbstractUserAuthentication $userAuthentication
+	 * @param AbstractUserAuthentication $userAuthentication
 	 */
-	public function registerLogoff(array $params, \TYPO3\CMS\Core\Authentication\AbstractUserAuthentication $userAuthentication) {
+	public function registerLogoff(array $params, AbstractUserAuthentication $userAuthentication) {
 		if (self::$isProcessing || $userAuthentication->loginType !== 'FE') {
 			return;
 		}
@@ -54,7 +58,7 @@ class Tx_SingleSignon_Hook_LogoffListener {
 
 		// Attach the user authentication object for URL generation during this request
 		$userAuthentication->user = $userData;
-		\Bitmotion\SingleSignon\Plugin\PluginController::$loggedOffUserAuthenticationObject = $userAuthentication;
+		PluginController::$loggedOffUserAuthenticationObject = $userAuthentication;
 	}
 
 }

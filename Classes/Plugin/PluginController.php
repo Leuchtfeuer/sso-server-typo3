@@ -1,4 +1,5 @@
 <?php
+namespace Bitmotion\SingleSignon\Plugin;
 
 /***************************************************************
  *  Copyright notice
@@ -23,6 +24,15 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Core\TypoScript\TemplateService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\HttpUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
+
 /**
  * Plugin Controller of the SSO Server.
  * It generates frontend output (SSO App logon url) or directly redirects to one SSO App
@@ -30,10 +40,10 @@
  * @author Dietrich Heise <typo3-ext@bitmotion.de>
  * @author Helmut Hummel (info@helhum.io)
  */
-class tx_singlesignon_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
+class PluginController extends AbstractPlugin {
 
 	/**
-	 * @var \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication
+	 * @var FrontendUserAuthentication
 	 */
 	public static $loggedOffUserAuthenticationObject;
 
@@ -47,7 +57,7 @@ class tx_singlesignon_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	 *
 	 * @var string
 	 */
-	public $scriptRelPath = 'Classes/Plugin/class.tx_singlesignon_pi1.php';
+	public $scriptRelPath = 'Classes/Plugin/PluginController.php';
 
 	/**
 	 * The extension key.
@@ -79,23 +89,23 @@ class tx_singlesignon_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	protected $extConf;
 
 	/**
-	 * @var tx_singlesignon_usermapping
+	 * @var \tx_singlesignon_usermapping
 	 */
 	protected $userMapping;
 
 	/**
-	 * @var Tx_SingleSignon_Domain_Repository_SessionRepository
+	 * @var \Tx_SingleSignon_Domain_Repository_SessionRepository
 	 */
 	protected $sessionRepository;
 
 	/**
-	 * @param Tx_SingleSignon_Domain_Repository_SessionRepository $sessionRepository
-	 * @param tx_singlesignon_usermapping $userMapping
+	 * @param \Tx_SingleSignon_Domain_Repository_SessionRepository $sessionRepository
+	 * @param \tx_singlesignon_usermapping $userMapping
 	 */
-	public function __construct(Tx_SingleSignon_Domain_Repository_SessionRepository $sessionRepository = NULL, tx_singlesignon_usermapping $userMapping = NULL) {
+	public function __construct(\Tx_SingleSignon_Domain_Repository_SessionRepository $sessionRepository = NULL, \tx_singlesignon_usermapping $userMapping = NULL) {
 		parent::__construct();
-		$this->sessionRepository = $sessionRepository ?: new Tx_SingleSignon_Domain_Repository_SessionRepository($GLOBALS['TYPO3_DB']);
-		$this->userMapping = $userMapping ?: new tx_singlesignon_usermapping();
+		$this->sessionRepository = $sessionRepository ?: new \Tx_SingleSignon_Domain_Repository_SessionRepository($GLOBALS['TYPO3_DB']);
+		$this->userMapping = $userMapping ?: new \tx_singlesignon_usermapping();
 	}
 
 	/**
@@ -111,7 +121,7 @@ class tx_singlesignon_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 			return $this->pi_wrapInBaseClass($this->pi_getLL('no_usermapping'));
 		}
 
-		$this->conf = array_replace_recursive($conf, Tx_SingleSignon_Configuration_FlexFormArrayConverter::convertFlexFormContentToArray($this->cObj->data['pi_flexform']));
+		$this->conf = array_replace_recursive($conf, \Tx_SingleSignon_Configuration_FlexFormArrayConverter::convertFlexFormContentToArray($this->cObj->data['pi_flexform']));
 		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['single_signon']);
 
 		$this->pi_setPiVarDefaults();
@@ -121,7 +131,7 @@ class tx_singlesignon_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 			$this->checkSsl();
 			$appLogonUrl = $this->generateSsoAppLogonUrl();
 			$content .= $this->getPluginContent($appLogonUrl);
-		} catch (Exception $exception) {
+		} catch (\Exception $exception) {
 			$content .= htmlspecialchars($this->pi_getLL($exception->getMessage(), $exception->getMessage()));
 		}
 
@@ -174,12 +184,12 @@ class tx_singlesignon_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	/**
 	 * Check if force SSL has been set an throw exception if the page is not requesteg via https then
 	 *
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	protected function checkSsl() {
-		if ($this->conf['forcessl'] && !\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_SSL')) {
+		if ($this->conf['forcessl'] && !GeneralUtility::getIndpEnv('TYPO3_SSL')) {
 			// no SSL page but required!
-			throw new Exception('no_ssl', 1439646265);
+			throw new \Exception('no_ssl', 1439646265);
 		}
 	}
 
@@ -187,7 +197,7 @@ class tx_singlesignon_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	 * Generates the logon URL for the SSO App
 	 *
 	 * @return string
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	protected function generateSsoAppLogonUrl() {
 		// Calculate link expire time
@@ -220,7 +230,7 @@ class tx_singlesignon_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
 		$this->calculateAndStoreMinimumLifetime($linkLifetime);
 		$this->sessionRepository->addOrUpdateSession(
-			new Tx_SingleSignon_Domain_Model_Session(
+			new \Tx_SingleSignon_Domain_Model_Session(
 				$this->getTypoScriptFrontendController()->fe_user->id,
 				$this->getTypoScriptFrontendController()->fe_user->user['uid'],
 				$appId,
@@ -239,7 +249,7 @@ class tx_singlesignon_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	 *
 	 * @param $appLogonUrl
 	 * @return string
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	protected function getPluginContent($appLogonUrl) {
 		$content = '';
@@ -251,7 +261,7 @@ class tx_singlesignon_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 			break;
 			// Open here (HTTP redirect) (works well without frames) (1)
 			case 1:
-				\TYPO3\CMS\Core\Utility\HttpUtility::redirect($appLogonUrl);
+				HttpUtility::redirect($appLogonUrl);
 			break;
 			// Display Link in Content (2)
 			case 2:
@@ -271,7 +281,7 @@ class tx_singlesignon_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 			break;
 			// Output error message
 			default:
-				throw new Exception('Action invalid: ' . $contentType, 1439646266);
+				throw new \Exception('Action invalid: ' . $contentType, 1439646266);
 		}
 
 		return $content;
@@ -283,7 +293,7 @@ class tx_singlesignon_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	 *
 	 * @param $stringToBeSigned
 	 * @return string SSL signature as byte stream
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	protected function getSslSignatureForString($stringToBeSigned) {
 		if ($this->extConf['externalOpenssl']) {
@@ -310,7 +320,7 @@ class tx_singlesignon_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 				// OPENSSL Sign (PHP - function)
 				$filePointer = @fopen($this->extConf['SSLPrivateKeyFile'], 'r');
 				if (!$filePointer) {
-					throw new Exception('no_ssl_key_found', 1439646267);
+					throw new \Exception('no_ssl_key_found', 1439646267);
 				}
 				$privateKeyString = fread($filePointer, 8192);
 				fclose($filePointer);
@@ -321,7 +331,7 @@ class tx_singlesignon_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 				openssl_free_key($privateKeyResource);
 				// END OPENSSL Sign
 			} else {
-				throw new Exception('no_openssl_inPHP', 1439646268);
+				throw new \Exception('no_openssl_inPHP', 1439646268);
 			}
 		}
 
@@ -355,15 +365,15 @@ class tx_singlesignon_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
 		$userData = array();
 		$dataSources = $this->conf['userDataSources.'];
-		$dataSourcesKeys = \TYPO3\CMS\Core\TypoScript\TemplateService::sortedKeyList($dataSources);
+		$dataSourcesKeys = TemplateService::sortedKeyList($dataSources);
 
 		foreach ($dataSourcesKeys as $key) {
 			$className = $dataSources[$key];
 			if (!class_exists($className)) {
 				throw new \UnexpectedValueException('Data source class name "' . $className . '" does not exist!',  1441731922);
 			}
-			$dataSource = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($className);
-			if (!$dataSource instanceof Tx_SingleSignon_UserData_FrontendUserDataSource) {
+			$dataSource = GeneralUtility::makeInstance($className);
+			if (!$dataSource instanceof \Tx_SingleSignon_UserData_FrontendUserDataSource) {
 				throw new \UnexpectedValueException(
 					'Data source with class name "' . $className . '" ' .
 					'must implement interface "Tx_SingleSignon_UserData_FrontendUserDataSource"',
@@ -479,18 +489,18 @@ class tx_singlesignon_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	 * @param string $appLogonUrl
 	 */
 	protected function addSsoAppUrlInNewWindowJavaScriptToHtmlHeader($appLogonUrl) {
-		$this->getTypoScriptFrontendController()->additionalHeaderData['Window_onload_' . $this->conf['appId']] = \TYPO3\CMS\Core\Utility\GeneralUtility::wrapJS('window.open(' . \TYPO3\CMS\Core\Utility\GeneralUtility::quoteJSvalue($appLogonUrl) . ');');
+		$this->getTypoScriptFrontendController()->additionalHeaderData['Window_onload_' . $this->conf['appId']] = GeneralUtility::wrapJS('window.open(' . GeneralUtility::quoteJSvalue($appLogonUrl) . ');');
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 * @return DatabaseConnection
 	 */
 	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+	 * @return TypoScriptFrontendController
 	 */
 	protected function getTypoScriptFrontendController() {
 		return $GLOBALS['TSFE'];
@@ -501,7 +511,7 @@ class tx_singlesignon_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	 */
 	protected function addMetaRefreshToHtmlHeader() {
 		if (!empty($this->extConf['refreshLinkPage'])) {
-			$this->getTypoScriptFrontendController()->additionalHeaderData['tx_sso_meta_refresh'] = '<meta http-equiv="refresh" content="' . \TYPO3\CMS\Core\Utility\MathUtility::isIntegerInRange(self::$minimumLinkLifetime - 5, 5, 2000000000) . '; URL="' . htmlspecialchars($this->cObj->getUrlToCurrentLocation()) . '">';
+			$this->getTypoScriptFrontendController()->additionalHeaderData['tx_sso_meta_refresh'] = '<meta http-equiv="refresh" content="' . MathUtility::isIntegerInRange(self::$minimumLinkLifetime - 5, 5, 2000000000) . '; URL="' . htmlspecialchars($this->cObj->getUrlToCurrentLocation()) . '">';
 		}
 	}
 
@@ -519,15 +529,15 @@ class tx_singlesignon_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	/**
 	 * @param $ssoData
 	 * @return string
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	protected function generateSsoAppUrl($ssoData) {
 		# encode the signature in hex format
 		$ssoData['signature'] = bin2hex($this->getSslSignatureForString($this->implodeSsoData($ssoData)));
-		$ssoData['returnTo'] = $this->validateReturnToUrl(\TYPO3\CMS\Core\Utility\GeneralUtility::_GET('returnTo'));
+		$ssoData['returnTo'] = $this->validateReturnToUrl(GeneralUtility::_GET('returnTo'));
 
 		# Compose the final URL
-		$finalUrl = $this->conf['targeturl'] . '?' . \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('', $ssoData, '', FALSE, TRUE);
+		$finalUrl = $this->conf['targeturl'] . '?' . GeneralUtility::implodeArrayForUrl('', $ssoData, '', FALSE, TRUE);
 		return $finalUrl;
 	}
 

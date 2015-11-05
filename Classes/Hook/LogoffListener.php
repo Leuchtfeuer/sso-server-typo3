@@ -54,7 +54,7 @@ class Tx_SingleSignon_Hook_LogoffListener {
 
 		// Attach the user authentication object for URL generation during this request
 		$userAuthentication->user = $userData;
-		tx_singlesignon_pi1::$loggedOffUserAuthenticationObject = $userAuthentication;
+		\Bitmotion\SingleSignon\Plugin\PluginController::$loggedOffUserAuthenticationObject = $userAuthentication;
 	}
 
 }

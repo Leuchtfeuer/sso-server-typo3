@@ -2,7 +2,6 @@
 $extPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('single_signon');
 
 return array(
-	'tx_singlesignon_pi1' => $extPath . 'Classes/Plugin/PluginController.php',
 	'tx_singlesignon_pi1_wizicon' => $extPath . 'Classes/Plugin/Wizicon.php',
 	'tx_singlesignon_usermapping' => $extPath . 'Classes/UserMapping.php',
 	'tx_singlesignon_configuration_flexformarrayconverter' => $extPath . 'Classes/Configuration/FlexFormService.php',

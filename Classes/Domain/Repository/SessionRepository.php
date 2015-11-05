@@ -21,6 +21,9 @@ namespace Bitmotion\SingleSignon\Domain\Repository;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Bitmotion\SingleSignon\Domain\Model\Session;
+use TYPO3\CMS\Core\Database\DatabaseConnection;
+
 /**
  * Class SessionRepository
  */
@@ -32,23 +35,23 @@ class SessionRepository {
 	protected $tableName = 'tx_singlesignon_sessions';
 
 	/**
-	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
+	 * @var DatabaseConnection
 	 */
 	protected $databaseConnection;
 
 	/**
-	 * @param \TYPO3\CMS\Core\Database\DatabaseConnection $databaseConnection
+	 * @param DatabaseConnection $databaseConnection
 	 */
-	public function __construct(\TYPO3\CMS\Core\Database\DatabaseConnection $databaseConnection = NULL) {
+	public function __construct(DatabaseConnection $databaseConnection = NULL) {
 		$this->databaseConnection = $databaseConnection ?: $GLOBALS['TYPO3_DB'];
 	}
 
 	/**
 	 * Adds or updates the session table
 	 *
-	 * @param \Tx_SingleSignon_Domain_Model_Session $session
+	 * @param Session $session
 	 */
-	public function addOrUpdateSession(\Tx_SingleSignon_Domain_Model_Session $session) {
+	public function addOrUpdateSession(Session $session) {
 		$values = array();
 		foreach ($session->getValues() as $name => $value) {
 			$values[$name] = is_scalar($value) ? $value : serialize($value);
@@ -91,10 +94,10 @@ class SessionRepository {
 	/**
 	 * Removes the identifiers and adds ON DUPLICATE KEY statement for data values
 	 *
-	 * @param \Tx_SingleSignon_Domain_Model_Session $session
+	 * @param Session $session
 	 * @return string
 	 */
-	protected function getOnDuplicateKeyStatement(\Tx_SingleSignon_Domain_Model_Session $session) {
+	protected function getOnDuplicateKeyStatement(Session $session) {
 		$updateValues = array();
 		foreach (array_slice($session->getValues(), 3) as $name => $value) {
 			$updateValues[] = "$name=VALUES($name)";

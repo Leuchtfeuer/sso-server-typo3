@@ -1,4 +1,5 @@
 <?php
+namespace Bitmotion\SingleSignon\Domain\Model;
 
 /***************************************************************
  *  Copyright notice
@@ -20,10 +21,12 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
- * Class Tx_SingleSignon_Domain_Model_Session
+ * Class Session
  */
-class Tx_SingleSignon_Domain_Model_Session {
+class Session {
 
 	/**
 	 * @var string
@@ -70,7 +73,7 @@ class Tx_SingleSignon_Domain_Model_Session {
 	public function getValues() {
 		$values = array();
 		foreach (get_object_vars($this) as $name => $value) {
-			$values[\TYPO3\CMS\Core\Utility\GeneralUtility::camelCaseToLowerCaseUnderscored($name)] = $value;
+			$values[GeneralUtility::camelCaseToLowerCaseUnderscored($name)] = $value;
 		}
 
 		return $values;

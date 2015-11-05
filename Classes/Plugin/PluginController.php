@@ -25,6 +25,7 @@ namespace Bitmotion\SingleSignon\Plugin;
  ***************************************************************/
 
 use Bitmotion\SingleSignon\Configuration\FlexFormService;
+use Bitmotion\SingleSignon\Domain\Model\Session;
 use Bitmotion\SingleSignon\Domain\Repository\SessionRepository;
 use Bitmotion\SingleSignon\UserMapping;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
@@ -233,7 +234,7 @@ class PluginController extends AbstractPlugin {
 
 		$this->calculateAndStoreMinimumLifetime($linkLifetime);
 		$this->sessionRepository->addOrUpdateSession(
-			new \Tx_SingleSignon_Domain_Model_Session(
+			new Session(
 				$this->getTypoScriptFrontendController()->fe_user->id,
 				$this->getTypoScriptFrontendController()->fe_user->user['uid'],
 				$appId,

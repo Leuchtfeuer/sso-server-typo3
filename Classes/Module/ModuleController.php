@@ -27,6 +27,7 @@ namespace Bitmotion\SingleSignon\Module;
 use TYPO3\CMS\Backend\Module\BaseScriptClass;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -62,9 +63,12 @@ class ModuleController extends BaseScriptClass {
 	protected $userlist = array();
 
 	public function __construct() {
+		// This checks permissions and exits if the users has no permission for entry.
+		$GLOBALS['BE_USER']->modAccess($GLOBALS['MCONF'], 1);
+
 		$this->doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
-		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['single_signon']);
+		$this->getLanguageService()->includeLLFile('EXT:single_signon/Resources/Private/Language/Module/locallang.xml');
 	}
 
 	/**
@@ -73,7 +77,8 @@ class ModuleController extends BaseScriptClass {
 	 * @return void
 	 */
 	function menuConfig() {
-		$this->MOD_MENU = array('function' => array('1' => $this->getLanguageService()->getLL('function1'), //Info
+		$this->MOD_MENU = array('function' => array(
+				'1' => $this->getLanguageService()->getLL('function1'), //Info
 				'6' => $this->getLanguageService()->getLL('function6'), //Create a new Mapping
 				'2' => $this->getLanguageService()->getLL('function2'), //Edit a mapping Table
 				'4' => $this->getLanguageService()->getLL('function4'), //Delete a mapping Table
@@ -97,8 +102,9 @@ class ModuleController extends BaseScriptClass {
 			// Insert the Banner
 			$this->doc->form = '<a href="http://www.single-signon.com" target="_blank" title="www.single-signon.com"><span class="banner"></span></a><form action="' . htmlspecialchars(BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '" method="POST">';
 			// JavaScript
+			$scriptRelPath = ExtensionManagementUtility::extRelPath('single_signon');
 			$this->doc->JScode = '
-					<link rel="stylesheet" type="text/css" href="../../mod1/single-signon.css" />
+					<link rel="stylesheet" type="text/css" href="'. htmlspecialchars($scriptRelPath) . 'Resources/Public/Css/single-signon.css" />
 					<script type="text/javascript" language="javascript">
 					script_ended = 0; function jumpToUrl(URL) { document.location = URL; }
 					</script>

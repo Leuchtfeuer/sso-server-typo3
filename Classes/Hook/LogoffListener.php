@@ -27,38 +27,38 @@ use TYPO3\CMS\Core\Authentication\AbstractUserAuthentication;
 /**
  * Class LogoffListener
  */
-class LogoffListener {
+class LogoffListener
+{
+    /**
+     * fetchUserSession also triggers the logoff hook, so we must no only react on first call
+     *
+     * @var bool
+     */
+    protected static $isProcessing = false;
 
-	/**
-	 * fetchUserSession also triggers the logoff hook, so we must no only react on first call
-	 *
-	 * @var bool
-	 */
-	static protected $isProcessing = FALSE;
+    /**
+     * @param array $params
+     * @param AbstractUserAuthentication $userAuthentication
+     */
+    public function registerLogoff(array $params, AbstractUserAuthentication $userAuthentication)
+    {
+        if (self::$isProcessing || $userAuthentication->loginType !== 'FE') {
+            return;
+        }
 
-	/**
-	 * @param array $params
-	 * @param AbstractUserAuthentication $userAuthentication
-	 */
-	public function registerLogoff(array $params, AbstractUserAuthentication $userAuthentication) {
-		if (self::$isProcessing || $userAuthentication->loginType !== 'FE') {
-			return;
-		}
+        self::$isProcessing = true;
+        $userAuthentication = clone $userAuthentication;
+        $userData = $userAuthentication->fetchUserSession(true);
+        self::$isProcessing = false;
 
-		self::$isProcessing = TRUE;
-		$userAuthentication = clone $userAuthentication;
-		$userData = $userAuthentication->fetchUserSession(TRUE);
-		self::$isProcessing = FALSE;
+        if (empty($userData['uid'])) {
+            return;
+        }
+        // This global var is used to trigger the condition which wraps the logoff URL generator
+        $GLOBALS['TX_SINGLE_SIGNON']['logout'] = true;
 
-		if (empty($userData['uid'])) {
-			return;
-		}
-		// This global var is used to trigger the condition which wraps the logoff URL generator
-		$GLOBALS['TX_SINGLE_SIGNON']['logout'] = TRUE;
-
-		// Attach the user authentication object for URL generation during this request
-		$userAuthentication->user = $userData;
-		PluginController::$loggedOffUserAuthenticationObject = $userAuthentication;
-	}
-
+        // Attach the user authentication object for URL generation during this request
+        $userAuthentication->user = $userData;
+        PluginController::$loggedOffUserAuthenticationObject = $userAuthentication;
+    }
 }

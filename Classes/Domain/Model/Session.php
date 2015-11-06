@@ -26,57 +26,58 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Class Session
  */
-class Session {
+class Session
+{
+    /**
+     * @var string
+     */
+    protected $sessionHash;
 
-	/**
-	 * @var string
-	 */
-	protected $sessionHash;
+    /**
+     * @var string
+     */
+    protected $userId;
 
-	/**
-	 * @var string
-	 */
-	protected $userId;
+    /**
+     * @var string
+     */
+    protected $appId;
 
-	/**
-	 * @var string
-	 */
-	protected $appId;
+    /**
+     * @var array
+     */
+    protected $data;
 
-	/**
-	 * @var array
-	 */
-	protected $data;
+    /**
+     * @var array
+     */
+    protected $timestamp;
 
-	/**
-	 * @var array
-	 */
-	protected $timestamp;
+    /**
+     * @param string $sessionHash
+     * @param string $userId
+     * @param string $appId
+     * @param array $data
+     */
+    public function __construct($sessionHash, $userId, $appId, array $data)
+    {
+        $this->sessionHash = $sessionHash;
+        $this->userId = $userId;
+        $this->appId = $appId;
+        $this->data = $data;
+        $this->timestamp = $GLOBALS['EXEC_TIME'];
+    }
 
-	/**
-	 * @param string $sessionHash
-	 * @param string $userId
-	 * @param string $appId
-	 * @param array $data
-	 */
-	public function __construct($sessionHash, $userId, $appId, array $data) {
-		$this->sessionHash = $sessionHash;
-		$this->userId = $userId;
-		$this->appId = $appId;
-		$this->data = $data;
-		$this->timestamp = $GLOBALS['EXEC_TIME'];
-	}
+    /**
+     * @return array
+     */
+    public function getValues()
+    {
+        $values = array();
+        foreach (get_object_vars($this) as $name => $value) {
+            $values[GeneralUtility::camelCaseToLowerCaseUnderscored($name)] = $value;
+        }
 
-	/**
-	 * @return array
-	 */
-	public function getValues() {
-		$values = array();
-		foreach (get_object_vars($this) as $name => $value) {
-			$values[GeneralUtility::camelCaseToLowerCaseUnderscored($name)] = $value;
-		}
-
-		return $values;
-	}
-
+        return $values;
+    }
 }

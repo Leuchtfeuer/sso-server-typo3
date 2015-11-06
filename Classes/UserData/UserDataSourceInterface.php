@@ -17,12 +17,12 @@ namespace Bitmotion\SingleSignon\UserData;
 /**
  * Contract for a user data provider
  */
-interface UserDataSourceInterface {
-
-	/**
-	 * @param array $preFetchedUserData
-	 * @param array $configuration
-	 * @return array
-	 */
-	public function fetchUserData(array $preFetchedUserData, array $configuration);
+interface UserDataSourceInterface
+{
+    /**
+     * @param array $preFetchedUserData
+     * @param array $configuration
+     * @return array
+     */
+    public function fetchUserData(array $preFetchedUserData, array $configuration);
 }

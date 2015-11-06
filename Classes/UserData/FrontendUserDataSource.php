@@ -20,49 +20,49 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 /**
  * Fetches the user data from the frontend user record of the currently logged in user
  */
-class FrontendUserDataSource implements UserDataSourceInterface {
+class FrontendUserDataSource implements UserDataSourceInterface
+{
+    /**
+     * @param array $preFetchedUserData
+     * @param array $configuration
+     * @return array
+     */
+    public function fetchUserData(array $preFetchedUserData, array $configuration)
+    {
+        $requestedUserDataFields = $configuration['userDataFields'];
 
-	/**
-	 * @param array $preFetchedUserData
-	 * @param array $configuration
-	 * @return array
-	 */
-	public function fetchUserData(array $preFetchedUserData, array $configuration) {
-		$requestedUserDataFields = $configuration['userDataFields'];
+        $compiledUserData = array_intersect_key(
+            $this->getTypoScriptFrontendController()->fe_user->user,
+            array_flip($requestedUserDataFields)
+        );
 
-		$compiledUserData = array_intersect_key(
-			$this->getTypoScriptFrontendController()->fe_user->user,
-			array_flip($requestedUserDataFields)
-		);
+        if (!empty($compiledUserData['usergroup'])) {
+            $groupIds = explode(',', $compiledUserData['usergroup']);
+            $userGroupNames = array();
+            foreach ($groupIds as $groupId) {
+                $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow('*', 'fe_groups', 'uid=' . (int)$groupId);
+                $userGroupNames[] = $row['title'];
+            }
+            $compiledUserData['usergroup'] = implode(',', $userGroupNames);
+        }
 
-		if (!empty($compiledUserData['usergroup'])) {
-			$groupIds = explode(',', $compiledUserData['usergroup']);
-			$userGroupNames = array();
-			foreach ($groupIds as $groupId) {
-				$row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow('*', 'fe_groups', 'uid=' . (int)$groupId);
-				$userGroupNames[] = $row['title'];
-			}
-			$compiledUserData['usergroup'] = implode(',', $userGroupNames);
-		}
-
-		return array_replace_recursive($preFetchedUserData, $compiledUserData);
-
-	}
-
-
-	/**
-	 * @return DatabaseConnection
-	 */
-	protected function getDatabaseConnection() {
-		return $GLOBALS['TYPO3_DB'];
-	}
-
-	/**
-	 * @return TypoScriptFrontendController
-	 */
-	protected function getTypoScriptFrontendController() {
-		return $GLOBALS['TSFE'];
-	}
+        return array_replace_recursive($preFetchedUserData, $compiledUserData);
+    }
 
 
+    /**
+     * @return DatabaseConnection
+     */
+    protected function getDatabaseConnection()
+    {
+        return $GLOBALS['TYPO3_DB'];
+    }
+
+    /**
+     * @return TypoScriptFrontendController
+     */
+    protected function getTypoScriptFrontendController()
+    {
+        return $GLOBALS['TSFE'];
+    }
 }

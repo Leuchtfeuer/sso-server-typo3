@@ -32,37 +32,39 @@ use TYPO3\CMS\Lang\LanguageService;
 *
 * @author Dietrich Heise <typo3-ext@bitmotion.de>
 */
-class Wizicon {
+class Wizicon
+{
+    /**
+     * @param array $wizardItems
+     * @return array
+     */
+    public function proc($wizardItems)
+    {
+        $labelArray = $this->includeLocalLang();
+        $wizardItems['plugins_tx_singlesignon_pi1'] = array(
+        'icon' => ExtensionManagementUtility::extRelPath('single_signon') . 'Resources/Public/Icons/ce_wiz.gif',
+            'title' => $this->getLanguageService()->getLLL('pi1_title', $labelArray),
+            'description' => $this->getLanguageService()->getLLL('pi1_plus_wiz_description', $labelArray),
+            'params' => '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=single_signon_pi1' );
 
-	/**
-	 * @param array $wizardItems
-	 * @return array
-	 */
-	public function proc($wizardItems) {
-		$labelArray = $this->includeLocalLang();
-		$wizardItems['plugins_tx_singlesignon_pi1'] = array(
-		'icon' => ExtensionManagementUtility::extRelPath('single_signon') . 'Resources/Public/Icons/ce_wiz.gif',
-			'title' => $this->getLanguageService()->getLLL('pi1_title', $labelArray),
-			'description' => $this->getLanguageService()->getLLL('pi1_plus_wiz_description', $labelArray),
-			'params' => '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=single_signon_pi1' );
+        return $wizardItems;
+    }
 
-		return $wizardItems;
-	}
+    /**
+    * This will return the labels array array of this extension
+    *
+    * @return array  the language translation for this extension
+    */
+    protected function includeLocalLang()
+    {
+        return $this->getLanguageService()->includeLLFile('EXT:single_signon/Resources/Private/Language/locallang_tca.xml', false);
+    }
 
-	/**
-	* This will return the labels array array of this extension
-	*
-	* @return array  the language translation for this extension
-	*/
-	protected function includeLocalLang() {
-		return $this->getLanguageService()->includeLLFile('EXT:single_signon/Resources/Private/Language/locallang_tca.xml', FALSE);
-	}
-
-	/**
-	 * @return LanguageService
-	 */
-	protected function getLanguageService() {
-		return $GLOBALS['LANG'];
-	}
-
+    /**
+     * @return LanguageService
+     */
+    protected function getLanguageService()
+    {
+        return $GLOBALS['LANG'];
+    }
 }

@@ -21,11 +21,11 @@
             <label index="viewTableName">Stored Mapping Table properties</label>
             <label index="infoTitle">Info</label>
             <label index="infoText">&lt;p&gt;For the &lt;b&gt;SSO Server&lt;/b&gt; you are able to set up a &lt;b&gt;User Mapping&lt;/b&gt;.
-		This per-user mappings are configured in User Mapping Tables.&lt;/p&gt;
-		&lt;p&gt;Every User Mapping Table has a unique name plus additional settings, e.g. on the handling of users that are not explicitely configured for User Mapping.&lt;/p&gt;
-		&lt;p&gt;In the top of this view you can &lt;b&gt;create, edit, copy&lt;/b&gt; and &lt;b&gt;delete&lt;/b&gt; User Mapping Tables.&lt;/p&gt;
-		&lt;hr&gt;&lt;p&gt;In the Single Sign-On content element setup, you can then select from the Mapping Tables you defined here. See screenshot.&lt;/p&gt;
-	</label>
+        This per-user mappings are configured in User Mapping Tables.&lt;/p&gt;
+        &lt;p&gt;Every User Mapping Table has a unique name plus additional settings, e.g. on the handling of users that are not explicitely configured for User Mapping.&lt;/p&gt;
+        &lt;p&gt;In the top of this view you can &lt;b&gt;create, edit, copy&lt;/b&gt; and &lt;b&gt;delete&lt;/b&gt; User Mapping Tables.&lt;/p&gt;
+        &lt;hr&gt;&lt;p&gt;In the Single Sign-On content element setup, you can then select from the Mapping Tables you defined here. See screenshot.&lt;/p&gt;
+    </label>
             <label index="savedTitle">Storing data...</label>
             <label index="savedText">Done.</label>
             <label index="deleteTitle">Deleting data...</label>

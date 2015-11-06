@@ -107,17 +107,15 @@ class ModuleController extends BaseScriptClass
             // JavaScript
             $scriptRelPath = ExtensionManagementUtility::extRelPath('single_signon');
             $this->doc->JScode = '
-					<link rel="stylesheet" type="text/css" href="' . htmlspecialchars($scriptRelPath) . 'Resources/Public/Css/single-signon.css" />
-					<script type="text/javascript" language="javascript">
-					script_ended = 0; function jumpToUrl(URL) { document.location = URL; }
-					</script>
-					';
+                <link rel="stylesheet" type="text/css" href="' . htmlspecialchars($scriptRelPath) . 'Resources/Public/Css/single-signon.css" />
+                <script type="text/javascript" language="javascript">
+                script_ended = 0; function jumpToUrl(URL) { document.location = URL; }
+                </script>';
             $this->doc->postCode = '
-					<script type="text/javascript" language="javascript">
-					script_ended = 1;
-					if (top.theMenu) top.theMenu.recentuid = ' . intval($this->id) . ';
-					</script>
-					';
+                <script type="text/javascript" language="javascript">
+                script_ended = 1;
+                if (top.theMenu) top.theMenu.recentuid = ' . intval($this->id) . ';
+                </script>';
             $this->content .= $this->doc->startPage($this->getLanguageService()->getLL('title'));
             $this->content .= $this->doc->header($this->getLanguageService()->getLL('title'));
             $this->content .= $this->doc->section('', $this->doc->funcMenu('', BackendUtility::getFuncMenu($this->id, 'SET[function]', $this->MOD_SETTINGS['function'], $this->MOD_MENU['function'])));
@@ -513,14 +511,14 @@ class ModuleController extends BaseScriptClass
      * Return a mapping table properties (a form to edit) in $this->content for the given
      * $mapping_id.
      *
-     * @param integer $mapping_id : the UID for the mapping table you want to edit.
-     * @param integer $show : if this is set to 1 the function only display the forms (readonly)
+     * @param int $mapping_id : the UID for the mapping table you want to edit.
+     * @param int $show : if this is set to 1 the function only display the forms (readonly)
      * @return void
      */
     public function editTableProperties($mapping_id = 0, $show = 0)
     {
         $editable = $show ? ' READONLY' : '';
-        $result = $this->getDatabaseConnection()->exec_SELECTquery('*', $this->table_properties, 'uid=' . $mapping_id);
+        $result = $this->getDatabaseConnection()->exec_SELECTquery('*', $this->table_properties, 'uid=' . (int)$mapping_id);
         $row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
 
         $content = '<table><tr><td>' . $this->getLanguageService()->getLL('enterTableName') . '</td><td>' . chr(10);
@@ -549,11 +547,11 @@ class ModuleController extends BaseScriptClass
     /**
      * returns a user list for the given parameters
      *
-     * @param integer $sysfolder_id : UID of the sysfolder where the fe_users are stored
-     * @param integer $mapping_id : if given the UID of the mapping table
+     * @param int $sysfolder_id : UID of the sysfolder where the fe_users are stored
+     * @param int $mapping_id : if given the UID of the mapping table
      * @return array  ([uid] => [mapped_username], )
      */
-    public function mapUserlist($sysfolder_id, $mapping_id = '0')
+    public function mapUserlist($sysfolder_id, $mapping_id = 0)
     {
         $result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'fe_users', 'pid=' . (int)$sysfolder_id . ' AND deleted=\'0\'');
         $menge = $this->getDatabaseConnection()->sql_num_rows($result);

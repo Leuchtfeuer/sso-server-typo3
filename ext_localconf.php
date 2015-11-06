@@ -6,9 +6,9 @@ defined('TYPO3_MODE') or die('Access denied.');
     $_EXTKEY,
     'setup',
     trim('
-		plugin.tx_singlesignon_pi1 = USER_INT
-		plugin.tx_singlesignon_pi1.userFunc = Bitmotion\\SingleSignon\\Plugin\\PluginController->main
-	')
+        plugin.tx_singlesignon_pi1 = USER_INT
+        plugin.tx_singlesignon_pi1.userFunc = Bitmotion\\SingleSignon\\Plugin\\PluginController->main
+    ')
 );
 
 // Add default rendering for plugin

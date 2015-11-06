@@ -1,9 +1,9 @@
 plugin.tx_singlesignon_pi1 {
-	includeLibs >
-	userDataSources.10 = Bitmotion\SingleSignon\UserData\FrontendUserDataSource
-	userDataSources.10 {
-		foo = bar
-	}
+    includeLibs >
+    userDataSources.10 = Bitmotion\SingleSignon\UserData\FrontendUserDataSource
+    userDataSources.10 {
+        foo = bar
+    }
 }
 
 [globalVar = TX_SINGLE_SIGNON|logout = 1]

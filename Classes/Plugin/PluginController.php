@@ -62,7 +62,7 @@ class PluginController extends AbstractPlugin {
 	 *
 	 * @var string
 	 */
-	public $scriptRelPath = 'Classes/Plugin/PluginController.php';
+	public $scriptRelPath = 'pi1/dummy.php';
 
 	/**
 	 * The extension key.

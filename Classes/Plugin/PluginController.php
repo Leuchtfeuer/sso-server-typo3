@@ -24,7 +24,6 @@ namespace Bitmotion\SingleSignon\Plugin;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Bitmotion\SingleSignon\Configuration\FlexFormService;
 use Bitmotion\SingleSignon\Domain\Model\Session;
 use Bitmotion\SingleSignon\Domain\Repository\SessionRepository;
 use Bitmotion\SingleSignon\UserData\UserDataSourceInterface;
@@ -34,6 +33,7 @@ use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\HttpUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Extbase\Service\FlexFormService;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
@@ -104,13 +104,20 @@ class PluginController extends AbstractPlugin {
 	protected $sessionRepository;
 
 	/**
+	 * @var FlexFormService
+	 */
+	protected $flexFormService;
+
+	/**
 	 * @param SessionRepository $sessionRepository
 	 * @param UserMapping $userMapping
+	 * @param FlexFormService $flexFormService
 	 */
-	public function __construct(SessionRepository $sessionRepository = NULL, UserMapping $userMapping = NULL) {
+	public function __construct(SessionRepository $sessionRepository = NULL, UserMapping $userMapping = NULL, FlexFormService $flexFormService = NULL) {
 		parent::__construct();
 		$this->sessionRepository = $sessionRepository ?: new SessionRepository($GLOBALS['TYPO3_DB']);
 		$this->userMapping = $userMapping ?: new UserMapping();
+		$this->flexFormService = $flexFormService ?: GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Service\\FlexFormService');
 	}
 
 	/**
@@ -126,7 +133,7 @@ class PluginController extends AbstractPlugin {
 			return $this->pi_wrapInBaseClass($this->pi_getLL('no_usermapping'));
 		}
 
-		$this->conf = array_replace_recursive($conf, FlexFormService::convertFlexFormContentToArray($this->cObj->data['pi_flexform']));
+		$this->conf = array_replace_recursive($conf, $this->flexFormService->convertFlexFormContentToArray($this->cObj->data['pi_flexform']));
 		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['single_signon']);
 
 		$this->pi_setPiVarDefaults();

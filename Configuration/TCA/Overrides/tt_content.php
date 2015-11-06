@@ -5,7 +5,7 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 $extensionKey = 'single_signon';
 ExtensionManagementUtility::addPlugin(
-	array('LLL:EXT:single_signon/Resources/Private/Language/locallang_tca.php:single_signon', 'single_signon_pi1'),
+	array('LLL:EXT:single_signon/Resources/Private/Language/locallang_tca.php:single_signon', $extensionKey . '_pi1'),
 	'list_type', 
 	$extensionKey
 );

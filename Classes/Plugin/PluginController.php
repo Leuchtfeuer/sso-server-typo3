@@ -337,6 +337,9 @@ class PluginController extends AbstractPlugin {
 				$privateKeyString = fread($filePointer, 8192);
 				fclose($filePointer);
 				$privateKeyResource = openssl_pkey_get_private($privateKeyString, $this->extConf['SSLPassphrase']);
+				if (!$privateKeyResource) {
+					throw new \Exception('private_ssl_key_error', 1439646268);
+				}
 				// calculate the signature
 				openssl_sign($stringToBeSigned, $signature, $privateKeyResource);
 				// remove sign from memory

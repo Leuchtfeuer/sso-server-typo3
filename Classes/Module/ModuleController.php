@@ -95,7 +95,7 @@ class ModuleController extends BaseScriptClass {
 
 		if (($this->id && $access) || ($this->getBackendUserAuthentication()->user['admin'] && !$this->id)) {
 			// Insert the Banner
-			$this->doc->form = '<a href="http://www.single-signon.com" target="_blank" title="www.single-signon.com"><span class="banner"></span></a><img src="/clear.gif" width="1" height="34" alt=""><form action="' . htmlspecialchars(BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '" method="POST">';
+			$this->doc->form = '<a href="http://www.single-signon.com" target="_blank" title="www.single-signon.com"><span class="banner"></span></a><form action="' . htmlspecialchars(BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '" method="POST">';
 			// JavaScript
 			$this->doc->JScode = '
 					<link rel="stylesheet" type="text/css" href="../../mod1/single-signon.css" />

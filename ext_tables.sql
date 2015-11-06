@@ -37,7 +37,7 @@ CREATE TABLE tx_singlesignon_properties (
 );
 
 #
-# Table structure for table 'fe_session_data'
+# Table structure for table 'tx_singlesignon_sessions'
 #
 CREATE TABLE tx_singlesignon_sessions (
   session_hash varchar(32) DEFAULT '' NOT NULL,

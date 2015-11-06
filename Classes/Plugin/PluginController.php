@@ -58,18 +58,11 @@ class PluginController extends AbstractPlugin {
 	public $prefixId = 'tx_singlesignon_pi1';
 
 	/**
-	 * Path to this script relative to the extension dir.
-	 *
-	 * @var string
-	 */
-	public $scriptRelPath = 'pi1/dummy.php';
-
-	/**
 	 * The extension key.
 	 *
 	 * @var string
 	 */
-	public $extKey = 'single_signon'; //
+	public $extKey = 'single_signon';
 
 	/**
 	 * @var bool
@@ -137,7 +130,7 @@ class PluginController extends AbstractPlugin {
 		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['single_signon']);
 
 		$this->pi_setPiVarDefaults();
-		$this->pi_loadLL();
+		$this->pi_loadLL('EXT:single_signon/Resources/Private/Language/Plugin/locallang.xml');
 
 		try {
 			$this->checkSsl();

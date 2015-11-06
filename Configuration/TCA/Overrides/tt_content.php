@@ -11,7 +11,7 @@ ExtensionManagementUtility::addPlugin(
 );
 ExtensionManagementUtility::addStaticFile(
 	$extensionKey, 
-	'pi1/static/', 
+	'Configuration/TypoScript/',
 	'Bitmotion SSO'
 );
 ExtensionManagementUtility::addPiFlexFormValue(

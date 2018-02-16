@@ -1,0 +1,23 @@
+{
+  "name": "bitmotion/single-signon",
+  "type": "typo3-cms-extension",
+  "description": "The TYPO3 SSO Server provides seamless integration of third-party (i.e. non-TYPO3) applications (SSO Apps) into TYPO3. This includes end-user access to SSO Apps with no additional logon",
+  "license": [
+    "GPL-2.0-and-later"
+  ],
+  "require": {
+    "typo3/cms-core": "^6.2 || ^7.6"
+  },
+  "conflict": {
+    "typo3-ter/naw-single-signon": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Bitmotion\\SingleSignon\\": "Classes"
+    }
+  },
+  "replace": {
+    "single_signon": "self.version",
+    "typo3-ter/single-signon": "self.version"
+  }
+}

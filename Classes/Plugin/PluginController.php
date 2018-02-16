@@ -494,7 +494,7 @@ class PluginController extends AbstractPlugin
         $content = $this->conf['html_before'];
         $additionalAttributes = array();
         if ($linkTarget === '_blank') {
-            $additionalAttributes[] = 'onmousedown="location.reload();"';
+            $additionalAttributes[] = 'onmousedown="setTimeout(function () {location.reload()},300);"';
         }
         $content .= '<a ' . implode(' ', $additionalAttributes) . ' href="' . htmlspecialchars($appLogonUrl) . '" target="' . htmlspecialchars($linkTarget) . '">' . htmlspecialchars($linkText) . '</a>';
         $content .= $this->conf['html_after'];

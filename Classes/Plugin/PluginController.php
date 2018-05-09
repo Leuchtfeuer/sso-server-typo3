@@ -496,7 +496,7 @@ class PluginController extends AbstractPlugin
         if ($linkTarget === '_blank') {
             $additionalAttributes[] = 'onmousedown="setTimeout(function () {location.reload()},300);"';
         }
-        $content .= '<a class="'.$this->conf['add_classes'].'" ' . implode(' ', $additionalAttributes) . ' href="' . htmlspecialchars($appLogonUrl) . '" target="' . htmlspecialchars($linkTarget) . '">' . htmlspecialchars($linkText) . '</a>';
+        $content .= '<a class="' . $this->conf['add_classes'] . '" ' . implode(' ', $additionalAttributes) . ' href="' . htmlspecialchars($appLogonUrl) . '" target="' . htmlspecialchars($linkTarget) . '">' . htmlspecialchars($linkText) . '</a>';
         $content .= $this->conf['html_after'];
         return $content;
     }

@@ -136,14 +136,14 @@
                             </config>
                         </TCEforms>
                     </html_after>
-                    <additional_params>
+                    <add_classes>
                         <TCEforms>
-                            <label>LLL:EXT:single_signon/Resources/Private/Language/locallang_tca.php:single_signon.pi_flexform.additional_params</label>
+                            <label>LLL:EXT:single_signon/Resources/Private/Language/locallang_tca.php:single_signon.pi_flexform.add_classes</label>
                             <config>
-                                <type>text</type>
+                                <type>input</type>
                             </config>
                         </TCEforms>
-                    </additional_params>
+                    </add_classes>
                 </el>
             </ROOT>
         </sDEF2>

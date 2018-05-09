@@ -136,6 +136,14 @@
                             </config>
                         </TCEforms>
                     </html_after>
+                    <additional_params>
+                        <TCEforms>
+                            <label>LLL:EXT:single_signon/Resources/Private/Language/locallang_tca.php:single_signon.pi_flexform.additional_params</label>
+                            <config>
+                                <type>text</type>
+                            </config>
+                        </TCEforms>
+                    </additional_params>
                 </el>
             </ROOT>
         </sDEF2>

@@ -493,6 +493,9 @@ class PluginController extends AbstractPlugin
 
         $content = $this->conf['html_before'];
         $additionalAttributes = array();
+        if ($this->conf['additional_params']) {
+            $additionalAttributes[] = $this->conf['additional_params'];
+        }
         if ($linkTarget === '_blank') {
             $additionalAttributes[] = 'onmousedown="setTimeout(function () {location.reload()},300);"';
         }

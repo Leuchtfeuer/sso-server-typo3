@@ -23,6 +23,7 @@
             <label index="single_signon.pi_flexform.frametargetcustom">Custom Frame Target Name (overrides: Frame Target)</label>
             <label index="single_signon.pi_flexform.html_before">HTML before the Link</label>
             <label index="single_signon.pi_flexform.html_after">HTML after the Link</label>
+            <label index="single_signon.pi_flexform.add_classes">Add classes to the Link</label>
             <label index="single_signon.pi_flexform.contenttype">Invocation Type</label>
             <label index="single_signon.pi_flexform.contenttype.I.0">Open in new window (requires JavaScript)</label>
             <label index="single_signon.pi_flexform.contenttype.I.1">Open here (HTTP redirect)</label>
@@ -60,6 +61,7 @@
             <label index="single_signon.pi_flexform.frametargetcustom" type="integer">145086136</label>
             <label index="single_signon.pi_flexform.html_before" type="integer">95683711</label>
             <label index="single_signon.pi_flexform.html_after" type="integer">264447386</label>
+            <label index="single_signon.pi_flexform.add_classes" type="integer">1525871097</label>
             <label index="single_signon.pi_flexform.contenttype" type="integer">128962952</label>
             <label index="single_signon.pi_flexform.contenttype.I.0" type="integer">227310529</label>
             <label index="single_signon.pi_flexform.contenttype.I.1" type="integer">72660979</label>

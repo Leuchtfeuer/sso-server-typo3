@@ -1,4 +1,5 @@
 <?php
+
 namespace Bitmotion\SingleSignon\Domain\Model;
 
 /***************************************************************
@@ -73,7 +74,7 @@ class Session
      */
     public function getValues()
     {
-        $values = array();
+        $values = [];
         foreach (get_object_vars($this) as $name => $value) {
             $values[GeneralUtility::camelCaseToLowerCaseUnderscored($name)] = $value;
         }

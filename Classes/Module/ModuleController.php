@@ -1,6 +1,10 @@
 <?php
+
 namespace Bitmotion\SingleSignon\Module;
 
+use TYPO3\CMS\Backend\Module\BaseScriptClass;
+use TYPO3\CMS\Backend\Routing\UriBuilder;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 /***************************************************************
  *  Copyright notice
  *
@@ -24,11 +28,11 @@ namespace Bitmotion\SingleSignon\Module;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Backend\Module\BaseScriptClass;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\PathUtility;
 
 /**
  * Module 'mapping' for the 'usermapping' extension.
@@ -55,12 +59,12 @@ class ModuleController extends BaseScriptClass
     /**
      * @var array
      */
-    protected $extConf = array();
+    protected $extConf = [];
 
     /**
      * @var array
      */
-    protected $userlist = array();
+    protected $userlist = [];
 
     public function __construct()
     {
@@ -68,31 +72,27 @@ class ModuleController extends BaseScriptClass
         $GLOBALS['BE_USER']->modAccess($GLOBALS['MCONF'], 1);
 
         $this->doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
-        $this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['single_signon']);
+        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('single_signon');
         $this->getLanguageService()->includeLLFile('EXT:single_signon/Resources/Private/Language/Module/locallang.xml');
     }
 
     /**
      * Adds items to the->MOD_MENU array. Used for the function menu selector.
-     *
-     * @return void
      */
     public function menuConfig()
     {
-        $this->MOD_MENU = array('function' => array(
+        $this->MOD_MENU = ['function' => [
                 '1' => $this->getLanguageService()->getLL('function1'), //Info
                 '6' => $this->getLanguageService()->getLL('function6'), //Create a new Mapping
                 '2' => $this->getLanguageService()->getLL('function2'), //Edit a mapping Table
                 '4' => $this->getLanguageService()->getLL('function4'), //Delete a mapping Table
                 '5' => $this->getLanguageService()->getLL('function5'), //Copy a mapping Table
-        ));
+        ]];
         parent::menuConfig();
     }
 
     /**
      * Main function of the module. Write the content to $this->content
-     *
-     * @return void
      */
     public function main()
     {
@@ -103,9 +103,9 @@ class ModuleController extends BaseScriptClass
 
         if (($this->id && $access) || ($this->getBackendUserAuthentication()->user['admin'] && !$this->id)) {
             // Insert the Banner
-            $this->doc->form = '<a href="http://www.single-signon.com" target="_blank" title="www.single-signon.com"><span class="banner"></span></a><form action="' . htmlspecialchars(BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '" method="POST">';
+            $this->doc->form = '<a href="http://www.single-signon.com" target="_blank" title="www.single-signon.com"><span class="banner"></span></a><form action="' . htmlspecialchars(GeneralUtility::makeInstance(UriBuilder::class)->buildUriFromRoute('tools_txsinglesignonM1')) . '" method="POST">';
             // JavaScript
-            $scriptRelPath = ExtensionManagementUtility::extRelPath('single_signon');
+            $scriptRelPath = PathUtility::getAbsoluteWebPath(ExtensionManagementUtility::extPath('single_signon'));
             $this->doc->JScode = '
                 <link rel="stylesheet" type="text/css" href="' . htmlspecialchars($scriptRelPath) . 'Resources/Public/Css/single-signon.css" />
                 <script type="text/javascript" language="javascript">
@@ -114,7 +114,7 @@ class ModuleController extends BaseScriptClass
             $this->doc->postCode = '
                 <script type="text/javascript" language="javascript">
                 script_ended = 1;
-                if (top.theMenu) top.theMenu.recentuid = ' . intval($this->id) . ';
+                if (top.theMenu) top.theMenu.recentuid = ' . (int)($this->id) . ';
                 </script>';
             $this->content .= $this->doc->startPage($this->getLanguageService()->getLL('title'));
             $this->content .= $this->doc->header($this->getLanguageService()->getLL('title'));
@@ -143,8 +143,6 @@ class ModuleController extends BaseScriptClass
 
     /**
      * Generates the module content
-     *
-     * @return void
      */
     public function moduleContent()
     {
@@ -204,8 +202,6 @@ class ModuleController extends BaseScriptClass
 
     /**
      * Returns the HTML Code for the form field of the Mapping Table in the BE in $this->content
-     *
-     * @return void
      */
     public function copyMappingTable()
     {
@@ -213,41 +209,39 @@ class ModuleController extends BaseScriptClass
         $mapping_id = 0;
         $result = $this->getDatabaseConnection()->exec_SELECTquery('*', $this->table_properties, 'uid=' . (int)$old_mapping_id);
         $row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
-        $sysfolder_id = intval($row['sysfolder_id']);
+        $sysfolder_id = (int)($row['sysfolder_id']);
 
-        $this->content .= '<form action="' . htmlspecialchars(BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '">' . chr(10);
+        $this->content .= '<form action="' . htmlspecialchars(GeneralUtility::makeInstance(UriBuilder::class)->buildUriFromRoute('tools_txsinglesignonM1')) . '">' . chr(10);
         $this->content .= '<input type="hidden" name="sysfolder_id" value="' . (int)$sysfolder_id . '">' . chr(10);
         $this->content .= '<input type="hidden" name="mapping_id" value="' . (int)$mapping_id . '">' . chr(10);
         $this->content .= '<input type="hidden" name="saveit" value="true">' . chr(10);
 
-        # Table Properties
+        // Table Properties
         $this->editTableProperties($mapping_id);
 
-        # User Mapping List
+        // User Mapping List
         $this->userlist = $this->mapUserlist($sysfolder_id, $old_mapping_id);
 
-        # Fill the Userlist form
+        // Fill the Userlist form
         foreach ($this->userlist as $id => $name) {
             $this->content .= '<input name="fe_uid"' . (int)$id . '" type="hidden" value="' . htmlspecialchars($name) . '" size="30">' . chr(10);
         }
-        $this->content .= '<table><tr><td><form action="' . htmlspecialchars(BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '">' . chr(10);
+        $this->content .= '<table><tr><td><form action="' . htmlspecialchars(GeneralUtility::makeInstance(UriBuilder::class)->buildUriFromRoute('tools_txsinglesignonM1')) . '">' . chr(10);
         $this->content .= '<input type="hidden" name="sysfolder_id" value="' . (int)$sysfolder_id . '">' . chr(10);
         $this->content .= '<input type="hidden" name="mapping_id" value="' . (int)$mapping_id . '">' . chr(10);
         $this->content .= '<input type="hidden" name="deleteit" value="true">' . chr(10);
         $this->content .= '<input type="submit" value="' . htmlspecialchars($this->getLanguageService()->getLL('submit')) . '"></form></td><td>' . chr(10);
-        $this->content .= '<form action="' . htmlspecialchars(BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '" method="POST">' . chr(10);
+        $this->content .= '<form action="' . htmlspecialchars(GeneralUtility::makeInstance(UriBuilder::class)->buildUriFromRoute('tools_txsinglesignonM1')) . '" method="POST">' . chr(10);
         $this->content .= '<input type="submit" value="' . htmlspecialchars($this->getLanguageService()->getLL('cancel')) . '">' . chr(10);
         $this->content .= '</td></tr></table>';
     }
 
     /**
      * Return the HTML Code for form in $this->content
-     *
-     * @return void
      */
     public function deleteMappingTable()
     {
-        $mapping_id = intval(GeneralUtility::_GP('mapping_id'));
+        $mapping_id = (int)(GeneralUtility::_GP('mapping_id'));
         if (GeneralUtility::_GP('deleteit')) {
             $this->getDatabaseConnection()->exec_DELETEquery($this->table_properties, 'uid=' . (int)$mapping_id);
             $this->getDatabaseConnection()->exec_DELETEquery($this->table_usermap, 'mapping_id=' . (int)$mapping_id);
@@ -256,11 +250,11 @@ class ModuleController extends BaseScriptClass
             $this->editTableProperties($mapping_id, 1);
             $this->content .= $this->doc->section('Are you Sure?', '', 0, 1);
 
-            $this->content .= '<table><tr><td><form action="' . htmlspecialchars(BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '">' . chr(10);
+            $this->content .= '<table><tr><td><form action="' . htmlspecialchars(GeneralUtility::makeInstance(UriBuilder::class)->buildUriFromRoute('tools_txsinglesignonM1')) . '">' . chr(10);
             $this->content .= '<input type="hidden" name="mapping_id" value="' . (int)$mapping_id . '">' . chr(10);
             $this->content .= '<input type="hidden" name="deleteit" value="true">' . chr(10);
             $this->content .= '<input type="submit" value="' . htmlspecialchars($this->getLanguageService()->getLL('submit')) . '"></form></td><td>' . chr(10);
-            $this->content .= '<form action="' . htmlspecialchars(BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '" method="POST">' . chr(10);
+            $this->content .= '<form action="' . htmlspecialchars(GeneralUtility::makeInstance(UriBuilder::class)->buildUriFromRoute('tools_txsinglesignonM1')) . '" method="POST">' . chr(10);
             $this->content .= '<input type="submit" value="' . htmlspecialchars($this->getLanguageService()->getLL('cancel')) . '">' . chr(10);
             $this->content .= '</form></td></tr></table>';
         }
@@ -270,8 +264,6 @@ class ModuleController extends BaseScriptClass
      * Saves the Mapping Table (from GeneralUtility::_GP('offset')
      * to GeneralUtility::_GP('offset')+$this->extConf['maxUsersPerPage']
      * Only the actualy shown users will be saved
-     *
-     * @return void
      */
     public function saveMappingTable()
     {
@@ -282,25 +274,25 @@ class ModuleController extends BaseScriptClass
         $offset = (int)GeneralUtility::_GP('offset');
         $maxUsersPerPage = $this->extConf['maxUsersPerPage'];
 
-        $allowall = intval((bool)GeneralUtility::_GP('allowall'));
+        $allowall = (int)((bool)GeneralUtility::_GP('allowall'));
 
         // Save Table Properties (name and default mapping)
         $result = $this->getDatabaseConnection()->exec_SELECTquery('*', $this->table_properties, 'uid=' . (int)$mapping_id);
         $numrows = $this->getDatabaseConnection()->sql_num_rows($result);
         if ($numrows == 1) {
-            $values = array(
+            $values = [
                 'mapping_tablename' => $mapping_tablename,
                 'mapping_defaultmapping' => $mapping_defaultmapping,
                 'allowall' => $allowall
-            );
+            ];
             $this->getDatabaseConnection()->exec_UPDATEquery($this->table_properties, 'uid=' . (int)$mapping_id, $values);
         } else {
-            $values = array(
+            $values = [
                 'sysfolder_id' => $sysfolder_id,
                 'mapping_tablename' => $mapping_tablename,
                 'mapping_defaultmapping' => $mapping_defaultmapping,
                 'allowall' => $allowall
-            );
+            ];
             $this->getDatabaseConnection()->exec_INSERTquery($this->table_properties, $values);
             $mapping_id = $this->getDatabaseConnection()->sql_insert_id();
         }
@@ -316,15 +308,15 @@ class ModuleController extends BaseScriptClass
                 $username = GeneralUtility::_GP($feuid);
                 if ($this->getDatabaseConnection()->sql_num_rows($result2) == 1) {
                     // Update DB
-                    $values = array('mapping_username' => $username);
+                    $values = ['mapping_username' => $username];
                     $this->getDatabaseConnection()->exec_UPDATEquery($this->table_usermap, 'mapping_id=' . (int)$mapping_id . ' AND fe_uid=' . (int)$row['uid'], $values);
                 } else {
                     // Insert in DB
-                    $values = array(
+                    $values = [
                         'mapping_id' => $mapping_id,
                         'fe_uid' => $row['uid'],
                         'mapping_username' => $username
-                    );
+                    ];
                     $this->getDatabaseConnection()->exec_INSERTquery($this->table_usermap, $values);
                 }
             }
@@ -333,8 +325,6 @@ class ModuleController extends BaseScriptClass
 
     /**
      * return the form for editMappingTable in $this->content
-     *
-     * @return void
      */
     public function editMappingTable()
     {
@@ -348,24 +338,24 @@ class ModuleController extends BaseScriptClass
             $this->content .= $this->doc->section('Error: No Sysfolder id', '', 0, 1);
             return;
         }
-        $this->content .= '<form action="' . htmlspecialchars(BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '">' . chr(10);
+        $this->content .= '<form action="' . htmlspecialchars(GeneralUtility::makeInstance(UriBuilder::class)->buildUriFromRoute('tools_txsinglesignonM1')) . '">' . chr(10);
         $this->content .= '<input type="hidden" name="sysfolder_id" value="' . (int)$sysfolder_id . '">' . chr(10);
         $this->content .= '<input type="hidden" name="mapping_id" value="' . (int)$mapping_id . '">' . chr(10);
         $this->content .= '<input type="hidden" name="saveit" value="true">' . chr(10);
         $this->content .= '<input type="hidden" name="offset" value="' . (int)$offset . '">' . chr(10);
 
-        # Table Properties
+        // Table Properties
         $this->editTableProperties($mapping_id);
 
-        # User Mapping List: [uid] => [mappingname]
+        // User Mapping List: [uid] => [mappingname]
         $this->userlist = $this->mapUserlist($sysfolder_id, $mapping_id);
         $numberofusers = count($this->userlist);
 
-        # Fill the Userlist form (more pages)
+        // Fill the Userlist form (more pages)
         $maxUsersPerPage = $this->extConf['maxUsersPerPage'];
 
         $this->content .= '<h3>';
-        $this->content .= $this->generate_pagination(BackendUtility::getModuleUrl('tools_txsinglesignonM1', array('sysfolder_id' => $sysfolder_id, 'mapping_id' => $mapping_id)), $numberofusers, $maxUsersPerPage, $offset);
+        $this->content .= $this->generate_pagination(GeneralUtility::makeInstance(UriBuilder::class)->buildUriFromRoute('tools_txsinglesignonM1', ['sysfolder_id' => $sysfolder_id, 'mapping_id' => $mapping_id]), $numberofusers, $maxUsersPerPage, $offset);
         $this->content .= '</h3>';
 
         $this->content .= '<table>' . chr(10);
@@ -383,12 +373,12 @@ class ModuleController extends BaseScriptClass
             $tmp_num++;
         }
         $this->content .= '</table>' . chr(10);
-        $this->content .= '<table><tr><td><form action="' . htmlspecialchars(BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '">' . chr(10);
+        $this->content .= '<table><tr><td><form action="' . htmlspecialchars(GeneralUtility::makeInstance(UriBuilder::class)->buildUriFromRoute('tools_txsinglesignonM1')) . '">' . chr(10);
         $this->content .= '<input type="hidden" name="sysfolder_id" value="' . (int)$sysfolder_id . '">' . chr(10);
         $this->content .= '<input type="hidden" name="mapping_id" value="' . (int)$mapping_id . '">' . chr(10);
         $this->content .= '<input type="hidden" name="deleteit" value="true">' . chr(10);
         $this->content .= '<input type="submit" value="' . htmlspecialchars($this->getLanguageService()->getLL('submit')) . '"></form></td><td>' . chr(10);
-        $this->content .= '<form action="' . htmlspecialchars(BackendUtility::getModuleUrl('tools_txsinglesignonM1')) . '" method="POST">' . chr(10);
+        $this->content .= '<form action="' . htmlspecialchars(GeneralUtility::makeInstance(UriBuilder::class)->buildUriFromRoute('tools_txsinglesignonM1')) . '" method="POST">' . chr(10);
         $this->content .= '<input type="submit" value="' . htmlspecialchars($this->getLanguageService()->getLL('cancel')) . '">' . chr(10);
         $this->content .= '</form></td></tr></table>';
     }
@@ -411,9 +401,9 @@ class ModuleController extends BaseScriptClass
         if ($total_pages > 10) {
             $init_page_max = ($total_pages > 3) ? 3 : $total_pages;
             for ($i = 1; $i < $init_page_max + 1; $i++) {
-                $page_string .= ($i == $on_page) ? '<b>' . $i . '</b>' : '<a href="' . htmlspecialchars($base_url . "&offset=" . (($i - 1) * $per_page)) . '">' . $i . '</a>';
+                $page_string .= ($i == $on_page) ? '<b>' . $i . '</b>' : '<a href="' . htmlspecialchars($base_url . '&offset=' . (($i - 1) * $per_page)) . '">' . $i . '</a>';
                 if ($i < $init_page_max) {
-                    $page_string .= ", ";
+                    $page_string .= ', ';
                 }
             }
             if ($total_pages > 3) {
@@ -422,7 +412,7 @@ class ModuleController extends BaseScriptClass
                     $init_page_min = ($on_page > 4) ? $on_page : 5;
                     $init_page_max = ($on_page < $total_pages - 4) ? $on_page : $total_pages - 4;
                     for ($i = $init_page_min - 1; $i < $init_page_max + 2; $i++) {
-                        $page_string .= ($i == $on_page) ? '<b>' . $i . '</b>' : '<a href="' . htmlspecialchars($base_url . "&offset=" . (($i - 1) * $per_page)) . '">' . $i . '</a>';
+                        $page_string .= ($i == $on_page) ? '<b>' . $i . '</b>' : '<a href="' . htmlspecialchars($base_url . '&offset=' . (($i - 1) * $per_page)) . '">' . $i . '</a>';
                         if ($i < $init_page_max + 1) {
                             $page_string .= ', ';
                         }
@@ -432,15 +422,15 @@ class ModuleController extends BaseScriptClass
                     $page_string .= ' ... ';
                 }
                 for ($i = $total_pages - 2; $i < $total_pages + 1; $i++) {
-                    $page_string .= ($i == $on_page) ? '<b>' . $i . '</b>' : '<a href="' . htmlspecialchars($base_url . "&offset=" . (($i - 1) * $per_page)) . '">' . $i . '</a>';
+                    $page_string .= ($i == $on_page) ? '<b>' . $i . '</b>' : '<a href="' . htmlspecialchars($base_url . '&offset=' . (($i - 1) * $per_page)) . '">' . $i . '</a>';
                     if ($i < $total_pages) {
-                        $page_string .= ", ";
+                        $page_string .= ', ';
                     }
                 }
             }
         } else {
             for ($i = 1; $i < $total_pages + 1; $i++) {
-                $page_string .= ($i == $on_page) ? '<b>' . $i . '</b>' : '<a href="' . htmlspecialchars($base_url . "&offset=" . (($i - 1) * $per_page)) . '">' . $i . '</a>';
+                $page_string .= ($i == $on_page) ? '<b>' . $i . '</b>' : '<a href="' . htmlspecialchars($base_url . '&offset=' . (($i - 1) * $per_page)) . '">' . $i . '</a>';
                 if ($i < $total_pages) {
                     $page_string .= ', ';
                 }
@@ -448,10 +438,10 @@ class ModuleController extends BaseScriptClass
         }
         if ($add_prevnext_text) {
             if ($on_page > 1) {
-                $page_string = ' <a href="' . htmlspecialchars($base_url . "&offset=" . (($on_page - 2) * $per_page)) . '">' . htmlspecialchars($this->getLanguageService()->getLL('goBack')) . '</a>&nbsp;&nbsp;' . $page_string;
+                $page_string = ' <a href="' . htmlspecialchars($base_url . '&offset=' . (($on_page - 2) * $per_page)) . '">' . htmlspecialchars($this->getLanguageService()->getLL('goBack')) . '</a>&nbsp;&nbsp;' . $page_string;
             }
             if ($on_page < $total_pages) {
-                $page_string .= '&nbsp;&nbsp;<a href="' . htmlspecialchars($base_url . "&offset=" . ($on_page * $per_page)) . '">' . htmlspecialchars($this->getLanguageService()->getLL('goForward')) . '</a>';
+                $page_string .= '&nbsp;&nbsp;<a href="' . htmlspecialchars($base_url . '&offset=' . ($on_page * $per_page)) . '">' . htmlspecialchars($this->getLanguageService()->getLL('goForward')) . '</a>';
             }
         }
         $page_string = htmlspecialchars($this->getLanguageService()->getLL('gotoPage')) . ' ' . $page_string;
@@ -461,8 +451,6 @@ class ModuleController extends BaseScriptClass
     /**
      * return the form for selectUserFolder() in $this->content
      * This will print out a clickable list of all Sysfolders
-     *
-     * @return void
      */
     public function selectUserFolder()
     {
@@ -471,7 +459,7 @@ class ModuleController extends BaseScriptClass
         $content1 = '<table>';
         for ($i = 0; $i < $menge; $i++) {
             $row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
-            $ahref = '<a href="' . htmlspecialchars(BackendUtility::getModuleUrl('tools_txsinglesignonM1', array('sysfolder_id' => $row['uid']))) . '" class="link1">' . chr(10);
+            $ahref = '<a href="' . htmlspecialchars(GeneralUtility::makeInstance(UriBuilder::class)->buildUriFromRoute('tools_txsinglesignonM1', ['sysfolder_id' => $row['uid']])) . '" class="link1">' . chr(10);
             $result1 = $this->getDatabaseConnection()->exec_SELECTquery('*', 'fe_users', 'pid=' . (int)$row['uid'] . ' AND deleted=\'0\'');
             $num = $this->getDatabaseConnection()->sql_num_rows($result1);
             $content1 .= '<tr>' . chr(10);
@@ -486,8 +474,6 @@ class ModuleController extends BaseScriptClass
 
     /**
      * return the form for selectMappingTable() in $this->content
-     *
-     * @return void
      */
     public function selectMappingTable()
     {
@@ -496,7 +482,7 @@ class ModuleController extends BaseScriptClass
         $content1 = '<table>';
         for ($i = 0; $i < $menge; $i++) {
             $row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
-            $ahref = '<a href="' . htmlspecialchars(BackendUtility::getModuleUrl('tools_txsinglesignonM1', array('sysfolder_id' => $row['sysfolder_id'], 'mapping_id' => $row['uid']))) . '" class="link1">' . chr(10);
+            $ahref = '<a href="' . htmlspecialchars(GeneralUtility::makeInstance(UriBuilder::class)->buildUriFromRoute('tools_txsinglesignonM1', ['sysfolder_id' => $row['sysfolder_id'], 'mapping_id' => $row['uid']])) . '" class="link1">' . chr(10);
             $content1 .= '<tr class="box">' . chr(10);
             $content1 .= '<td class="td1">' . $ahref . $this->getLanguageService()->getLL('mappingTable') . '</a></td><td class="td2">' . $ahref . htmlspecialchars($row['mapping_tablename']) . '</a></td>' . chr(10);
             $content1 .= '<td class="td1">' . $ahref . $this->getLanguageService()->getLL('sysfolderid') . '</a></td><td class="td2">' . $ahref . (int)$row['sysfolder_id'] . '</a></td>' . chr(10);
@@ -513,7 +499,6 @@ class ModuleController extends BaseScriptClass
      *
      * @param int $mapping_id : the UID for the mapping table you want to edit.
      * @param int $show : if this is set to 1 the function only display the forms (readonly)
-     * @return void
      */
     public function editTableProperties($mapping_id = 0, $show = 0)
     {
@@ -555,7 +540,7 @@ class ModuleController extends BaseScriptClass
     {
         $result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'fe_users', 'pid=' . (int)$sysfolder_id . ' AND deleted=\'0\'');
         $menge = $this->getDatabaseConnection()->sql_num_rows($result);
-        $userarray = array();
+        $userarray = [];
         for ($i = 0; $i < $menge; $i++) {
             $row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
             $result2 = $this->getDatabaseConnection()->exec_SELECTquery('*', $this->table_usermap, 'mapping_id=' . (int)$mapping_id . ' AND fe_uid=' . (int)$row['uid']);
@@ -574,7 +559,7 @@ class ModuleController extends BaseScriptClass
     }
 
     /**
-     * @return \TYPO3\CMS\Lang\LanguageService
+     * @return \TYPO3\CMS\Core\Localization\LanguageService
      */
     protected function getLanguageService()
     {

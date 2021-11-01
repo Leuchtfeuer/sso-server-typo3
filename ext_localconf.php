@@ -3,7 +3,7 @@ defined('TYPO3_MODE') or die('Access denied.');
 
 // Register plugin
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript(
-    $_EXTKEY,
+    'sso-server-typo3',
     'setup',
     trim('
         plugin.tx_singlesignon_pi1 = USER_INT
@@ -13,7 +13,7 @@ defined('TYPO3_MODE') or die('Access denied.');
 
 // Add default rendering for plugin
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript(
-    $_EXTKEY,
+    'sso-server-typo3',
     'setup',
     'tt_content.list.20.single_signon_pi1 =< plugin.tx_singlesignon_pi1',
     'defaultContentRendering'

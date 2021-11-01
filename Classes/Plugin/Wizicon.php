@@ -1,6 +1,8 @@
 <?php
+
 namespace Bitmotion\SingleSignon\Plugin;
 
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 /***************************************************************
 *  Copyright notice
 *
@@ -24,8 +26,7 @@ namespace Bitmotion\SingleSignon\Plugin;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use TYPO3\CMS\Lang\LanguageService;
+use TYPO3\CMS\Core\Utility\PathUtility;
 
 /**
 * Class that adds the wizard icon.
@@ -41,11 +42,11 @@ class Wizicon
     public function proc($wizardItems)
     {
         $labelArray = $this->includeLocalLang();
-        $wizardItems['plugins_tx_singlesignon_pi1'] = array(
-        'icon' => ExtensionManagementUtility::extRelPath('single_signon') . 'Resources/Public/Icons/ce_wiz.gif',
+        $wizardItems['plugins_tx_singlesignon_pi1'] = [
+        'icon' => PathUtility::getAbsoluteWebPath(ExtensionManagementUtility::extPath('single_signon')) . 'Resources/Public/Icons/ce_wiz.gif',
             'title' => $this->getLanguageService()->getLLL('pi1_title', $labelArray),
             'description' => $this->getLanguageService()->getLLL('pi1_plus_wiz_description', $labelArray),
-            'params' => '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=single_signon_pi1' );
+            'params' => '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=single_signon_pi1' ];
 
         return $wizardItems;
     }
@@ -61,7 +62,7 @@ class Wizicon
     }
 
     /**
-     * @return LanguageService
+     * @return \TYPO3\CMS\Core\Localization\LanguageService
      */
     protected function getLanguageService()
     {

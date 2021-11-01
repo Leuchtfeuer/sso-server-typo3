@@ -1,11 +1,12 @@
 <?php
+
 namespace Bitmotion\SingleSignon\Configuration\TCA\Overrides;
 
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 $extensionKey = 'single_signon';
 ExtensionManagementUtility::addPlugin(
-    array('LLL:EXT:single_signon/Resources/Private/Language/locallang_tca.php:single_signon', $extensionKey . '_pi1'),
+    ['LLL:EXT:single_signon/Resources/Private/Language/locallang_tca.php:single_signon', $extensionKey . '_pi1'],
     'list_type',
     $extensionKey
 );

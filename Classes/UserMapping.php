@@ -1,4 +1,5 @@
 <?php
+
 namespace Bitmotion\SingleSignon;
 
 /***************************************************************
@@ -26,7 +27,6 @@ namespace Bitmotion\SingleSignon;
 
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
-use TYPO3\CMS\Lang\LanguageService;
 
 /**
  * @author  Dietrich Heise <typo3-ext@bitmotion.de>
@@ -42,12 +42,12 @@ class UserMapping
     public function getAvailableMappingItems($config)
     {
         // No Usermapping =0
-        $config['items'][] = array($this->getLanguageService()->sL('LLL:EXT:single_signon/Resources/Private/Language/locallang_tca.php:single_signon.pi_flexform.no_usermapping'), '0');
+        $config['items'][] = [$this->getLanguageService()->sL('LLL:EXT:single_signon/Resources/Private/Language/locallang_tca.php:single_signon.pi_flexform.no_usermapping'), '0'];
 
         // configured Mappings
         $result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'tx_singlesignon_properties', 'deleted=0');
         while ($row = $this->getDatabaseConnection()->sql_fetch_assoc($result)) {
-            $config['items'][] = array($row['mapping_tablename'], $row['uid']);
+            $config['items'][] = [$row['mapping_tablename'], $row['uid']];
         }
         return $config;
     }
@@ -109,7 +109,7 @@ class UserMapping
     }
 
     /**
-     * @return LanguageService
+     * @return \TYPO3\CMS\Core\Localization\LanguageService
      */
     protected function getLanguageService()
     {

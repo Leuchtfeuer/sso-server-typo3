@@ -1,4 +1,5 @@
 <?php
+
 namespace Bitmotion\SingleSignon\UserData;
 
 /*
@@ -38,7 +39,7 @@ class FrontendUserDataSource implements UserDataSourceInterface
 
         if (!empty($compiledUserData['usergroup'])) {
             $groupIds = explode(',', $compiledUserData['usergroup']);
-            $userGroupNames = array();
+            $userGroupNames = [];
             foreach ($groupIds as $groupId) {
                 $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow('*', 'fe_groups', 'uid=' . (int)$groupId);
                 $userGroupNames[] = $row['title'];
@@ -48,7 +49,6 @@ class FrontendUserDataSource implements UserDataSourceInterface
 
         return array_replace_recursive($preFetchedUserData, $compiledUserData);
     }
-
 
     /**
      * @return DatabaseConnection

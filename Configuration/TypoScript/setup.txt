@@ -6,7 +6,8 @@ plugin.tx_singlesignon_pi1 {
     }
 }
 
-[globalVar = TX_SINGLE_SIGNON|logout = 1]
+
+[]
 page.9992342 =< plugin.tx_singlesignon_pi1
 page.9992342.userFunc = Bitmotion\SingleSignon\Plugin\PluginController->logoff
-[GLOBAL]
+[global]

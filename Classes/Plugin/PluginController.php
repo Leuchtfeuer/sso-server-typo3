@@ -1,6 +1,10 @@
 <?php
+
 namespace Bitmotion\SingleSignon\Plugin;
 
+use Bitmotion\SingleSignon\Domain\Model\Session;
+use Bitmotion\SingleSignon\Domain\Repository\SessionRepository;
+use Bitmotion\SingleSignon\UserData\UserDataSourceInterface;
 /***************************************************************
  *  Copyright notice
  *
@@ -24,16 +28,14 @@ namespace Bitmotion\SingleSignon\Plugin;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Bitmotion\SingleSignon\Domain\Model\Session;
-use Bitmotion\SingleSignon\Domain\Repository\SessionRepository;
-use Bitmotion\SingleSignon\UserData\UserDataSourceInterface;
 use Bitmotion\SingleSignon\UserMapping;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
-use TYPO3\CMS\Core\TypoScript\TemplateService;
+use TYPO3\CMS\Core\Service\FlexFormService;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\HttpUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Extbase\Service\FlexFormService;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
@@ -97,21 +99,21 @@ class PluginController extends AbstractPlugin
     protected $sessionRepository;
 
     /**
-     * @var FlexFormService
+     * @var \TYPO3\CMS\Core\Service\FlexFormService
      */
     protected $flexFormService;
 
     /**
      * @param SessionRepository $sessionRepository
      * @param UserMapping $userMapping
-     * @param FlexFormService $flexFormService
+     * @param \TYPO3\CMS\Core\Service\FlexFormService $flexFormService
      */
     public function __construct(SessionRepository $sessionRepository = null, UserMapping $userMapping = null, FlexFormService $flexFormService = null)
     {
         parent::__construct();
         $this->sessionRepository = $sessionRepository ?: new SessionRepository($GLOBALS['TYPO3_DB']);
         $this->userMapping = $userMapping ?: new UserMapping();
-        $this->flexFormService = $flexFormService ?: GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Service\\FlexFormService');
+        $this->flexFormService = $flexFormService ?: GeneralUtility::makeInstance(FlexFormService::class);
     }
 
     /**
@@ -128,7 +130,7 @@ class PluginController extends AbstractPlugin
         }
 
         $this->conf = array_replace_recursive($conf, $this->flexFormService->convertFlexFormContentToArray($this->cObj->data['pi_flexform']));
-        $this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['single_signon']);
+        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('single_signon');
 
         $this->pi_setPiVarDefaults();
         $this->pi_loadLL('EXT:single_signon/Resources/Private/Language/Plugin/locallang.xml');
@@ -156,21 +158,21 @@ class PluginController extends AbstractPlugin
         if (empty(self::$loggedOffUserAuthenticationObject)) {
             return '';
         }
-        $this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['single_signon']);
+        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('single_signon');
         $activeSessions = $this->sessionRepository->findBySessionId(self::$loggedOffUserAuthenticationObject->id);
 
-        $logoffUrls = array();
+        $logoffUrls = [];
         foreach ($activeSessions as $session) {
             $metaData = unserialize($session['data']);
             $this->conf = $metaData['config'];
 
-            $ssoData = array(
+            $ssoData = [
                 'version' => $metaData['ssoData']['version'],
                 'user' => $metaData['ssoData']['user'],
                 'app_id' => $metaData['ssoData']['app_id'],
-                'expires' => intval($this->conf['linklifetime']) + $GLOBALS['EXEC_TIME'],
+                'expires' => (int)($this->conf['linklifetime']) + $GLOBALS['EXEC_TIME'],
                 'action' => 'logoff',
-            );
+            ];
 
             $logoffUrls[] = $this->generateSsoAppUrl($ssoData);
             $this->sessionRepository->deleteBySessionHashUserIdAppId(
@@ -210,7 +212,7 @@ class PluginController extends AbstractPlugin
     protected function generateSsoAppLogonUrl()
     {
         // Calculate link expire time
-        $linkLifetime = intval($this->conf['linklifetime']);
+        $linkLifetime = (int)($this->conf['linklifetime']);
 
         // Create Signing Data
         $version = $this->sso_version;
@@ -218,10 +220,10 @@ class PluginController extends AbstractPlugin
         $appId = $this->conf['appId'];
         $validUntilTimestamp = $linkLifetime + $GLOBALS['EXEC_TIME'];
         $action = 'logon';
-        $flags = base64_encode('create_modify=' . (string)intval((bool)$this->conf['flag_create']));
+        $flags = base64_encode('create_modify=' . (string)(int)((bool)$this->conf['flag_create']));
         $userData = $this->getUserData();
 
-        $ssoData = array(
+        $ssoData = [
             'version' => $version,
             'user' => $userName,
             'app_id' => $appId,
@@ -229,7 +231,7 @@ class PluginController extends AbstractPlugin
             'action' => $action,
             'flags' => $flags,
             'userdata' => $this->encodeUserData($userData),
-        );
+        ];
 
         $finalUrl = $this->generateSsoAppUrl($ssoData);
 
@@ -243,10 +245,10 @@ class PluginController extends AbstractPlugin
                 $this->getTypoScriptFrontendController()->fe_user->id,
                 $this->getTypoScriptFrontendController()->fe_user->user['uid'],
                 $appId,
-                array(
+                [
                     'ssoData' => $ssoData,
                     'config' => $this->conf,
-                )
+                ]
             )
         );
 
@@ -297,7 +299,6 @@ class PluginController extends AbstractPlugin
         return $content;
     }
 
-
     /**
      * Signs a string by either using command line SSL or PHP builtin SSL
      *
@@ -341,20 +342,20 @@ class PluginController extends AbstractPlugin
                 openssl_sign($stringToBeSigned, $signature, $privateKeyResource);
                 // remove sign from memory
                 openssl_free_key($privateKeyResource);
-                // END OPENSSL Sign
+            // END OPENSSL Sign
             } else {
                 throw new \Exception('no_openssl_inPHP', 1439646268);
             }
         }
 
-        # debug mode: save binary signature to file
+        // debug mode: save binary signature to file
         if (self::$debug) {
             $tmp_signature_file = '/tmp/directsso_debug.signature';
-            $tmp_file = @fopen($tmp_signature_file, "w");
+            $tmp_file = @fopen($tmp_signature_file, 'w');
             fwrite($tmp_file, $signature);
             fclose($tmp_file);
-            print('<br>Stored binary signature into ' . $tmp_signature_file);
-            print('<br>bin2hex of binary signature: ' . bin2hex($signature));
+            print '<br>Stored binary signature into ' . $tmp_signature_file;
+            print '<br>bin2hex of binary signature: ' . bin2hex($signature);
         }
 
         return $signature;
@@ -376,14 +377,14 @@ class PluginController extends AbstractPlugin
             explode(',', $this->conf['enable_fields'])
         );
 
-        $userData = array();
+        $userData = [];
         $dataSources = $this->conf['userDataSources.'];
-        $dataSourcesKeys = TemplateService::sortedKeyList($dataSources);
+        $dataSourcesKeys = ArrayUtility::filterAndSortByNumericKeys($dataSources);
 
         foreach ($dataSourcesKeys as $key) {
             $className = $dataSources[$key];
             if (!class_exists($className)) {
-                throw new \UnexpectedValueException('Data source class name "' . $className . '" does not exist!',  1441731922);
+                throw new \UnexpectedValueException('Data source class name "' . $className . '" does not exist!', 1441731922);
             }
             $dataSource = GeneralUtility::makeInstance($className);
             if (!$dataSource instanceof UserDataSourceInterface) {
@@ -394,7 +395,7 @@ class PluginController extends AbstractPlugin
                 );
             }
 
-            $dataSourceConfiguration = isset($dataSources[$key . '.']) ? $dataSources[$key . '.'] : array();
+            $dataSourceConfiguration = isset($dataSources[$key . '.']) ? $dataSources[$key . '.'] : [];
             $dataSourceConfiguration['userDataFields'] = empty($dataSourceConfiguration['userDataFields']) ? $requestedUserDataFields : $dataSourceConfiguration['userDataFields'];
 
             $userData = $dataSource->fetchUserData(
@@ -434,7 +435,8 @@ class PluginController extends AbstractPlugin
     {
         if (!is_string($returnToUrl)) {
             return '';
-        } elseif (preg_match('#[[:cntrl:]])#', $returnToUrl)) {
+        }
+        if (preg_match('#[[:cntrl:]])#', $returnToUrl)) {
             return '';
         }
 
@@ -492,7 +494,7 @@ class PluginController extends AbstractPlugin
         }
 
         $content = $this->conf['html_before'];
-        $additionalAttributes = array();
+        $additionalAttributes = [];
         if ($linkTarget === '_blank') {
             $additionalAttributes[] = 'onmousedown="setTimeout(function () {location.reload()},300);"';
         }
@@ -527,9 +529,6 @@ class PluginController extends AbstractPlugin
         return $GLOBALS['TSFE'];
     }
 
-    /**
-     * @return void
-     */
     protected function addMetaRefreshToHtmlHeader()
     {
         if (!empty($this->extConf['refreshLinkPage'])) {
@@ -556,11 +555,11 @@ class PluginController extends AbstractPlugin
      */
     protected function generateSsoAppUrl($ssoData)
     {
-        # encode the signature in hex format
+        // encode the signature in hex format
         $ssoData['signature'] = bin2hex($this->getSslSignatureForString($this->implodeSsoData($ssoData)));
         $ssoData['returnTo'] = $this->validateReturnToUrl(GeneralUtility::_GET('returnTo'));
 
-        # Compose the final URL
+        // Compose the final URL
         $finalUrl = $this->conf['targeturl'] . '?' . GeneralUtility::implodeArrayForUrl('', $ssoData, '', false, true);
         return $finalUrl;
     }

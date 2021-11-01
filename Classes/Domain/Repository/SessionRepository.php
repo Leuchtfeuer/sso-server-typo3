@@ -1,4 +1,5 @@
 <?php
+
 namespace Bitmotion\SingleSignon\Domain\Repository;
 
 /***************************************************************
@@ -54,7 +55,7 @@ class SessionRepository
      */
     public function addOrUpdateSession(Session $session)
     {
-        $values = array();
+        $values = [];
         foreach ($session->getValues() as $name => $value) {
             $values[$name] = is_scalar($value) ? $value : serialize($value);
         }
@@ -64,7 +65,7 @@ class SessionRepository
 
     /**
      * @param string $sessionId
-     * @return array|NULL
+     * @return array|null
      */
     public function findBySessionId($sessionId)
     {
@@ -103,7 +104,7 @@ class SessionRepository
      */
     protected function getOnDuplicateKeyStatement(Session $session)
     {
-        $updateValues = array();
+        $updateValues = [];
         foreach (array_slice($session->getValues(), 3) as $name => $value) {
             $updateValues[] = "$name=VALUES($name)";
         }

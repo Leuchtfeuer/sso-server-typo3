@@ -1,4 +1,5 @@
 <?php
+
 $MCONF['name'] = 'tools_txsinglesignonM1';
 
 $MCONF['access'] = 'admin';

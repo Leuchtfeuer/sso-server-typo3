@@ -22,6 +22,7 @@ namespace Bitmotion\SingleSignon\Domain\Model;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -50,7 +51,7 @@ class Session
     protected $data;
 
     /**
-     * @var array
+     * @var int
      */
     protected $timestamp;
 
@@ -66,7 +67,9 @@ class Session
         $this->userId = $userId;
         $this->appId = $appId;
         $this->data = $data;
-        $this->timestamp = $GLOBALS['EXEC_TIME'];
+
+        $context = GeneralUtility::makeInstance(Context::class);
+        $this->timestamp = $context->getPropertyFromAspect('date', 'timestamp');
     }
 
     /**

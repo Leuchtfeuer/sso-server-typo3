@@ -23,77 +23,74 @@ namespace Bitmotion\SingleSignon\Domain\Repository;
  ***************************************************************/
 
 use Bitmotion\SingleSignon\Domain\Model\Session;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class SessionRepository
  */
 class SessionRepository
 {
-    /**
-     * @var string
-     */
-    protected $tableName = 'tx_singlesignon_sessions';
+    private const SESSION_TABLE_NAME = 'tx_singlesignon_sessions';
 
-    /**
-     * @var DatabaseConnection
-     */
-    protected $databaseConnection;
-
-    /**
-     * @param DatabaseConnection $databaseConnection
-     */
-    public function __construct(DatabaseConnection $databaseConnection = null)
-    {
-        $this->databaseConnection = $databaseConnection ?: $GLOBALS['TYPO3_DB'];
-    }
-
-    /**
-     * Adds or updates the session table
-     *
-     * @param Session $session
-     */
-    public function addOrUpdateSession(Session $session)
+    public function addOrUpdateSession(Session $session): void
     {
         $values = [];
         foreach ($session->getValues() as $name => $value) {
             $values[$name] = is_scalar($value) ? $value : serialize($value);
         }
-        $insertQuery = $this->databaseConnection->INSERTquery($this->tableName, $values);
-        $this->databaseConnection->sql_query($insertQuery . $this->getOnDuplicateKeyStatement($session));
+
+        $this->sessionExists($values)
+            ? $this->updateSession($values)
+            : $this->addSession($values);
     }
 
-    /**
-     * @param string $sessionId
-     * @return array|null
-     */
-    public function findBySessionId($sessionId)
+    public function findBySessionId(string $sessionId): ?array
     {
-        $activeSessions = $this->databaseConnection->exec_SELECTgetRows(
-            '*',
-            $this->tableName,
-            'session_hash=' . $this->databaseConnection->fullQuoteStr($sessionId, $this->tableName)
-        );
+        $qb = $this->getQueryBuilder();
 
-        return $activeSessions;
-    }
-
-    /**
-     * @param string $sessionHash
-     * @param string $userId
-     * @param string $appId
-     */
-    public function deleteBySessionHashUserIdAppId($sessionHash, $userId, $appId)
-    {
-        $this->databaseConnection->exec_DELETEquery(
-            $this->tableName,
-            sprintf(
-                'session_hash=%s AND user_id=%s AND app_id=%s',
-                $this->databaseConnection->fullQuoteStr($sessionHash, $this->tableName),
-                $this->databaseConnection->fullQuoteStr($userId, $this->tableName),
-                $this->databaseConnection->fullQuoteStr($appId, $this->tableName)
+        $result = $qb->select('*')
+            ->from(self::SESSION_TABLE_NAME, 's')
+            ->where(
+                $qb->expr()->eq(
+                    's.session_hash',
+                    $qb->createNamedParameter($sessionId, \PDO::PARAM_STR)
+                )
             )
-        );
+            ->execute()
+            ->fetchAll();
+
+        return empty($result) ? null : $result;
+    }
+
+    public function deleteBySessionHashUserIdAppId(
+        string $sessionHash,
+        int $userId,
+        string $appId
+    ): void {
+        $qb = $this->getQueryBuilder();
+
+        $qb->delete(self::SESSION_TABLE_NAME)
+            ->where(
+                $qb->expr()->eq(
+                    'session_hash',
+                    $qb->createNamedParameter($sessionHash, \PDO::PARAM_STR)
+                )
+            )
+            ->andWhere(
+                $qb->expr()->eq(
+                    'user_id',
+                    $qb->createNamedParameter($userId, \PDO::PARAM_INT)
+                )
+            )
+            ->andWhere(
+                $qb->expr()->eq(
+                    'app_id',
+                    $qb->createNamedParameter($appId, \PDO::PARAM_STR)
+                )
+            )
+            ->execute();
     }
 
     /**
@@ -109,5 +106,78 @@ class SessionRepository
             $updateValues[] = "$name=VALUES($name)";
         }
         return ' ON DUPLICATE KEY UPDATE ' . implode(', ', $updateValues);
+    }
+
+    private function getQueryBuilder(): QueryBuilder
+    {
+        return GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable(self::SESSION_TABLE_NAME);
+    }
+
+    private function updateSession(array $values): void
+    {
+        $qb = $this->getQueryBuilder();
+
+        $qb->update(self::SESSION_TABLE_NAME)
+            ->where(
+                $qb->expr()->eq(
+                    'session_hash',
+                    $qb->createNamedParameter($values['session_hash'], \PDO::PARAM_STR)
+                )
+            )
+            ->andWhere(
+                $qb->expr()->eq(
+                    'user_id',
+                    $qb->createNamedParameter($values['user_id'], \PDO::PARAM_INT)
+                )
+            )
+            ->andWhere(
+                $qb->expr()->eq(
+                    'app_id',
+                    $qb->createNamedParameter($values['app_id'], \PDO::PARAM_STR)
+                )
+            )
+            ->set('data', $values['data'])
+            ->set('timestamp', $values['timestamp'], false)
+            ->execute();
+    }
+
+    private function addSession(array $values): void
+    {
+        $this->getQueryBuilder()
+            ->insert(self::SESSION_TABLE_NAME)
+            ->values($values)
+            ->execute();
+    }
+
+    private function sessionExists(array $values): bool
+    {
+        $qb = $this->getQueryBuilder();
+
+        $result = $qb->select('*')
+            ->from(self::SESSION_TABLE_NAME)
+            ->where(
+                $qb->expr()->eq(
+                    'session_hash',
+                    $qb->createNamedParameter($values['session_hash'], \PDO::PARAM_STR)
+                )
+            )
+            ->andWhere(
+                $qb->expr()->eq(
+                    'user_id',
+                    $qb->createNamedParameter($values['user_id'], \PDO::PARAM_INT)
+                )
+            )
+            ->andWhere(
+                $qb->expr()->eq(
+                    'app_id',
+                    $qb->createNamedParameter($values['app_id'], \PDO::PARAM_STR)
+                )
+            )
+            ->setMaxResults(1)
+            ->execute()
+            ->fetchAll();
+
+        return !empty($result);
     }
 }

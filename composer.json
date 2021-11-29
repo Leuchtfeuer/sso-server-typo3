@@ -6,7 +6,8 @@
     "GPL-2.0-and-later"
   ],
   "require": {
-    "typo3/cms-core": "^9.5 || ^10.4"
+    "typo3/cms-core": "^9.5 || ^10.4",
+    "typo3/cms-frontend": "^9.5 || ^10.4"
   },
   "conflict": {
     "typo3-ter/naw-single-signon": "*"
@@ -24,7 +25,7 @@
     "typo3/cms": {
       "cms-package-dir": "{$vendor-dir}/typo3/cms",
       "web-dir": ".Build/web",
-      "extension-key": "sso-server-typo3"
+      "extension-key": "single_signon"
     }
   },
   "config": {

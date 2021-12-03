@@ -1,6 +1,6 @@
 <?php
 
-namespace Bitmotion\SingleSignon;
+namespace Bitmotion\SingleSignon\Service;
 
 /***************************************************************
  *  Copyright notice
@@ -25,7 +25,10 @@ namespace Bitmotion\SingleSignon;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Core\Database\DatabaseConnection;
+use Bitmotion\SingleSignon\Domain\Repository\MappingPropertyRepository;
+use Bitmotion\SingleSignon\Domain\Repository\UserMappingRepository;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 /**
@@ -33,22 +36,41 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
  */
 class UserMapping
 {
+    const NO_USERMAPPING_LABEL_KEY = 'LLL:EXT:single_signon/Resources/Private/Language/locallang_tca.php:single_signon.pi_flexform.no_usermapping';
+    /** @var UserMappingRepository */
+    private $userMappingRepository;
+
+    /** @var MappingPropertyRepository */
+    private $mappingPropertyRepository;
+
+    public function __construct()
+    {
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $this->userMappingRepository = $objectManager->get(UserMappingRepository::class);
+        $this->mappingPropertyRepository = $objectManager->get(MappingPropertyRepository::class);
+    }
+
     /**
      * Used as itemProcFunc in Flexform
-     *
-     * @param array $config
-     * @return array Item config
      */
-    public function getAvailableMappingItems($config)
+    public function getAvailableMappingItems(array $config): array
     {
         // No Usermapping =0
-        $config['items'][] = [$this->getLanguageService()->sL('LLL:EXT:single_signon/Resources/Private/Language/locallang_tca.php:single_signon.pi_flexform.no_usermapping'), '0'];
+        $config['items'][] = [
+            $this->getLanguageService()->sL(self::NO_USERMAPPING_LABEL_KEY),
+            '0'
+        ];
 
         // configured Mappings
-        $result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'tx_singlesignon_properties', 'deleted=0');
-        while ($row = $this->getDatabaseConnection()->sql_fetch_assoc($result)) {
-            $config['items'][] = [$row['mapping_tablename'], $row['uid']];
+        $properties = $this->mappingPropertyRepository->getAllEnabledProperties();
+        if (empty($properties)) {
+            return $config;
         }
+
+        foreach ($properties as $property) {
+            $config['items'][] = [$property['mapping_tablename'], $property['uid']];
+        }
+
         return $config;
     }
 
@@ -71,41 +93,31 @@ class UserMapping
             return $feUser->user['username'];
         }
 
-        $result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'tx_singlesignon_properties', 'deleted=0 AND uid=' . (int)$mappingId);
-        $row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
+        $mappingProperty = $this->mappingPropertyRepository->getPropertyByUid($mappingId);
+        if (empty($mappingProperty)) {
+            throw new \Exception('no_usermapping', 1638195573540);
+        }
 
         // If allowall map undef-users to fe_usernames, else deny
-        $allowAll = (bool)$row['allowall'];
-        $sysfolder_id = (int)$row['sysfolder_id'];
-        $mapping_defaultmapping = $row['mapping_defaultmapping'];
+        $allowAll = (bool)$mappingProperty['allowall'];
+        $sysfolder_id = (int)$mappingProperty['sysfolder_id'];
+        $mapping_defaultmapping = $mappingProperty['mapping_defaultmapping'];
 
-        $result = $this->getDatabaseConnection()->exec_SELECTquery('*', 'tx_singlesignon_usermap', 'mapping_id=' . (int)$mappingId . ' AND fe_uid=' . (int)$feUser->user['uid']);
-        $row = $this->getDatabaseConnection()->sql_fetch_assoc($result);
+        $userMapping = $this->userMappingRepository->getUserMappingByMappingAndUser((int)$mappingId, (int)$feUser->user['uid']);
 
         if ((int)$feUser->user['pid'] !== $sysfolder_id) {
             throw new \Exception('no_usermapping', 1439646264);
         }
 
-        if (empty($row['mapping_username']) && $allowAll) {
-            return $mapping_defaultmapping ?: $feUser->user['username'];
+        if (!empty($userMapping['mapping_username'])) {
+            return $userMapping['mapping_username'];
         }
 
-        if (empty($row['mapping_username'])) {
-            if (!$allowAll) {
-                throw new \Exception('No mapping was found and allow all was denied!', 1439646541);
-            }
-            return $mapping_defaultmapping ?: $feUser->user['username'];
+        if (!$allowAll) {
+            throw new \Exception('No mapping was found and allow all was denied!', 1439646541);
         }
 
-        return $row['mapping_username'];
-    }
-
-    /**
-     * @return DatabaseConnection
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
+        return $mapping_defaultmapping ?: $feUser->user['username'];
     }
 
     /**

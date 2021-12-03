@@ -44,9 +44,13 @@
     ],
     "cs-fix": ".Build/bin/php-cs-fixer fix --config .php_cs-fixer.php --using-cache no --show-progress dots -vvv",
     "phpstan": ".Build/bin/phpstan analyse -l 4 Classes/ Configuration/ Resources/",
+    "functional-test": ".Build/bin/phpunit --configuration Tests/Build/FunctionalTests.xml",
+    "unit-test": ".Build/bin/phpunit --configuration Tests/Build/UnitTests.xml",
     "deploy": [
       "@cs-fix",
-      "@phpstan"
+      "@phpstan",
+      "@functional-test",
+      "@unit-test"
     ]
   }
 }

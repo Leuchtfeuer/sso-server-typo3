@@ -2,9 +2,6 @@
 
 namespace Bitmotion\SingleSignon\Plugin;
 
-use Bitmotion\SingleSignon\Domain\Model\Session;
-use Bitmotion\SingleSignon\Domain\Repository\SessionRepository;
-use Bitmotion\SingleSignon\UserData\UserDataSourceInterface;
 /***************************************************************
  *  Copyright notice
  *
@@ -28,9 +25,11 @@ use Bitmotion\SingleSignon\UserData\UserDataSourceInterface;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Bitmotion\SingleSignon\UserMapping;
+use Bitmotion\SingleSignon\Domain\Model\Session;
+use Bitmotion\SingleSignon\Domain\Repository\SessionRepository;
+use Bitmotion\SingleSignon\Service\UserMapping;
+use Bitmotion\SingleSignon\UserData\UserDataSourceInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Service\FlexFormService;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -49,6 +48,9 @@ use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
  */
 class PluginController extends AbstractPlugin
 {
+    private const PLUGIN_NAME = 'tx_singlesignon_pi1';
+    private const EXT_NAME = 'single_signon';
+
     /**
      * @var FrontendUserAuthentication
      */
@@ -111,7 +113,7 @@ class PluginController extends AbstractPlugin
     public function __construct(SessionRepository $sessionRepository = null, UserMapping $userMapping = null, FlexFormService $flexFormService = null)
     {
         parent::__construct();
-        $this->sessionRepository = $sessionRepository ?: new SessionRepository($GLOBALS['TYPO3_DB']);
+        $this->sessionRepository = $sessionRepository ?: new SessionRepository();
         $this->userMapping = $userMapping ?: new UserMapping();
         $this->flexFormService = $flexFormService ?: GeneralUtility::makeInstance(FlexFormService::class);
     }
@@ -129,7 +131,10 @@ class PluginController extends AbstractPlugin
             return $this->pi_wrapInBaseClass($this->pi_getLL('no_usermapping'));
         }
 
-        $this->conf = array_replace_recursive($conf, $this->flexFormService->convertFlexFormContentToArray($this->cObj->data['pi_flexform']));
+        $this->conf = array_replace_recursive(
+            $conf,
+            $this->flexFormService->convertFlexFormContentToArray($this->cObj->data['pi_flexform'])
+        );
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('single_signon');
 
         $this->pi_setPiVarDefaults();
@@ -511,14 +516,6 @@ class PluginController extends AbstractPlugin
     protected function addSsoAppUrlInNewWindowJavaScriptToHtmlHeader($appLogonUrl)
     {
         $this->getTypoScriptFrontendController()->additionalHeaderData['Window_onload_' . $this->conf['appId']] = GeneralUtility::wrapJS('window.open(' . GeneralUtility::quoteJSvalue($appLogonUrl) . ');');
-    }
-
-    /**
-     * @return DatabaseConnection
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
     }
 
     /**

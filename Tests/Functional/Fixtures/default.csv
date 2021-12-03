@@ -1,9 +1,18 @@
-"pages",,,,,,,,,
-,"uid","pid","sorting","deleted","t3_origuid","title",,,
-,1,0,256,0,0,"Connected mode",,,
-"tt_content",,,,,,,,,
-,"uid","pid","sorting","deleted","sys_language_uid","l18n_parent","l10n_source","t3_origuid","header"
-,297,1,256,0,0,0,0,0,"Regular Element #1"
-"tx_singlesignon_sessions",,,,,,,,,
-,"session_hash","user_id","app_id","data","timestamp",,,,
-,"0sasd49885d8s",1,1,"data",15891,,,,
+"pages",,,,,,,,,,,
+,"uid","pid","sorting","deleted","t3_origuid","title",,,,,
+,1,0,256,0,0,"Connected mode",,,,,
+"tt_content",,,,,,,,,,,
+,"uid","pid","sorting","deleted","sys_language_uid","l18n_parent","l10n_source","t3_origuid","header",,
+,297,1,256,0,0,0,0,0,"Regular Element #1",,
+"tx_singlesignon_sessions",,,,,,,,,,,
+,"session_hash","user_id","app_id","data","timestamp",,,,,,
+,"0sasd49885d8s",1,1,"data",15891,,,,,,
+"tx_singlesignon_properties",,,,,,,,,,,
+,"uid","pid","tstamp","crdate","cruser_id","deleted","hidden","mapping_tablename","mapping_defaultmapping","allowall","sysfolder_id"
+,1,1,1638439856,1638439856,1,0,0,"mappingTable1","default",1,45
+,2,1,1638439856,1638439856,1,0,0,"mappingTable2","default",1,45
+,3,1,1638439856,1638439856,1,1,0,"mappingTable2","default",1,45
+"tx_singlesignon_usermap",,,,,,,,,,,
+,"uid","pid","tstamp","crdate","cruser_id","deleted","hidden","mapping_id","fe_uid","mapping_username",
+,1,1,1638439856,1638439856,1,0,0,1,1,"mappedUsername",
+

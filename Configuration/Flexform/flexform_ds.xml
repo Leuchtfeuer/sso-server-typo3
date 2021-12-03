@@ -197,7 +197,7 @@
                             <config>
                                 <type>select</type>
                                 <renderType>selectSingle</renderType>
-                                <itemsProcFunc>Bitmotion\SingleSignon\UserMapping->getAvailableMappingItems</itemsProcFunc>
+                                <itemsProcFunc>Bitmotion\SingleSignon\Service\UserMapping->getAvailableMappingItems</itemsProcFunc>
                                 <maxitems>1</maxitems>
                                 <size>1</size>
                                 <multiple>1</multiple>

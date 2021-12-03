@@ -58,7 +58,10 @@ class Wizicon
     */
     protected function includeLocalLang()
     {
-        return $this->getLanguageService()->includeLLFile('EXT:single_signon/Resources/Private/Language/locallang_tca.xml', false);
+        return $this->getLanguageService()->includeLLFile(
+            'EXT:single_signon/Resources/Private/Language/locallang_tca.xml',
+            false
+        );
     }
 
     /**

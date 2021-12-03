@@ -15,14 +15,29 @@ namespace Bitmotion\SingleSignon\UserData;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Core\Database\DatabaseConnection;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use Bitmotion\SingleSignon\Domain\Repository\FrontendUserGroupRepository;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Fetches the user data from the frontend user record of the currently logged in user
  */
 class FrontendUserDataSource implements UserDataSourceInterface
 {
+    /** @var FrontendUserGroupRepository */
+    private $frontendUserGroupRespository;
+
+    /** @var array */
+    private $user;
+
+    public function __construct()
+    {
+        $this->frontendUserGroupRespository = GeneralUtility::makeInstance(ObjectManager::class)
+            ->get(FrontendUserGroupRepository::class);
+        $this->user = empty($GLOBALS['TSFE']->fe_user->user) ? [] : $GLOBALS['TSFE']->fe_user->user;
+    }
+
     /**
      * @param array $preFetchedUserData
      * @param array $configuration
@@ -33,7 +48,7 @@ class FrontendUserDataSource implements UserDataSourceInterface
         $requestedUserDataFields = $configuration['userDataFields'];
 
         $compiledUserData = array_intersect_key(
-            $this->getTypoScriptFrontendController()->fe_user->user,
+            $this->user,
             array_flip($requestedUserDataFields)
         );
 
@@ -41,28 +56,15 @@ class FrontendUserDataSource implements UserDataSourceInterface
             $groupIds = explode(',', $compiledUserData['usergroup']);
             $userGroupNames = [];
             foreach ($groupIds as $groupId) {
-                $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow('*', 'fe_groups', 'uid=' . (int)$groupId);
-                $userGroupNames[] = $row['title'];
+                /** @var FrontendUserGroup|null $userGroup */
+                $userGroup = $this->frontendUserGroupRespository->findOneByUid((int)$groupId);
+                if ($userGroup) {
+                    $userGroupNames[] = $userGroup->getTitle();
+                }
             }
             $compiledUserData['usergroup'] = implode(',', $userGroupNames);
         }
 
         return array_replace_recursive($preFetchedUserData, $compiledUserData);
-    }
-
-    /**
-     * @return DatabaseConnection
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
-    }
-
-    /**
-     * @return TypoScriptFrontendController
-     */
-    protected function getTypoScriptFrontendController()
-    {
-        return $GLOBALS['TSFE'];
     }
 }

@@ -2,10 +2,17 @@
 
 namespace Bitmotion\SingleSignon\Service;
 
+use Bitmotion\SingleSignon\Domain\Repository\MappingPropertyRepository;
+use Bitmotion\SingleSignon\Domain\Repository\UserMappingRepository;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
+
 /***************************************************************
  *  Copyright notice
  *
  *  (c) 2005-2006 Dietrich Heise <typo3-ext@bitmotion.de>
+ *  (c) 2021 Yassine Abid <yassine.abid@leuchtfeuer.com>, Leuchtfeuer Digital Marketing
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,12 +31,6 @@ namespace Bitmotion\SingleSignon\Service;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
-use Bitmotion\SingleSignon\Domain\Repository\MappingPropertyRepository;
-use Bitmotion\SingleSignon\Domain\Repository\UserMappingRepository;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 /**
  * @author  Dietrich Heise <typo3-ext@bitmotion.de>

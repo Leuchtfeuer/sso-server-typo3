@@ -2,10 +2,16 @@
 
 namespace Bitmotion\SingleSignon\Domain\Repository;
 
+use Bitmotion\SingleSignon\Domain\Model\Session;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /***************************************************************
  *  Copyright notice
  *
  *  (c) 2015 Helmut Hummel <helmut.hummel@typo3.org>
+ *  (c) 2021 Yassine Abid <yassine.abid@leuchtfeuer.com>, Leuchtfeuer Digital Marketing
  *  All rights reserved
  *
  *  The GNU General Public License can be found at
@@ -22,14 +28,6 @@ namespace Bitmotion\SingleSignon\Domain\Repository;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Bitmotion\SingleSignon\Domain\Model\Session;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-
-/**
- * Class SessionRepository
- */
 class SessionRepository
 {
     private const SESSION_TABLE_NAME = 'tx_singlesignon_sessions';

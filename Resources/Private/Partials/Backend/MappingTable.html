@@ -1,0 +1,66 @@
+<f:if condition="{configuration}">
+    <f:then>
+        <div class="panel panel-default">
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th class="text-nowrap">
+                        <f:translate
+                                key="LLL:EXT:single_signon/Resources/Private/Language/Module/locallang_mod.xlf:new.mappingtable.mappingtablename"/>
+                    </th>
+                    <th class="text-nowrap">
+                        <f:translate
+                                key="LLL:EXT:single_signon/Resources/Private/Language/Module/locallang_mod.xlf:new.mappingtable.sysfolderuid"/>
+                    </th>
+                    <th class="col-control nowrap"></th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <f:for each="{configuration}" as="property">
+                    <tr>
+                        <td>{property.mapping_tablename}</td>
+                        <td>{property.sysfolder_id}</td>
+                        <td class="col-control nowrap">
+                            <div class="btn-group" role="group">
+
+                                <f:link.action action="edit" arguments="{mappingId: property.uid}"
+                                               class="btn btn-default">
+                                    <core:icon identifier="actions-open" size="small"/>
+                                </f:link.action>
+                                <a class="btn btn-default t3js-modal-trigger"
+                                   href="{f:uri.action(action: 'delete', arguments: '{property: property.uid}')}"
+                                   data-severity="warning"
+                                   title="{f:translate(key: 'LLL:EXT:core/Resources/Private/Language/locallang_mod_web_list.xlf:delete')}"
+                                   data-title="{f:translate(key: 'LLL:EXT:backend/Resources/Private/Language/locallang_alt_doc.xlf:label.confirm.delete_record.title')}"
+                                   data-content="{f:translate(key: 'LLL:EXT:backend/Resources/Private/Language/locallang_alt_doc.xlf:deleteWarning')}"
+                                   data-button-close-text="{f:translate(key: 'LLL:EXT:backend/Resources/Private/Language/locallang_alt_doc.xlf:buttons.confirm.delete_record.no')}">
+                                    <core:icon identifier="actions-delete"/>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                </f:for>
+                </tbody>
+            </table>
+        </div>
+    </f:then>
+    <f:else>
+        <div class="row">
+            <div class="col-sm-12">
+                <f:be.infobox state="-1"
+                              title="{f:translate(key: 'LLL:EXT:single_signon/Resources/Private/Language/Module/locallang_mod.xlf:new.mappingtable.no-mapping')}"/>
+            </div>
+        </div>
+    </f:else>
+</f:if>
+
+<div class="row">
+    <div class="col-sm-12">
+        <f:link.action action="selectFolder" arguments="{}" class="btn btn-default">
+            <core:icon identifier="actions-document-new"/>
+            <f:translate key="LLL:EXT:single_signon/Resources/Private/Language/locallang_mod.xlf:menu.create"/>
+        </f:link.action>
+    </div>
+</div>
+

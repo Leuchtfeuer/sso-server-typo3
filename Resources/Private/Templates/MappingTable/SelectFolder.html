@@ -1,0 +1,10 @@
+{namespace be=TYPO3\CMS\Backend\ViewHelpers}
+{namespace core=TYPO3\CMS\Core\ViewHelpers}
+<f:layout name="Backend" />
+
+<f:section name="content">
+	<h1><f:translate key="LLL:EXT:single_signon/Resources/Private/Language/Module/locallang_mod.xlf:menu.create" /></h1>
+	<h2><f:translate key="LLL:EXT:single_signon/Resources/Private/Language/Module/locallang_mod.xlf:new.mappingtable.folder.title" /></h2>
+
+	<f:render partial="Backend/MappingTable/SelectFolder" arguments="{folders: folders}" />
+</f:section>

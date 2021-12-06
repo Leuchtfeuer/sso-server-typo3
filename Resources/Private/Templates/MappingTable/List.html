@@ -1,0 +1,12 @@
+{namespace be=TYPO3\CMS\Backend\ViewHelpers}
+{namespace core=TYPO3\CMS\Core\ViewHelpers}
+<f:layout name="Backend"/>
+
+<f:section name="content">
+    <h1>
+        <f:translate key="LLL:EXT:single_signon/Resources/Private/Language/locallang_mod.xlf:properties.title"/>
+    </h1>
+
+    <f:render partial="Backend/MappingTable" arguments="{configuration: mappings}"/>
+</f:section>
+</html>

@@ -1,0 +1,28 @@
+{namespace be=TYPO3\CMS\Backend\ViewHelpers}
+{namespace core=TYPO3\CMS\Core\ViewHelpers}
+<f:layout name="Backend" />
+
+<f:section name="content">
+	<h1><f:translate key="LLL:EXT:single_signon/Resources/Private/Language/Module/locallang_mod.xlf:info.title" /></h1>
+	<p>
+		<f:format.raw>
+			<f:translate key="LLL:EXT:single_signon/Resources/Private/Language/Module/locallang_mod.xlf:info.text" />
+		</f:format.raw>
+	</p>
+	<div class="card-container">
+		<div class="card card-size-fixed-small">
+			<f:render partial="Backend/Card/Header"
+					  arguments="{title: '{f:translate(key: \'LLL:EXT:single_signon/Resources/Private/Language/Module/locallang_mod.xlf:list.card.mappingtable.title\')}', icon: 'single_signon'}" />
+			<div class="card-content">
+				<p class="card-text">
+					<f:translate key="LLL:EXT:single_signon/Resources/Private/Language/Module/locallang_mod.xlf:list.card.mappingtable.text"/>
+				</p>
+			</div>
+			<div class="card-footer">
+				<f:link.action action="list" controller="MappingTable" class="btn btn-default">
+					<f:translate key="LLL:EXT:single_signon/Resources/Private/Language/Module/locallang_mod.xlf:list.card.button"/>
+				</f:link.action>
+			</div>
+		</div>
+	</div>
+</f:section>

@@ -2,6 +2,11 @@
 
 namespace Bitmotion\SingleSignon\UserData;
 
+use Bitmotion\SingleSignon\Domain\Repository\FrontendUserGroupRepository;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,14 +20,6 @@ namespace Bitmotion\SingleSignon\UserData;
  * The TYPO3 project - inspiring people to share!
  */
 
-use Bitmotion\SingleSignon\Domain\Repository\FrontendUserGroupRepository;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-
-/**
- * Fetches the user data from the frontend user record of the currently logged in user
- */
 class FrontendUserDataSource implements UserDataSourceInterface
 {
     /** @var FrontendUserGroupRepository */

@@ -6,6 +6,7 @@ namespace Bitmotion\SingleSignon\Domain\Model;
  *  Copyright notice
  *
  *  (c) 2015 Helmut Hummel <helmut.hummel@typo3.org>
+ *  (c) 2021 Yassine Abid <yassine.abid@leuchtfeuer.com>
  *  All rights reserved
  *
  *  The GNU General Public License can be found at

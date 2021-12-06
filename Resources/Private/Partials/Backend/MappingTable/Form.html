@@ -1,0 +1,35 @@
+<f:form action="{action}" class="form row">
+	<div class="form-group col-sm-12 col-md-5 col-lg-3">
+		<label for="rolesKey">
+			<f:translate key="LLL:EXT:single_signon/Resources/Private/Language/Module/locallang_mod.xlf:new.mappingtable.mappingtablename"/>
+		</label>
+		<f:form.textfield class="form-control" name="property[mapping_tablename]" value="{property.mapping_tablename}"/>
+	</div>
+
+	<div class="form-group col-sm-12 col-md-5 col-lg-3">
+		<label for="rolesKey">
+			<f:translate key="LLL:EXT:single_signon/Resources/Private/Language/Module/locallang_mod.xlf:new.mappingtable.default"/>
+		</label>
+		<f:form.textfield class="form-control" name="property[mapping_defaultmapping]" value="{property.mapping_defaultmapping}"/>
+	</div>
+
+	<div class="form-group col-sm-12 col-md-5 col-lg-3">
+		<label for="rolesKey">
+			<f:translate key="LLL:EXT:single_signon/Resources/Private/Language/Module/locallang_mod.xlf:new.mappingtable.allow"/>
+		</label>
+		<f:form.checkbox class="form-control" name="property[allowall]" value="allowall" checked="{property.allowall} == 1"/>
+	</div>
+	<f:form.hidden name="property[sysfolder_id]" value="{folder}"/>
+	<f:form.hidden name="property[uid]" value="{property.uid}"/>
+
+	<f:render partial="Backend/MappingTable/UsersForm" arguments="{users: users}" />
+
+
+	<div class="form-group col-sm-12">
+		<f:form.button class="btn btn-default">
+			<core:icon identifier="actions-save" />
+			<f:translate key="LLL:EXT:single_signon/Resources/Private/Language/Module/locallang_mod.xlf:properties.button.save"/>
+		</f:form.button>
+	</div>
+</f:form>
+

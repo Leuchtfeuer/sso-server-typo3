@@ -1,7 +1,33 @@
 <?php
 defined('TYPO3_MODE') or die('Access denied.');
 
-if (TYPO3_MODE == 'BE') {
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule('tools', 'txsinglesignonM1', '', \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('single_signon') . 'Modules/UserMapping/');
-    $GLOBALS['TBE_MODULES_EXT']['xMOD_db_new_content_el']['addElClasses']['Bitmotion\\SingleSignon\\Plugin\\Wizicon'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('single_signon') . 'Classes/Plugin/Wizicon.php';
-}
+call_user_func(
+    function ($extensionKey) {
+
+        // Register Backend Module
+        $controllerActions = [
+            \Bitmotion\SingleSignon\Controller\BackendController::class => 'info',
+            \Bitmotion\SingleSignon\Controller\MappingTableController::class => 'list,edit,new,delete,selectFolder,createForm,update',
+        ];
+        $extensionName = $extensionKey;
+        if (version_compare(TYPO3_version, '10.0.0', '<')) {
+            $controllerActions = [
+                'Backend' => 'info',
+                'MappingTable' => 'list,edit,new,delete,selectFolder,createForm,update',
+            ];
+            $extensionName = 'Bitmotion.' . ucfirst($extensionKey);
+        }
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
+            $extensionName,
+            'tools',
+            'txsinglesignonM1',
+            'bottom',
+            $controllerActions,
+            [
+                'access' => 'admin',
+                'icon' => 'EXT:single_signon/Resources/Public/Icons/ce_wiz.gif',
+                'labels' => 'LLL:EXT:single_signon/Resources/Private/Language/Module/locallang_mod.xlf'
+            ]
+        );
+    }, 'single_signon'
+);

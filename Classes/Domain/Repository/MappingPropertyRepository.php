@@ -2,33 +2,19 @@
 
 namespace Bitmotion\SingleSignon\Domain\Repository;
 
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2021 Leuchtfeuer Digital Marketing GmbH  <team-yd@typo3.org>
- *  All rights reserved
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the text file GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class SessionRepository
+/*
+ * This file is part of the "Single Signon" extension for TYPO3 CMS.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * Yassine Abid <yassine.abid@leuchtfeuer.com>, Leuchtfeuer Digital Marketing
  */
+
 class MappingPropertyRepository
 {
     private const MAPPING_PROPERTY_TABLE_NAME = 'tx_singlesignon_properties';
@@ -60,6 +46,78 @@ class MappingPropertyRepository
                 ->fetchAll();
 
         return empty($result) ? [] : reset($result);
+    }
+
+    public function addMappingProperty(
+        int $folderUid,
+        string $tablename,
+        string $defaultMapping,
+        bool $allow
+    ): int {
+        $values = [
+            'tstamp'  => time(),
+            'crdate'  => time(),
+            'cruser_id'  => $GLOBALS['BE_USER']->user['uid'] ?? 0,
+            'mapping_tablename' => $tablename,
+            'mapping_defaultmapping' => $defaultMapping,
+            'allowall' => (int)$allow,
+            'sysfolder_id' => $folderUid
+        ];
+
+        $this->getQueryBuilder()
+            ->insert(self::MAPPING_PROPERTY_TABLE_NAME)
+            ->values($values)
+            ->execute();
+
+        $qb = $this->getQueryBuilder();
+        return $qb->select('uid')
+            ->from(self::MAPPING_PROPERTY_TABLE_NAME)
+            ->where(
+                $qb->expr()->eq('tstamp', $qb->createNamedParameter($values['tstamp'], \PDO::PARAM_INT))
+            )
+            ->andwhere(
+                $qb->expr()->eq('crdate', $qb->createNamedParameter($values['crdate'], \PDO::PARAM_INT))
+            )
+            ->andwhere(
+                $qb->expr()->eq('mapping_tablename', $qb->createNamedParameter($values['mapping_tablename'], \PDO::PARAM_STR))
+            )
+            ->andwhere(
+                $qb->expr()->eq('mapping_defaultmapping', $qb->createNamedParameter($values['mapping_defaultmapping'], \PDO::PARAM_STR))
+            )
+            ->andwhere(
+                $qb->expr()->eq('sysfolder_id', $qb->createNamedParameter($values['sysfolder_id'], \PDO::PARAM_INT))
+            )
+            ->orderBy('uid', 'DESC')
+            ->execute()
+            ->fetchColumn();
+    }
+
+    public function updateMappingProperty(
+        int $uid,
+        string $tablename,
+        string $defaultMapping,
+        bool $allow
+    ): void {
+        $qb = $this->getQueryBuilder();
+        $qb->update(self::MAPPING_PROPERTY_TABLE_NAME)
+            ->where(
+                $qb->expr()->eq('uid', $qb->createNamedParameter($uid, \PDO::PARAM_INT))
+            )
+            ->set('tstamp', time())
+            ->set('mapping_tablename', $tablename)
+            ->set('mapping_defaultmapping', $defaultMapping)
+            ->set('allowall', (int)$allow)
+            ->execute();
+    }
+
+    public function deleteMappingProperty(int $property): void
+    {
+        $qb = $this->getQueryBuilder();
+        $qb->delete(self::MAPPING_PROPERTY_TABLE_NAME)
+            ->where(
+                $qb->expr()->eq('uid', $property)
+            )
+            ->execute();
     }
 
     private function getQueryBuilder(): QueryBuilder

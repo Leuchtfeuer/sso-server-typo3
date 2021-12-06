@@ -121,7 +121,7 @@ This per-user mappings are configured in User Mapping Tables.&lt;/p&gt;
 				<source>Mapping table has been created successfully.</source>
 			</trans-unit>
 			<trans-unit id="message.property.deleted.title">
-				<source>vRemoved!</source>
+				<source>Removed!</source>
 			</trans-unit>
 			<trans-unit id="message.property.deleted.text">
 				<source>Mapping table has been removed successfully.</source>
@@ -131,6 +131,9 @@ This per-user mappings are configured in User Mapping Tables.&lt;/p&gt;
 			</trans-unit>
 			<trans-unit id="message.property.updated.text">
 				<source>Mapping table has been updated successfully.</source>
+			</trans-unit>
+			<trans-unit id="properties.title">
+				<source>List of mapping tables</source>
 			</trans-unit>
 		</body>
 	</file>

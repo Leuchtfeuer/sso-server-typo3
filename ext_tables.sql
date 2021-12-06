@@ -47,4 +47,3 @@ CREATE TABLE tx_singlesignon_sessions (
   timestamp int(11) unsigned DEFAULT '0' NOT NULL,
   PRIMARY KEY (session_hash,user_id,app_id)
 ) ENGINE=InnoDB;
-

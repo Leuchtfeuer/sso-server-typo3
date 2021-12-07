@@ -75,7 +75,7 @@ class MappingTableController extends BackendController
             $property['sysfolder_id'],
             $property['mapping_tablename'],
             $property['mapping_defaultmapping'],
-            !empty($property['allowall']),
+            !empty($property['allowall'])
         );
 
         foreach ($users as $feUid => $user) {

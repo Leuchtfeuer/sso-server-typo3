@@ -1,16 +1,6 @@
 <?php
 
-/***************************************************************
- * Extension Manager/Repository config file for ext "single_signon".
- *
- * Auto generated 08-09-2015 17:44
- *
- * Manual updates:
- * Only the data in the array - everything else is removed by next
- * writing. "version" and "dependencies" must not be touched!
- ***************************************************************/
-
-$EM_CONF[$_EXTKEY] = array(
+$EM_CONF['single_signon'] = [
     'title' => 'Single Sign-On',
     'description' => 'The TYPO3 SSO Server provides seamless integration of third-party (i.e. non-TYPO3) applications (SSO Apps) into TYPO3. This includes end-user access to SSO Apps with no additional logon.',
     'category' => 'plugin',
@@ -27,9 +17,9 @@ $EM_CONF[$_EXTKEY] = array(
         'conflicts' => [],
         'suggests' => [],
     ],
-    'autoload' => array(
-        'psr-4' => array(
+    'autoload' => [
+        'psr-4' => [
             'Bitmotion\\SingleSignon\\' => 'Classes',
-        ),
-    )
-);
+        ],
+    ]
+];

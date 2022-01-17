@@ -108,7 +108,7 @@ class MappingTableController extends BackendController
             (int)$property['uid'],
             $property['mapping_tablename'],
             $property['mapping_defaultmapping'],
-            !empty($property['allowall']),
+            !empty($property['allowall'])
         );
 
         foreach ($users as $feUid => $user) {

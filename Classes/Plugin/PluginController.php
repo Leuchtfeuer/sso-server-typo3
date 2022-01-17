@@ -231,7 +231,7 @@ class PluginController extends AbstractPlugin
         $ssoData = [
             'version' => $version,
             'user' => $userName,
-            'app_id' => $appId,
+            'tpa_id' => $appId,
             'expires' => $validUntilTimestamp,
             'action' => $action,
             'flags' => $flags,
